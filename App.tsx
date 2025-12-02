@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded } from 'lucide-react';
+import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap } from 'lucide-react';
 import { MapView } from './components/MapView';
 import { TableView } from './components/TableView';
 import { GeminiChat } from './components/GeminiChat';
@@ -151,6 +151,48 @@ const App: React.FC = () => {
     return 8;
   }, [activeRegion]);
 
+  // Helper to get region styling
+  const getRegionVisuals = (region: RegionName) => {
+    switch (region) {
+      case 'Odesa':
+        return {
+          gradient: 'from-blue-400 to-teal-500',
+          icon: <Anchor className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Перлина біля моря'
+        };
+      case 'Mykolaiv':
+        return {
+          gradient: 'from-indigo-400 to-blue-600',
+          icon: <Ship className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Місто на хвилі'
+        };
+      case 'Kherson':
+        return {
+          gradient: 'from-yellow-400 to-green-500',
+          icon: <Sun className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Сонячний край'
+        };
+      case 'Dnipro':
+        return {
+          gradient: 'from-sky-500 to-indigo-700',
+          icon: <Building2 className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Серце індустрії'
+        };
+      case 'Zaporizhzhia':
+        return {
+          gradient: 'from-orange-400 to-rose-600',
+          icon: <Zap className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Козацька сила'
+        };
+      default:
+        return {
+          gradient: 'from-slate-400 to-slate-600',
+          icon: <MapPin className="w-12 h-12 text-white" />,
+          description: 'Регіон'
+        };
+    }
+  };
+
   return (
     <div className="h-screen flex flex-col bg-slate-50 overflow-hidden relative">
       
@@ -174,67 +216,62 @@ const App: React.FC = () => {
 
       {/* Welcome / Region Selection Modal */}
       {isRegionModalOpen && !showIntro && (
-        <div className="fixed inset-0 z-[100] bg-slate-900/95 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-5xl w-full p-8 text-center animate-in fade-in zoom-in duration-300 relative overflow-hidden">
+        <div className="fixed inset-0 z-[100] bg-slate-900/95 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-6xl w-full p-6 md:p-10 text-center animate-in fade-in zoom-in duration-300 relative overflow-hidden my-auto">
             
             {/* Background Accent */}
-            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600"></div>
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600"></div>
 
-            <div className="w-20 h-20 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4 text-teal-600 shadow-inner">
-              <HeartHandshake className="w-10 h-10" />
+            <div className="w-16 h-16 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4 text-teal-600 shadow-inner">
+              <HeartHandshake className="w-8 h-8" />
             </div>
             
-            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3 tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-2 tracking-tight">
               Вітаю, шановне панство!
             </h1>
-            <p className="text-lg text-slate-500 mb-10 max-w-lg mx-auto leading-relaxed">
+            <p className="text-base text-slate-500 mb-8 max-w-lg mx-auto leading-relaxed">
               Оберіть ваш регіон, щоб побачити доступні послуги допомоги
             </p>
             
-            {/* Region Grid - Interactive Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
-              {(Object.keys(REGION_CONFIG) as RegionName[]).map((region) => (
-                <button
-                  key={region}
-                  onClick={() => handleRegionSelect(region)}
-                  className="group relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-48 flex flex-col items-center justify-center"
-                >
-                  {/* Background Image (blurred/faded Coat of Arms) */}
-                  <div className="absolute inset-0 opacity-5 group-hover:opacity-15 transition-opacity duration-300 pointer-events-none">
-                    <img 
-                      src={REGION_CONFIG[region].image} 
-                      alt="" 
-                      className="w-full h-full object-cover scale-150 blur-sm group-hover:scale-125 transition-transform duration-700" 
-                    />
-                  </div>
-                  
-                  {/* Gradient Overlay for Hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-teal-50/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                  {/* Content */}
-                  <div className="relative z-10 p-4 flex flex-col items-center w-full">
-                    {/* Coat of Arms Icon */}
-                    <div className="w-20 h-24 mb-3 drop-shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:drop-shadow-xl">
-                       <img 
-                         src={REGION_CONFIG[region].image} 
-                         alt={`${REGION_CONFIG[region].label} Герб`} 
-                         className="w-full h-full object-contain"
-                       />
+            {/* Region Grid - Modern Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
+              {(Object.keys(REGION_CONFIG) as RegionName[]).map((region) => {
+                const visuals = getRegionVisuals(region);
+                return (
+                  <button
+                    key={region}
+                    onClick={() => handleRegionSelect(region)}
+                    className="group relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 flex flex-col h-56"
+                  >
+                    {/* Visual Header */}
+                    <div className={`h-32 bg-gradient-to-br ${visuals.gradient} flex items-center justify-center relative overflow-hidden`}>
+                       {/* Background Pattern */}
+                       <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent scale-150"></div>
+                       
+                       {/* Icon with scale effect */}
+                       <div className="transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                         {visuals.icon}
+                       </div>
                     </div>
-                    
-                    {/* Text Label */}
-                    <span className="font-bold text-slate-700 text-sm md:text-base group-hover:text-teal-700 transition-colors px-2 leading-tight">
-                      {REGION_CONFIG[region].label}
-                    </span>
-                    
-                    {/* Active Indicator */}
-                    <div className="mt-2 w-8 h-1 bg-teal-500 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300"></div>
-                  </div>
-                </button>
-              ))}
+
+                    {/* Content Body */}
+                    <div className="flex-1 p-4 flex flex-col items-center justify-center bg-white relative z-10">
+                      <span className="font-bold text-slate-800 text-base md:text-lg group-hover:text-teal-700 transition-colors leading-tight mb-1">
+                        {REGION_CONFIG[region].label.replace(' область', '')}
+                      </span>
+                      <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+                        {visuals.description}
+                      </span>
+                      
+                      {/* Active Indicator Line */}
+                      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-teal-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
             
-            <p className="mt-10 text-xs text-slate-400 font-medium uppercase tracking-widest opacity-70">
+            <p className="mt-8 text-[10px] text-slate-400 font-medium uppercase tracking-widest opacity-60">
               Інклюзивна мапа соціальних послуг України
             </p>
           </div>
