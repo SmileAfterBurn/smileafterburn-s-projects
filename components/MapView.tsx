@@ -141,14 +141,15 @@ export const MapView: React.FC<MapViewProps> = ({
               key={org.id}
               position={[org.lat, org.lng]}
               icon={isSelected ? selectedIcon : defaultIcon}
-              eventHandlers={{
+              // Cast eventHandlers to any to bypass TypeScript error in some environments
+              {...({ eventHandlers: {
                 click: () => {
                   onSelectOrg(org.id);
                 },
-              }}
+              }} as any)}
               zIndexOffset={isSelected ? 1000 : 0}
             >
-              <Popup className="min-w-[240px]">
+              <Popup className="min-w-[300px]">
                 <div className="p-1">
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-bold text-base text-slate-800 flex items-center gap-1 pr-2">

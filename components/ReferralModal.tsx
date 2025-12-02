@@ -26,7 +26,7 @@ export const ReferralModal: React.FC<ReferralModalProps> = ({ organization, onCl
 
   const needsOptions = [
     'Юридична допомога', 'Психосоціальна підтримка', 'Кейс-менеджмент', 
-    'Грошова допомога', 'Житло/Прихисток', 'Гуманітарна допомога (продукти/гігієна)',
+    'Грошова допомога', 'Житло/Прихисток', 'Гуманітарна допомога',
     'Медична допомога', 'Захист дітей', 'Евакуація'
   ];
 
@@ -183,11 +183,11 @@ ${formData.notes}
   }
 
   return (
-    <div className="fixed inset-0 z-[6000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl my-8 flex flex-col animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 z-[6000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col animate-in fade-in zoom-in duration-200 max-h-[90vh]">
         
         {/* Header */}
-        <div className="bg-slate-800 text-white p-5 flex justify-between items-start rounded-t-xl">
+        <div className="bg-slate-800 text-white p-5 flex justify-between items-start rounded-t-xl shrink-0">
           <div>
             <h2 className="text-xl font-bold flex items-center gap-2">
               <FileText className="w-5 h-5 text-teal-400" />
@@ -203,7 +203,7 @@ ${formData.notes}
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto max-h-[75vh]">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto custom-scrollbar">
           
           {/* Priority */}
           <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
@@ -331,7 +331,7 @@ ${formData.notes}
           </div>
 
           {/* Actions */}
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
+          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3 sticky bottom-0 bg-white">
             <button 
               type="button" 
               onClick={onClose}

@@ -78,10 +78,10 @@ export const RemoteSupportModal: React.FC<RemoteSupportModalProps> = ({ onClose 
         </div>
 
         {/* List */}
-        <div className="flex-1 overflow-y-auto p-4 bg-slate-100">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="flex-1 overflow-y-auto p-4 bg-slate-100 custom-scrollbar">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredActors.map(actor => (
-              <div key={actor.id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow border border-slate-200 flex flex-col">
+              <div key={actor.id} className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow border border-slate-200 flex flex-col h-full">
                 <div className="flex justify-between items-start mb-2">
                   <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide flex items-center gap-1 ${
                     actor.category.includes('Юридична') ? 'bg-blue-50 text-blue-700' :
