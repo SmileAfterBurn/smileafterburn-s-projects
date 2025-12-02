@@ -16,6 +16,15 @@ export interface Organization {
   region: RegionName; // Нове поле для фільтрації по регіонах
 }
 
+export interface RemoteSupportActor {
+  id: string;
+  name: string;
+  category: string; // e.g. "Психологічна допомога", "Юридична допомога", "Гарячі лінії"
+  phones: string[];
+  description: string;
+  website?: string; // Optional field for online resources
+}
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'model';

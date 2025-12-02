@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, AttributionControl } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, AttributionControl, ZoomControl } from 'react-leaflet';
 import { Organization } from '../types';
 import { MapPin, Heart, Phone, Mail } from 'lucide-react';
 import L from 'leaflet';
@@ -110,11 +110,15 @@ export const MapView: React.FC<MapViewProps> = ({
         dragging={true}
         className="z-0"
         attributionControl={false}
+        zoomControl={false} // Disable default English zoom control
         markerZoomAnimation={true}
       >
+        {/* Localized Controls */}
         <AttributionControl prefix="Ілля Чернов | Leaflet" position="bottomright" />
+        <ZoomControl position="topleft" zoomInTitle="Наблизити" zoomOutTitle="Віддалити" />
+
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> спільнота'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         

@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown } from 'lucide-react';
+import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded } from 'lucide-react';
 import { MapView } from './components/MapView';
 import { TableView } from './components/TableView';
 import { GeminiChat } from './components/GeminiChat';
 import { IntroModal } from './components/IntroModal';
+import { RemoteSupportModal } from './components/RemoteSupportModal'; // Import new modal
 import { INITIAL_ORGANIZATIONS, REGION_CONFIG } from './constants';
 import { Organization, ViewMode, RegionName } from './types';
 
@@ -14,6 +15,9 @@ const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isChatOpen, setIsChatOpen] = useState(false);
   
+  // Remote Support Modal State
+  const [isRemoteSupportOpen, setIsRemoteSupportOpen] = useState(false);
+
   // Sidebar state for Split View
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -116,6 +120,11 @@ const App: React.FC = () => {
         <IntroModal onComplete={handleIntroComplete} />
       )}
 
+      {/* Remote Support Modal */}
+      {isRemoteSupportOpen && (
+        <RemoteSupportModal onClose={() => setIsRemoteSupportOpen(false)} />
+      )}
+
       {/* Welcome / Region Selection Modal */}
       {isRegionModalOpen && !showIntro && (
         <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4">
@@ -178,7 +187,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex-1 max-w-xl mx-4 hidden md:block">
+        <div className="flex-1 max-w-xl mx-4 hidden lg:block">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
@@ -192,6 +201,17 @@ const App: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          
+          {/* Remote Support Button (New) */}
+          <button 
+            onClick={() => setIsRemoteSupportOpen(true)}
+            className="hidden sm:flex items-center gap-2 px-3 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg font-bold text-xs transition-colors border border-rose-200"
+            title="Дистанційна підтримка будь-де"
+          >
+            <PhoneForwarded className="w-4 h-4" />
+            <span className="hidden md:inline">Дистанційна підтримка</span>
+          </button>
+
           {/* View Toggles */}
           <div className="hidden md:flex bg-slate-100 rounded-lg p-1 gap-1 mr-2">
             <button

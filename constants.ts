@@ -1,4 +1,4 @@
-import { Organization, RegionName } from './types';
+import { Organization, RegionName, RemoteSupportActor } from './types';
 
 export const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1ev98ifed1h8xc16KcWaOmvaky8I9StuE0-6w7UPG4K4/edit?gid=1212063265#gid=1212063265';
 export const DRIVE_URL = 'https://drive.google.com/drive/folders/1kSQKI_-2b8mmWfUw5ZHvGaDD9g4tPWqU?usp=sharing';
@@ -31,6 +31,111 @@ export const REGION_CONFIG: Record<RegionName, { center: [number, number], zoom:
     label: 'Запорізька область'
   }
 };
+
+// --- Дані для Дистанційної підтримки ---
+export const REMOTE_SUPPORT_ACTORS: RemoteSupportActor[] = [
+  {
+    id: 'r1',
+    name: 'Урядова гаряча лінія',
+    category: 'Державні гарячі лінії',
+    phones: ['1545'],
+    description: 'Цілодобова урядова гаряча лінія з усіх питань.',
+    website: 'https://ukc.gov.ua/'
+  },
+  {
+    id: 'r2',
+    name: 'Гаряча лінія Мінреінтеграції',
+    category: 'Державні гарячі лінії',
+    phones: ['1548', '+380960788433'],
+    description: 'Питання ВПО, евакуації та гуманітарної допомоги.',
+    website: 'https://minre.gov.ua/'
+  },
+  {
+    id: 'r3',
+    name: 'Безоплатна правова допомога',
+    category: 'Юридична допомога',
+    phones: ['0 800 213 103'],
+    description: 'Консультації юристів, допомога в оформленні документів.',
+    website: 'https://legalaid.gov.ua/'
+  },
+  {
+    id: 'r4',
+    name: 'Національна лінія психологічної підтримки',
+    category: 'Психологічна підтримка',
+    phones: ['0 800 100 102'],
+    description: 'Безкоштовна та анонімна психологічна допомога.'
+  },
+  {
+    id: 'r5',
+    name: 'Гаряча лінія запобігання домашньому насильству',
+    category: 'Соціальний захист',
+    phones: ['116 123', '0 800 500 335'],
+    description: 'Цілодобова підтримка постраждалих від насильства.'
+  },
+  {
+    id: 'r6',
+    name: 'Юридичний порадник для ВПО',
+    category: 'Юридична допомога',
+    phones: [], 
+    description: 'Чат-бот та онлайн ресурси для переселенців (Viber, Telegram, Facebook).',
+    website: 'https://chatbot.r2p.org.ua/'
+  },
+  {
+    id: 'r7',
+    name: 'Лінія підтримки дітей та молоді (La Strada)',
+    category: 'Психологічна підтримка',
+    phones: ['116 111', '0 800 500 225'],
+    description: 'Консультації для дітей, підлітків та батьків. Анонімно.',
+    website: 'https://la-strada.org.ua/'
+  },
+  {
+    id: 'r8',
+    name: 'Національна гаряча лінія з питань ВІЛ/СНІД',
+    category: 'Охорона здоров\'я',
+    phones: ['0 800 500 451'],
+    description: 'Цілодобова, безкоштовна та анонімна інформаційна підтримка.'
+  },
+  {
+    id: 'r9',
+    name: 'Lifeline Ukraine',
+    category: 'Психологічна підтримка',
+    phones: ['7333'],
+    description: 'Національна лінія з питань профілактики самогубств та підтримки психічного здоров’я.',
+    website: 'https://lifelineukraine.com/get-help'
+  },
+  {
+    id: 'r10',
+    name: 'Офіс Омбудсмана України',
+    category: 'Права людини',
+    phones: ['0 800 50 17 20', '044 299 74 08'],
+    description: 'Гаряча лінія Уповноваженого ВРУ з прав людини. Розшук зниклих, права дітей, обмін полоненими.',
+    website: 'https://ombudsman.gov.ua/'
+  },
+  {
+    id: 'r11',
+    name: 'Український ветеранський фонд',
+    category: 'Психологічна підтримка',
+    phones: ['0 800 33 20 29'],
+    description: 'Гаряча лінія кризової підтримки для ветеранів та їхніх родин (цілодобово).',
+    website: 'https://veteranfund.com.ua/'
+  },
+  {
+    id: 'r12',
+    name: 'Донбас SOS',
+    category: 'Допомога ВПО',
+    phones: ['0 800 309 110'],
+    description: 'Інформаційна підтримка ВПО, юридичні питання, перетин лінії розмежування.',
+    website: 'https://www.donbasssos.org/'
+  },
+  {
+    id: 'r13',
+    name: 'Helping to Leave',
+    category: 'Евакуація',
+    phones: ['(093) 177 64 58'],
+    description: 'Допомога з евакуацією з зон бойових дій та окупованих територій.',
+    website: 'https://helpingtoleave.org/ua'
+  }
+];
 
 // Дані для Одеської, Миколаївської, Херсонської, Дніпропетровської та Запорізької областей
 export const INITIAL_ORGANIZATIONS: Organization[] = [
@@ -559,6 +664,81 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     driveFolderUrl: DRIVE_URL,
     budget: 500000,
     region: 'Dnipro'
+  },
+  // Миколаївські департаменти
+  {
+    id: '36',
+    name: 'Департамент праці та соціального захисту (Миколаїв)',
+    address: 'м. Миколаїв',
+    lat: 46.9700,
+    lng: 31.9900,
+    category: 'Комунальна установа',
+    services: 'Забезпечення соціальних гарантій учасників бойових дій, осіб з інвалідністю, ветеранів',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Mykolaiv'
+  },
+  {
+    id: '37',
+    name: 'Управління соц. виплат (Інгульський р-н)',
+    address: 'вул. Миколаївська, 26/1, Миколаїв',
+    lat: 46.9450,
+    lng: 32.0300,
+    category: 'Комунальна установа',
+    services: 'Соціальні виплати та компенсації',
+    phone: '(0512) 58-61-69',
+    email: 'utszn_lenin@ukr.net',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Mykolaiv'
+  },
+  {
+    id: '38',
+    name: 'Управління соц. виплат (Центральний р-н)',
+    address: 'вул. Захисників Миколаєва (Декабристів), 25, Миколаїв',
+    lat: 46.9720,
+    lng: 31.9880,
+    category: 'Комунальна установа',
+    services: 'Соціальні виплати та компенсації',
+    phone: '(0512) 47-79-05',
+    email: 'utszn_centr@ukr.net',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Mykolaiv'
+  },
+  {
+    id: '39',
+    name: 'Управління соц. виплат (Заводський р-н)',
+    address: 'вул. Морехідна, 9/2, Миколаїв',
+    lat: 46.9630,
+    lng: 31.9600,
+    category: 'Комунальна установа',
+    services: 'Соціальні виплати та компенсації',
+    phone: '(0512) 40-91-28',
+    email: 'utszn_zavodsk@ukr.net',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Mykolaiv'
+  },
+  {
+    id: '40',
+    name: 'Управління соц. виплат (Корабельний р-н)',
+    address: 'вул. Дмитра Пєтухова, 1/1, Миколаїв',
+    lat: 46.8800,
+    lng: 32.0200,
+    category: 'Комунальна установа',
+    services: 'Соціальні виплати та компенсації',
+    phone: '(0512) 60-09-05',
+    email: 'utszn_korab@ukr.net',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Mykolaiv'
   }
-  // Вставте сюди нових акторів, коли користувач надасть текст
 ];
