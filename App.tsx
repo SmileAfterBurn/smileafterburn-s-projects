@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded } from 'lucide-react';
 import { MapView } from './components/MapView';
@@ -64,6 +65,33 @@ const App: React.FC = () => {
     Array.from(new Set(organizations.map(o => o.category))).sort(), 
   [organizations]);
 
+  // Helper function for sorting priority
+  const getOrganizationPriority = (org: Organization) => {
+    const name = org.name.toUpperCase();
+    const category = org.category.toUpperCase();
+
+    // Priority 1: "ПОСМІШКА ЮА" (ALWAYS FIRST)
+    if (name.includes("ПОСМІШКА ЮА")) return 1;
+
+    // Priority 2: Communal/State Institutions
+    // Checks for specific keywords in name or category
+    if (
+      category.includes("КОМУНАЛЬН") || 
+      name.includes("ДЕПАРТАМЕНТ") || 
+      name.includes("УПРАВЛІННЯ") || 
+      name.includes("ЛІКАРНЯ") || 
+      name.includes("ЦЕНТР") ||
+      name.includes("СЛУЖБА") ||
+      name.includes("ПОЛІКЛІНІКА")
+    ) return 2;
+
+    // Priority 3: "Дівчата"
+    if (name.includes("ДІВЧАТА")) return 3;
+
+    // Priority 4: Everything else
+    return 4;
+  };
+
   const filteredOrgs = organizations.filter(c => {
     // 1. Filter by Region
     if (activeRegion && c.region !== activeRegion) {
@@ -83,14 +111,16 @@ const App: React.FC = () => {
 
     return matchesSearch && matchesStatus && matchesCategory;
   }).sort((a, b) => {
-    // Priority sorting: "ПОСМІШКА ЮА" always on top
-    const priorityPhrase = "ПОСМІШКА ЮА";
-    const isPriorityA = a.name.toUpperCase().includes(priorityPhrase);
-    const isPriorityB = b.name.toUpperCase().includes(priorityPhrase);
+    const priorityA = getOrganizationPriority(a);
+    const priorityB = getOrganizationPriority(b);
 
-    if (isPriorityA && !isPriorityB) return -1;
-    if (!isPriorityA && isPriorityB) return 1;
-    return 0;
+    // Sort by priority group first
+    if (priorityA !== priorityB) {
+      return priorityA - priorityB;
+    }
+
+    // If priorities match, sort alphabetically by name
+    return a.name.localeCompare(b.name);
   });
 
   const handleOrgSelect = (id: string) => {
@@ -144,35 +174,68 @@ const App: React.FC = () => {
 
       {/* Welcome / Region Selection Modal */}
       {isRegionModalOpen && !showIntro && (
-        <div className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 text-center animate-in fade-in zoom-in duration-300">
-            <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6 text-teal-600">
-              <HeartHandshake className="w-8 h-8" />
+        <div className="fixed inset-0 z-[100] bg-slate-900/95 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-5xl w-full p-8 text-center animate-in fade-in zoom-in duration-300 relative overflow-hidden">
+            
+            {/* Background Accent */}
+            <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600"></div>
+
+            <div className="w-20 h-20 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4 text-teal-600 shadow-inner">
+              <HeartHandshake className="w-10 h-10" />
             </div>
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">
+            
+            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-3 tracking-tight">
               Вітаю, шановне панство!
             </h1>
-            <p className="text-lg text-slate-600 mb-8">
-              Де саме ви шукаєте допомогу?
+            <p className="text-lg text-slate-500 mb-10 max-w-lg mx-auto leading-relaxed">
+              Оберіть ваш регіон, щоб побачити доступні послуги допомоги
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Region Grid - Interactive Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
               {(Object.keys(REGION_CONFIG) as RegionName[]).map((region) => (
                 <button
                   key={region}
                   onClick={() => handleRegionSelect(region)}
-                  className="group relative p-6 bg-slate-50 border-2 border-slate-100 rounded-xl hover:border-teal-500 hover:bg-teal-50 transition-all duration-200"
+                  className="group relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-48 flex flex-col items-center justify-center"
                 >
-                  <MapPin className="w-6 h-6 mx-auto mb-3 text-slate-400 group-hover:text-teal-600 transition-colors" />
-                  <span className="font-bold text-slate-700 group-hover:text-teal-800">
-                    {REGION_CONFIG[region].label}
-                  </span>
+                  {/* Background Image (blurred/faded Coat of Arms) */}
+                  <div className="absolute inset-0 opacity-5 group-hover:opacity-15 transition-opacity duration-300 pointer-events-none">
+                    <img 
+                      src={REGION_CONFIG[region].image} 
+                      alt="" 
+                      className="w-full h-full object-cover scale-150 blur-sm group-hover:scale-125 transition-transform duration-700" 
+                    />
+                  </div>
+                  
+                  {/* Gradient Overlay for Hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-teal-50/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                  {/* Content */}
+                  <div className="relative z-10 p-4 flex flex-col items-center w-full">
+                    {/* Coat of Arms Icon */}
+                    <div className="w-20 h-24 mb-3 drop-shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:drop-shadow-xl">
+                       <img 
+                         src={REGION_CONFIG[region].image} 
+                         alt={`${REGION_CONFIG[region].label} Герб`} 
+                         className="w-full h-full object-contain"
+                       />
+                    </div>
+                    
+                    {/* Text Label */}
+                    <span className="font-bold text-slate-700 text-sm md:text-base group-hover:text-teal-700 transition-colors px-2 leading-tight">
+                      {REGION_CONFIG[region].label}
+                    </span>
+                    
+                    {/* Active Indicator */}
+                    <div className="mt-2 w-8 h-1 bg-teal-500 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+                  </div>
                 </button>
               ))}
             </div>
             
-            <p className="mt-8 text-sm text-slate-400">
-              Мапа соціальних послуг: притулки, гуманітарні штаби, волонтерські центри
+            <p className="mt-10 text-xs text-slate-400 font-medium uppercase tracking-widest opacity-70">
+              Інклюзивна мапа соціальних послуг України
             </p>
           </div>
         </div>

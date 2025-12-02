@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Organization } from '../types';
-import { MapPin, Phone, Mail, Filter, Building2, ExternalLink } from 'lucide-react';
+import { MapPin, Phone, Mail, Filter } from 'lucide-react';
 
 interface TableViewProps {
   organizations: Organization[];
@@ -12,15 +12,6 @@ interface TableViewProps {
   onFilterCategoryChange: (category: string) => void;
   availableCategories: string[];
 }
-
-const getStatusLabel = (status: string) => {
-  switch (status) {
-    case 'Active': return 'Активний';
-    case 'Inactive': return 'Неактивний';
-    case 'Pending': return 'В очікуванні';
-    default: return status;
-  }
-};
 
 export const TableView: React.FC<TableViewProps> = ({ 
   organizations, 
@@ -70,7 +61,7 @@ export const TableView: React.FC<TableViewProps> = ({
             onChange={(e) => onFilterCategoryChange(e.target.value)}
             className="text-xs border border-slate-200 rounded-lg px-2 py-2 bg-white focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 outline-none cursor-pointer hover:border-slate-300 transition-colors shadow-sm flex-1 sm:flex-none max-w-[200px]"
           >
-            <option value="All">Всі категорії</option>
+            <option value="All">Всі типи закладів</option>
             {availableCategories.map(cat => (
               <option key={cat} value={cat}>{cat}</option>
             ))}
@@ -84,11 +75,12 @@ export const TableView: React.FC<TableViewProps> = ({
 
       {/* Table Container */}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
-        <table className="w-full text-sm text-left border-collapse">
+        <table className="w-full text-sm text-left border-collapse table-fixed">
           <thead className="text-xs text-slate-500 uppercase bg-slate-50 sticky top-0 z-10 shadow-sm">
             <tr>
-              <th className="px-4 py-3 font-bold text-slate-700 w-3/5">Організація та Контакти</th>
-              <th className="px-4 py-3 font-bold text-slate-700 w-2/5 hidden sm:table-cell">Опис послуг</th>
+              {/* Adjusted widths: 70% for main info, 30% for services description */}
+              <th className="px-4 py-3 font-bold text-slate-700 w-full sm:w-[70%]">Організація та Контакти</th>
+              <th className="px-4 py-3 font-bold text-slate-700 w-[30%] hidden sm:table-cell">Опис послуг</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -108,69 +100,84 @@ export const TableView: React.FC<TableViewProps> = ({
                   <td className="px-4 py-4 align-top">
                     {/* Header Info */}
                     <div className="flex items-start justify-between gap-2 mb-1">
-                      <div className={`font-bold text-base leading-snug ${isSelected ? 'text-teal-900' : 'text-slate-900'}`}>
+                      <div className={`font-bold text-base leading-snug ${isSelected ? 'text-teal-900' : 'text-slate-800'}`}>
                         {org.name}
+                      </div>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide whitespace-nowrap ${
+                        org.status === 'Active' ? 'bg-green-100 text-green-700' :
+                        org.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
+                        'bg-slate-100 text-slate-500'
+                      }`}>
+                        {org.status === 'Active' ? 'Активний' : org.status === 'Pending' ? 'Очікує' : 'Неактивний'}
+                      </span>
+                    </div>
+
+                    {/* Address & Category */}
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-3">
+                      <div className="flex items-center gap-1 text-xs text-slate-500">
+                        <MapPin className="w-3 h-3 shrink-0" />
+                        <span className="truncate max-w-[200px]">{org.address}</span>
+                      </div>
+                      <div className="text-[10px] font-medium px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded">
+                        {org.category}
                       </div>
                     </div>
 
-                    {/* Meta Info */}
-                    <div className="flex flex-wrap gap-2 mb-3">
-                       <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
-                          org.status === 'Active' ? 'bg-green-50 text-green-700 border-green-100' : 
-                          org.status === 'Inactive' ? 'bg-red-50 text-red-700 border-red-100' : 'bg-yellow-50 text-yellow-700 border-yellow-100'
-                        }`}>
-                          {getStatusLabel(org.category)}
-                        </span>
-                        <div className="text-slate-500 text-xs flex items-center gap-1">
-                          <MapPin className="w-3 h-3 text-slate-400 shrink-0" /> 
-                          <span className="truncate max-w-[200px]">{org.address}</span>
-                        </div>
+                    {/* Contacts Badges */}
+                    <div className="flex flex-wrap gap-2">
+                       {org.phone && (
+                         <a 
+                           href={`tel:${cleanPhone}`}
+                           onClick={(e) => e.stopPropagation()} 
+                           className={`flex items-center gap-1.5 px-2 py-1 rounded border text-xs font-medium transition-colors ${
+                             isSelected 
+                               ? 'bg-white border-teal-200 text-teal-700 hover:bg-teal-50' 
+                               : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-white hover:border-teal-300 hover:text-teal-700'
+                           }`}
+                         >
+                           <Phone className="w-3 h-3" />
+                           {org.phone}
+                         </a>
+                       )}
+                       {org.email && (
+                         <a 
+                           href={`mailto:${org.email}`}
+                           onClick={(e) => e.stopPropagation()}
+                           className={`flex items-center gap-1.5 px-2 py-1 rounded border text-xs font-medium transition-colors break-all ${
+                             isSelected 
+                               ? 'bg-white border-teal-200 text-teal-700 hover:bg-teal-50' 
+                               : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-white hover:border-teal-300 hover:text-teal-700'
+                           }`}
+                         >
+                           <Mail className="w-3 h-3" />
+                           {org.email}
+                         </a>
+                       )}
                     </div>
-
-                    {/* Services (Mobile Only - shown inline) */}
-                    <div className="sm:hidden mb-3 text-xs text-slate-600 bg-white/50 p-2 rounded border border-slate-100 italic">
-                        {org.services}
-                    </div>
-
-                    {/* Contacts Block - Moved DOWN as requested */}
-                    <div className="flex flex-col gap-2 mt-2 pt-2 border-t border-slate-100/50">
-                      {org.phone && (
-                        <a 
-                          href={`tel:${cleanPhone}`} 
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-teal-700 group/link w-fit p-1 -ml-1 rounded hover:bg-white"
-                        >
-                          <div className="w-6 h-6 bg-teal-50 text-teal-600 rounded flex items-center justify-center shrink-0 group-hover/link:bg-teal-100 transition-colors">
-                            <Phone className="w-3.5 h-3.5" />
-                          </div>
-                          {org.phone}
-                        </a>
-                      )}
-                      
-                      {org.email && (
-                        <a 
-                          href={`mailto:${org.email}`} 
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-2 text-xs text-slate-600 hover:text-teal-700 group/link w-fit p-1 -ml-1 rounded hover:bg-white"
-                        >
-                           <div className="w-6 h-6 bg-blue-50 text-blue-600 rounded flex items-center justify-center shrink-0 group-hover/link:bg-blue-100 transition-colors">
-                            <Mail className="w-3.5 h-3.5" />
-                          </div>
-                          <span className="truncate max-w-[200px]">{org.email}</span>
-                        </a>
-                      )}
+                    
+                    {/* Mobile Only Services */}
+                    <div className="sm:hidden mt-3 pt-2 border-t border-slate-100/50">
+                       <p className="text-xs text-slate-500 leading-relaxed">{org.services}</p>
                     </div>
                   </td>
-
+                  
                   {/* Desktop Services Column */}
-                  <td className="px-4 py-4 align-top text-slate-700 hidden sm:table-cell">
-                    <div className={`text-xs leading-relaxed p-3 rounded-lg border h-full ${isSelected ? 'bg-white border-teal-100 shadow-sm' : 'bg-slate-50 border-slate-100'}`}>
+                  <td className="px-4 py-4 align-top hidden sm:table-cell">
+                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-4">
                       {org.services}
-                    </div>
+                    </p>
                   </td>
                 </tr>
               );
             })}
+            
+            {organizations.length === 0 && (
+              <tr>
+                <td colSpan={2} className="px-4 py-8 text-center text-slate-400 text-sm">
+                  Організацій не знайдено
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
