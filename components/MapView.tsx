@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, AttributionControl, ZoomControl } from 'react-leaflet';
 import { Organization } from '../types';
-import { MapPin, Heart, Phone, Mail } from 'lucide-react';
+import { MapPin, Heart, Phone, Mail, FileText } from 'lucide-react';
 import L from 'leaflet';
 
 // Function to create custom SVG icons with enhanced selected state
@@ -36,6 +36,7 @@ interface MapViewProps {
   organizations: Organization[];
   selectedOrgId: string | null;
   onSelectOrg: (id: string) => void;
+  onOpenReferral: (org: Organization) => void; // New prop for Referral
   center?: [number, number];
   zoom?: number;
 }
@@ -73,6 +74,7 @@ export const MapView: React.FC<MapViewProps> = ({
   organizations, 
   selectedOrgId, 
   onSelectOrg,
+  onOpenReferral,
   center = [46.9750, 31.9946], // Default near Mykolaiv
   zoom = 8
 }) => {
@@ -142,7 +144,6 @@ export const MapView: React.FC<MapViewProps> = ({
               eventHandlers={{
                 click: () => {
                   onSelectOrg(org.id);
-                  // The MapUpdater will handle the flyTo via the prop change
                 },
               }}
               zIndexOffset={isSelected ? 1000 : 0}
@@ -192,6 +193,21 @@ export const MapView: React.FC<MapViewProps> = ({
                       </div>
                     </div>
                   </div>
+
+                  {/* Referral Button */}
+                  {org.email && (
+                    <button
+                      onClick={(e) => {
+                        // Prevent map click propagation if needed, though popup usually handles it
+                        e.stopPropagation();
+                        onOpenReferral(org);
+                      }}
+                      className="w-full mt-2 flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold py-2 px-3 rounded transition-colors"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      Запит на перенаправлення
+                    </button>
+                  )}
                 </div>
               </Popup>
             </Marker>

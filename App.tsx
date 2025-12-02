@@ -4,7 +4,8 @@ import { MapView } from './components/MapView';
 import { TableView } from './components/TableView';
 import { GeminiChat } from './components/GeminiChat';
 import { IntroModal } from './components/IntroModal';
-import { RemoteSupportModal } from './components/RemoteSupportModal'; // Import new modal
+import { RemoteSupportModal } from './components/RemoteSupportModal';
+import { ReferralModal } from './components/ReferralModal'; // Import Referral Modal
 import { INITIAL_ORGANIZATIONS, REGION_CONFIG } from './constants';
 import { Organization, ViewMode, RegionName } from './types';
 
@@ -17,6 +18,9 @@ const App: React.FC = () => {
   
   // Remote Support Modal State
   const [isRemoteSupportOpen, setIsRemoteSupportOpen] = useState(false);
+
+  // Referral Modal State
+  const [referralOrg, setReferralOrg] = useState<Organization | null>(null);
 
   // Sidebar state for Split View
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -97,6 +101,11 @@ const App: React.FC = () => {
     }
   };
 
+  // Handler for opening Referral Modal
+  const handleOpenReferral = (org: Organization) => {
+    setReferralOrg(org);
+  };
+
   // Determine Map Center and Zoom with strict validation to prevent NaN errors
   const mapCenter: [number, number] = useMemo(() => {
     if (activeRegion && REGION_CONFIG[activeRegion]) {
@@ -118,6 +127,14 @@ const App: React.FC = () => {
       {/* Intro / Annotation Modal (Highest Priority) */}
       {showIntro && (
         <IntroModal onComplete={handleIntroComplete} />
+      )}
+
+      {/* Referral Modal */}
+      {referralOrg && (
+        <ReferralModal 
+          organization={referralOrg} 
+          onClose={() => setReferralOrg(null)} 
+        />
       )}
 
       {/* Remote Support Modal */}
@@ -315,6 +332,7 @@ const App: React.FC = () => {
                  organizations={filteredOrgs}
                  selectedOrgId={selectedOrgId}
                  onSelectOrg={handleOrgSelect}
+                 onOpenReferral={handleOpenReferral} // Pass the handler
                  center={mapCenter}
                  zoom={mapZoom}
                />
