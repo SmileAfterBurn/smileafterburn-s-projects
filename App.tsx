@@ -227,7 +227,7 @@ const App: React.FC = () => {
             </div>
             
             <h1 className="text-3xl md:text-4xl font-extrabold text-slate-800 mb-2 tracking-tight">
-              Вітаю, шановне панство!
+              Вітаю вас, шановні українці та україночки!
             </h1>
             <p className="text-base text-slate-500 mb-8 max-w-lg mx-auto leading-relaxed">
               Оберіть ваш регіон, щоб побачити доступні послуги допомоги

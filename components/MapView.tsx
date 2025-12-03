@@ -86,7 +86,7 @@ export const MapView: React.FC<MapViewProps> = ({
   // Explicitly cast arrays to [number, number] to satisfy TypeScript tuple requirement
   const targetCenter: [number, number] = hasSelectedLocation
     ? [selectedOrg!.lat, selectedOrg!.lng] as [number, number]
-    : (center && isValidCoordinate(center[0], center[1]) ? center : [46.9750, 31.9946] as [number, number]);
+    : (center && isValidCoordinate(center[0], center[1]) ? (center as [number, number]) : [46.9750, 31.9946] as [number, number]);
 
   // Double check to ensure we never pass NaN to MapContainer
   const safeCenter: [number, number] = isValidCoordinate(targetCenter[0], targetCenter[1])
