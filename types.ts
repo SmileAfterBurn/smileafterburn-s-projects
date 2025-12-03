@@ -14,6 +14,11 @@ export interface Organization {
   driveFolderUrl: string;
   budget: number;
   region: RegionName; // Нове поле для фільтрації по регіонах
+  
+  // New detailed fields
+  workingHours?: string;
+  additionalPhones?: string[];
+  establishedDate?: string; // Year or full date string
 }
 
 export interface RemoteSupportActor {

@@ -207,7 +207,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 25000000,
-    region: 'Odesa'
+    region: 'Odesa',
+    workingHours: 'Пн-Пт 10:00-18:00',
+    establishedDate: '2014'
   },
   {
     id: '2',
@@ -222,7 +224,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 12500000,
-    region: 'Mykolaiv'
+    region: 'Mykolaiv',
+    workingHours: 'Пн-Сб 09:00-16:00'
   },
   {
     id: '3',
@@ -237,7 +240,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 8100000,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-17:00'
   },
   {
     id: '4',
@@ -252,7 +256,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 18000000,
-    region: 'Odesa'
+    region: 'Odesa',
+    workingHours: 'Пн-Пт 09:30-17:30'
   },
   {
     id: '5',
@@ -297,7 +302,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 100000000,
-    region: 'Odesa'
+    region: 'Odesa',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    establishedDate: '2013'
   },
   {
     id: '8',
@@ -312,7 +319,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 100000000,
-    region: 'Mykolaiv'
+    region: 'Mykolaiv',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    establishedDate: '2013'
   },
   {
     id: '9',
@@ -327,7 +336,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 100000000,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    establishedDate: '2013'
   },
   
   // --- NEW IMPORTED DATA FOR ZAPORIZHZHIA REGION ---
@@ -344,7 +355,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-16:00',
+    additionalPhones: ['+38 068 213 40 28', '0505009731']
   },
   {
     id: 'zp_caritas_2',
@@ -359,7 +372,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-16:00'
   },
   {
     id: 'zp_posmishka_1',
@@ -374,7 +388,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    additionalPhones: ['380665598709', '380953448133']
   },
   {
     id: 'zp_posmishka_2',
@@ -389,7 +405,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-18:00'
   },
   {
     id: 'zp_posmishka_3',
@@ -404,7 +421,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-18:00'
   },
   {
     id: 'zp_posmishka_4',
@@ -419,7 +437,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-18:00'
   },
   {
     id: 'zp_saveukraine',
@@ -449,7 +468,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-17:00'
   },
   {
     id: 'zp_pin_2',
@@ -464,7 +484,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-17:00'
   },
   {
     id: 'zp_pin_3',
@@ -524,7 +545,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-17:00'
   },
   {
     id: 'zp_irc',
@@ -554,7 +576,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    additionalPhones: ['+38(097) 021 41 53']
   },
   {
     id: 'zp_nrc',
@@ -569,7 +592,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    additionalPhones: ['0674141637']
   },
   {
     id: 'zp_healthright',
@@ -584,7 +608,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    additionalPhones: ['+38 066 795 23 67', '+38 099 349 10 59']
   },
   {
     id: 'zp_soleterre',
@@ -614,7 +639,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    additionalPhones: ['+380 68 507 50 90', '+380 93 507 50 90']
   },
   {
     id: 'zp_proliska',
@@ -629,7 +655,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-17:00',
+    additionalPhones: ['066 743 41 70', '099 060 95 97']
   },
   {
     id: 'zp_rokada',
@@ -644,7 +672,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    additionalPhones: ['+380675256520']
   },
   {
     id: 'zp_league',
@@ -659,7 +688,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн–Пт 09:00–18:00',
+    additionalPhones: ['(099) 609 36 64']
   },
   {
     id: 'zp_icrc',
@@ -1051,7 +1082,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 100000000,
-    region: 'Dnipro'
+    region: 'Dnipro',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    establishedDate: '2013'
   },
   {
     id: '34',
@@ -1066,7 +1099,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 100000000,
-    region: 'Zaporizhzhia'
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    establishedDate: '2013'
   },
   {
     id: '35',
@@ -1097,7 +1132,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Mykolaiv'
+    region: 'Mykolaiv',
+    workingHours: 'Пн-Чт 08:30-17:15, Пт 08:30-16:00'
   },
   {
     id: '37',
@@ -1112,7 +1148,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Mykolaiv'
+    region: 'Mykolaiv',
+    workingHours: 'Пн-Чт 08:30-17:15, Пт 08:30-16:00',
+    additionalPhones: ['(0512)58-61-18', '+380991382500']
   },
   {
     id: '38',
@@ -1127,7 +1165,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Mykolaiv'
+    region: 'Mykolaiv',
+    workingHours: 'Пн-Чт 08:30-17:15, Пт 08:30-16:00',
+    additionalPhones: ['(0512) 47-31-69', '+380968278768']
   },
   {
     id: '39',
@@ -1142,7 +1182,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Mykolaiv'
+    region: 'Mykolaiv',
+    workingHours: 'Пн-Чт 08:30-17:15, Пт 08:30-16:00',
+    additionalPhones: ['(0512) 40-94-66', '0506344207']
   },
   {
     id: '40',
@@ -1157,7 +1199,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Mykolaiv'
+    region: 'Mykolaiv',
+    workingHours: 'Пн-Чт 08:30-17:15, Пт 08:30-16:00',
+    additionalPhones: ['0937574789', '(0512) 60-08-77']
   },
   
   // --- NEW IMPORTED DATA FOR KHERSON REGION ---
@@ -1174,7 +1218,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-19:00'
   },
   {
     id: 'kh_new_2',
@@ -1189,7 +1234,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    additionalPhones: ['+38 (050) 626 13 79']
   },
   {
     id: 'kh_new_3',
@@ -1204,7 +1251,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-18:00'
   },
   {
     id: 'kh_new_4',
@@ -1219,7 +1267,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: '09:00-18:00'
   },
   {
     id: 'kh_new_5',
@@ -1234,7 +1283,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    additionalPhones: ['+38(098) 890 2517']
   },
   {
     id: 'kh_new_6',
@@ -1249,7 +1300,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Щоденно 09:00-21:00'
   },
   {
     id: 'kh_new_7',
@@ -1264,7 +1316,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Цілодобово'
   },
   {
     id: 'kh_new_8',
@@ -1279,7 +1332,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    additionalPhones: ['+38 (068) 507 50 90', '+38 (093) 507 50 90']
   },
   {
     id: 'kh_new_9',
@@ -1294,7 +1349,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-17:00'
   },
   {
     id: 'kh_new_10',
@@ -1309,7 +1365,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-17:00'
   },
   {
     id: 'kh_new_11',
@@ -1324,7 +1381,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Ср-Нд 11:00-20:00'
   },
   {
     id: 'kh_new_12',
@@ -1339,7 +1397,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    additionalPhones: ['+38 (066) 282 60 33']
   },
   {
     id: 'kh_new_13',
@@ -1354,7 +1413,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-16:00',
+    additionalPhones: ['+38 (099) 349 10 59']
   },
   // Медичні заклади Херсона
   {
@@ -1415,7 +1476,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Жіноча консультація: Пн-Пт 08:00-14:00. Стаціонар: Цілодобово.'
   },
   {
     id: 'kh_med_5',
@@ -1446,7 +1508,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-17:00'
   },
   {
     id: 'kh_dist_2',
@@ -1461,7 +1524,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-17:00'
   },
   {
     id: 'kh_dist_3',
@@ -1476,7 +1540,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-17:00'
   },
   {
     id: 'kh_dist_4',
@@ -1491,7 +1556,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-17:30'
   },
   {
     id: 'kh_dist_5',
@@ -1506,7 +1572,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-17:30'
   },
   {
     id: 'kh_dist_6',
@@ -1521,7 +1588,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-17:00'
   },
   {
     id: 'kh_dist_7',
@@ -1536,7 +1604,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-17:00'
   },
   {
     id: 'kh_dist_8',
@@ -1551,7 +1620,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: DRIVE_URL,
     budget: 0,
-    region: 'Kherson'
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 08:00-14:42'
   },
   {
     id: 'kh_dist_9',
