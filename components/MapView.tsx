@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, AttributionControl, ZoomControl } from 'react-leaflet';
 import { Organization } from '../types';
-import { MapPin, Heart, Phone, Mail, FileText } from 'lucide-react';
+import { MapPin, Heart, Phone, Mail, FileText, Locate, Navigation, Loader2 } from 'lucide-react';
 import L from 'leaflet';
 
 // Function to create custom SVG icons with enhanced selected state
@@ -12,9 +12,6 @@ const createCustomIcon = (color: string, size: number, isSelected: boolean = fal
     ? 'drop-shadow(0 4px 6px rgba(0,0,0,0.5))' 
     : 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))';
   
-  // Add a pulsing animation class to the SVG if selected (using Tailwind/CSS)
-  const animationClass = isSelected ? 'animate-bounce-slight' : '';
-
   return new L.DivIcon({
     className: 'custom-marker-icon',
     html: `
@@ -29,6 +26,21 @@ const createCustomIcon = (color: string, size: number, isSelected: boolean = fal
   });
 };
 
+// User Location Icon (Blue Dot with Pulse)
+const userLocationIcon = new L.DivIcon({
+  className: 'user-location-icon',
+  html: `
+    <div class="relative flex h-6 w-6">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-6 w-6 bg-blue-600 border-2 border-white shadow-md items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+      </span>
+    </div>
+  `,
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
+});
+
 const defaultIcon = createCustomIcon('#0d9488', 36, false); // Teal-600
 const selectedIcon = createCustomIcon('#dc2626', 52, true);  // Red-600, significantly larger
 
@@ -36,7 +48,7 @@ interface MapViewProps {
   organizations: Organization[];
   selectedOrgId: string | null;
   onSelectOrg: (id: string) => void;
-  onOpenReferral: (org: Organization) => void; // New prop for Referral
+  onOpenReferral: (org: Organization) => void;
   center?: [number, number];
   zoom?: number;
 }
@@ -45,8 +57,8 @@ const isValidCoordinate = (lat: any, lng: any): boolean => {
   return (
     typeof lat === 'number' && 
     typeof lng === 'number' && 
-    !isNaN(lat) && 
-    !isNaN(lng)
+    Number.isFinite(lat) && 
+    Number.isFinite(lng)
   );
 };
 
@@ -54,10 +66,8 @@ const isValidCoordinate = (lat: any, lng: any): boolean => {
 const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
   const map = useMap();
   useEffect(() => {
-    // Defensive check: verify coordinates are valid numbers before flying
     if (center && isValidCoordinate(center[0], center[1])) {
       try {
-        // Smooth animation to the target
         map.flyTo(center, zoom, { 
           duration: 1.5,
           easeLinearity: 0.25
@@ -70,30 +80,85 @@ const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ cent
   return null;
 };
 
+// Component to handle Geolocation
+const LocationMarker = () => {
+  const [position, setPosition] = useState<[number, number] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const map = useMap();
+
+  useEffect(() => {
+    const onLocationFound = (e: L.LocationEvent) => {
+      setPosition([e.latlng.lat, e.latlng.lng]);
+      map.flyTo(e.latlng, 14, { duration: 1.5 });
+      setIsLoading(false);
+    };
+
+    const onLocationError = (e: L.ErrorEvent) => {
+      alert("Не вдалося визначити місцезнаходження: " + e.message);
+      setIsLoading(false);
+    };
+
+    map.on('locationfound', onLocationFound);
+    map.on('locationerror', onLocationError);
+
+    return () => {
+      map.off('locationfound', onLocationFound);
+      map.off('locationerror', onLocationError);
+    };
+  }, [map]);
+
+  const handleLocate = () => {
+    setIsLoading(true);
+    map.locate({ setView: false, enableHighAccuracy: true });
+  };
+
+  return (
+    <>
+      <div className="leaflet-top leaflet-left mt-20 ml-3 pointer-events-auto z-[400] absolute">
+         <div className="leaflet-control leaflet-bar">
+            <button 
+              onClick={handleLocate}
+              className="bg-white hover:bg-slate-50 text-slate-700 w-[30px] h-[30px] flex items-center justify-center border-b border-slate-300 cursor-pointer shadow-sm transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+              title="Знайти мене"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader2 size={18} className="animate-spin text-teal-600" />
+              ) : (
+                <Locate size={18} />
+              )}
+            </button>
+         </div>
+      </div>
+      {position && (
+        <Marker position={position} icon={userLocationIcon} zIndexOffset={2000}>
+          <Popup>Ви тут</Popup>
+        </Marker>
+      )}
+    </>
+  );
+};
+
 export const MapView: React.FC<MapViewProps> = ({ 
   organizations, 
   selectedOrgId, 
   onSelectOrg,
   onOpenReferral,
-  center = [46.9750, 31.9946], // Default near Mykolaiv
+  center = [46.9750, 31.9946],
   zoom = 8
 }) => {
   const selectedOrg = organizations.find(c => c.id === selectedOrgId);
   
-  // Use organization location if selected, otherwise provided center
   const hasSelectedLocation = selectedOrg && isValidCoordinate(selectedOrg.lat, selectedOrg.lng);
   
-  // Explicitly cast arrays to [number, number] to satisfy TypeScript tuple requirement
   const targetCenter: [number, number] = hasSelectedLocation
     ? [selectedOrg!.lat, selectedOrg!.lng] as [number, number]
     : (center && isValidCoordinate(center[0], center[1]) ? (center as [number, number]) : [46.9750, 31.9946] as [number, number]);
 
-  // Double check to ensure we never pass NaN to MapContainer
   const safeCenter: [number, number] = isValidCoordinate(targetCenter[0], targetCenter[1])
     ? targetCenter
     : [46.9750, 31.9946];
 
-  // Zoom in closer when an organization is selected
   const targetZoom = selectedOrg ? 15 : zoom;
 
   return (
@@ -112,10 +177,9 @@ export const MapView: React.FC<MapViewProps> = ({
         dragging={true}
         className="z-0"
         attributionControl={false}
-        zoomControl={false} // Disable default English zoom control
+        zoomControl={false}
         markerZoomAnimation={true}
       >
-        {/* Localized Controls */}
         <AttributionControl prefix="Ілля Чернов | Leaflet" position="bottomright" />
         <ZoomControl position="topleft" zoomInTitle="Наблизити" zoomOutTitle="Віддалити" />
 
@@ -125,15 +189,14 @@ export const MapView: React.FC<MapViewProps> = ({
         />
         
         <MapUpdater center={safeCenter} zoom={targetZoom} />
+        <LocationMarker />
 
         {organizations.map((org) => {
-          // Strict filtering for markers
           if (!isValidCoordinate(org.lat, org.lng)) {
             return null;
           }
 
           const isSelected = selectedOrgId === org.id;
-          // Sanitize phone for tel: link (remove spaces, parentheses, dashes)
           const cleanPhone = org.phone ? org.phone.replace(/[^\d+]/g, '') : '';
 
           return (
@@ -141,7 +204,7 @@ export const MapView: React.FC<MapViewProps> = ({
               key={org.id}
               position={[org.lat, org.lng]}
               icon={isSelected ? selectedIcon : defaultIcon}
-              // Cast eventHandlers to any to bypass TypeScript error in some environments
+              // Cast eventHandlers to any to bypass strict type checking
               {...({ eventHandlers: {
                 click: () => {
                   onSelectOrg(org.id);
@@ -158,10 +221,21 @@ export const MapView: React.FC<MapViewProps> = ({
                     </h3>
                   </div>
                   <div className="space-y-2 mb-3">
-                    <p className="text-sm text-slate-600 flex items-start gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                      {org.address}
-                    </p>
+                    <div className="flex flex-col gap-1">
+                      <p className="text-sm text-slate-600 flex items-start gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                        {org.address}
+                      </p>
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${org.lat},${org.lng}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 pl-5"
+                      >
+                        <Navigation className="w-3 h-3" />
+                        Прокласти маршрут
+                      </a>
+                    </div>
                     
                     <div className="bg-slate-50 p-2 rounded border border-slate-100">
                       <p className="text-xs font-bold text-slate-700 mb-1">Послуги:</p>
@@ -195,11 +269,9 @@ export const MapView: React.FC<MapViewProps> = ({
                     </div>
                   </div>
 
-                  {/* Referral Button */}
                   {org.email && (
                     <button
                       onClick={(e) => {
-                        // Prevent map click propagation if needed, though popup usually handles it
                         e.stopPropagation();
                         onOpenReferral(org);
                       }}
