@@ -180,11 +180,11 @@ export const MapView: React.FC<MapViewProps> = ({
         zoomControl={false}
         markerZoomAnimation={true}
       >
-        <AttributionControl prefix="Ілля Чернов | Leaflet" position="bottomright" />
+        <AttributionControl prefix="Розробник: Ілля Чернов" position="bottomright" />
         <ZoomControl position="topleft" zoomInTitle="Наблизити" zoomOutTitle="Віддалити" />
 
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> спільнота'
+          attribution=""
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
