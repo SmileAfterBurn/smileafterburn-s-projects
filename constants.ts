@@ -252,6 +252,113 @@ export const REMOTE_SUPPORT_ACTORS: RemoteSupportActor[] = [
 ];
 
 export const INITIAL_ORGANIZATIONS: Organization[] = [
+  // --- MUNICIPAL & CARITAS ADDITIONS FOR REQUESTED REGIONS ---
+  {
+    id: 'odesa_dept_soc',
+    name: 'Департамент праці та соціальної політики ОМР',
+    address: 'м. Одеса, вул. Косовська, 2-Д',
+    lat: 46.4600,
+    lng: 30.7150,
+    category: 'Комунальна установа',
+    services: 'Координація соціальних програм, допомога малозабезпеченим.',
+    phone: '(048) 705-10-90',
+    email: 'dpsp@omr.gov.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Odesa'
+  },
+  {
+    id: 'dnipro_dept_soc',
+    name: 'Департамент соціальної політики ДМР',
+    address: 'м. Дніпро, вул. Шевченка, 11',
+    lat: 48.4580,
+    lng: 35.0550,
+    category: 'Комунальна установа',
+    services: 'Соціальний захист, оформлення допомог.',
+    phone: '(056) 745-56-37',
+    email: 'social@dmr.gov.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Dnipro'
+  },
+  {
+    id: 'dnipro_caritas_donetsk',
+    name: 'БФ "Карітас Донецьк" (у м. Дніпро)',
+    address: 'м. Дніпро, вул. Гостомельська, 5',
+    lat: 48.4850,
+    lng: 35.0200,
+    category: 'Благодійний фонд',
+    services: 'Гуманітарна допомога, соціальне служіння, робота з ВПО.',
+    phone: '+380954595520',
+    email: 'caritas.donetsk@gmail.com',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Dnipro'
+  },
+  {
+    id: 'kharkiv_caritas',
+    name: 'БФ "Карітас Харків"',
+    address: 'м. Харків, вул. Молочна, 3',
+    lat: 49.9820,
+    lng: 36.2550,
+    category: 'Благодійний фонд',
+    services: 'Допомога постраждалим від війни, соціально-психологічна підтримка.',
+    phone: '+380503000248',
+    email: 'caritas.kharkiv@gmail.com',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Kharkiv'
+  },
+  {
+    id: 'zp_dept_soc',
+    name: 'Управління соціального захисту населення ЗМР',
+    address: 'м. Запоріжжя, пр. Маяковського, 3',
+    lat: 47.8500,
+    lng: 35.1350,
+    category: 'Комунальна установа',
+    services: 'Державні соціальні гарантії, робота з ВПО.',
+    phone: '(061) 228-10-66',
+    email: 'uzsn@zp.gov.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Zaporizhzhia'
+  },
+  {
+    id: 'volyn_dept_soc',
+    name: 'Департамент соціальної політики Луцької міської ради',
+    address: 'м. Луцьк, пр. Волі, 4а',
+    lat: 50.7470,
+    lng: 25.3250,
+    category: 'Комунальна установа',
+    services: 'Соціальні послуги, субсидії, пільги.',
+    phone: '(0332) 28-41-60',
+    email: 'social@lutskrada.gov.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Volyn'
+  },
+  {
+    id: 'kherson_dept_soc',
+    name: 'Управління соціальної політики Херсонської міської ради',
+    address: 'м. Херсон, пров. Військовий, 6',
+    lat: 46.6350,
+    lng: 32.6150,
+    category: 'Комунальна установа',
+    services: 'Соціальний захист населення громади.',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Kherson'
+  },
+
   // ================= TERNOPIL REGION (NEW) =================
   {
     id: 'ternopil_posmishka',

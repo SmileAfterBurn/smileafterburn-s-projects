@@ -323,7 +323,11 @@ const App: React.FC = () => {
             
             {/* Region Grid - Modern Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5">
-              {(Object.keys(REGION_CONFIG) as RegionName[]).map((region) => {
+              {(Object.keys(REGION_CONFIG) as RegionName[]).sort((a, b) => {
+                  if (a === 'All') return -1;
+                  if (b === 'All') return 1;
+                  return REGION_CONFIG[a].label.localeCompare(REGION_CONFIG[b].label, 'uk');
+              }).map((region) => {
                 const visuals = getRegionVisuals(region);
                 return (
                   <button
