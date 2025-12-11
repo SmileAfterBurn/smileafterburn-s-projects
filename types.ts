@@ -1,4 +1,5 @@
-export type RegionName = 'Odesa' | 'Mykolaiv' | 'Kherson' | 'Dnipro' | 'Zaporizhzhia';
+
+export type RegionName = 'All' | 'Odesa' | 'Mykolaiv' | 'Kherson' | 'Dnipro' | 'Zaporizhzhia' | 'Kyiv' | 'Lviv' | 'Kharkiv' | 'Volyn' | 'Zhytomyr' | 'IvanoFrankivsk' | 'Kirovohrad' | 'Rivne' | 'Sumy' | 'Ternopil' | 'Chernivtsi' | 'Khmelnytskyi' | 'Chernihiv';
 
 export interface Organization {
   id: string;
@@ -19,6 +20,7 @@ export interface Organization {
   workingHours?: string;
   additionalPhones?: string[];
   establishedDate?: string; // Year or full date string
+  website?: string;
 }
 
 export interface RemoteSupportActor {

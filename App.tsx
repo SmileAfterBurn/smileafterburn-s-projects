@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap } from 'lucide-react';
+import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield } from 'lucide-react';
 import { MapView } from './components/MapView';
 import { TableView } from './components/TableView';
 import { GeminiChat } from './components/GeminiChat';
@@ -27,7 +27,7 @@ const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Region State
-  const [activeRegion, setActiveRegion] = useState<RegionName | null>(null);
+  const [activeRegion, setActiveRegion] = useState<RegionName>('All'); // Default to All
   const [isRegionModalOpen, setIsRegionModalOpen] = useState(false);
 
   // Intro/Onboarding State
@@ -42,6 +42,7 @@ const App: React.FC = () => {
     const hasSeenIntro = localStorage.getItem('hide_intro_annotation');
     if (hasSeenIntro === 'true') {
       setShowIntro(false);
+      // Ensure modal is open on first load if not explicitly set otherwise, or keep closed and default to 'All'
       setIsRegionModalOpen(true);
     } else {
       setShowIntro(true);
@@ -82,7 +83,10 @@ const App: React.FC = () => {
       name.includes("ЛІКАРНЯ") || 
       name.includes("ЦЕНТР") ||
       name.includes("СЛУЖБА") ||
-      name.includes("ПОЛІКЛІНІКА")
+      name.includes("ПОЛІКЛІНІКА") ||
+      name.includes("СОЦЗАХИСТ") ||
+      name.includes("АДМІНІСТРАЦІЯ") ||
+      name.includes("РАДА")
     ) return 2;
 
     // Priority 3: "Дівчата"
@@ -93,8 +97,8 @@ const App: React.FC = () => {
   };
 
   const filteredOrgs = organizations.filter(c => {
-    // 1. Filter by Region
-    if (activeRegion && c.region !== activeRegion) {
+    // 1. Filter by Region (if not 'All')
+    if (activeRegion && activeRegion !== 'All' && c.region !== activeRegion) {
       return false;
     }
 
@@ -141,19 +145,25 @@ const App: React.FC = () => {
     if (activeRegion && REGION_CONFIG[activeRegion]) {
       return REGION_CONFIG[activeRegion].center;
     }
-    return [46.9750, 31.9946]; // Default safe center (Mykolaiv area)
+    return REGION_CONFIG['All'].center; 
   }, [activeRegion]);
   
   const mapZoom = useMemo(() => {
     if (activeRegion && REGION_CONFIG[activeRegion]) {
       return REGION_CONFIG[activeRegion].zoom;
     }
-    return 8;
+    return REGION_CONFIG['All'].zoom;
   }, [activeRegion]);
 
   // Helper to get region styling
   const getRegionVisuals = (region: RegionName) => {
     switch (region) {
+      case 'All':
+        return {
+          gradient: 'from-blue-600 to-yellow-500',
+          icon: <Globe className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Єдина країна'
+        };
       case 'Odesa':
         return {
           gradient: 'from-blue-400 to-teal-500',
@@ -183,6 +193,84 @@ const App: React.FC = () => {
           gradient: 'from-orange-400 to-rose-600',
           icon: <Zap className="w-12 h-12 text-white drop-shadow-md" />,
           description: 'Козацька сила'
+        };
+      case 'Kyiv':
+        return {
+          gradient: 'from-blue-700 to-yellow-400',
+          icon: <Landmark className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Серце України'
+        };
+      case 'Lviv':
+        return {
+          gradient: 'from-amber-700 to-orange-500',
+          icon: <Coffee className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Західний форпост'
+        };
+      case 'Kharkiv':
+        return {
+          gradient: 'from-green-600 to-emerald-400',
+          icon: <GraduationCap className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Місто героїв'
+        };
+      case 'Volyn':
+        return {
+          gradient: 'from-green-700 to-emerald-600',
+          icon: <Castle className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Замок Любарта'
+        };
+      case 'Zhytomyr':
+        return {
+          gradient: 'from-emerald-600 to-green-800',
+          icon: <Trees className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Полісся'
+        };
+      case 'Rivne':
+        return {
+          gradient: 'from-emerald-500 to-teal-700',
+          icon: <Trees className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Бурштиновий край'
+        };
+      case 'Sumy':
+        return {
+          gradient: 'from-blue-500 to-yellow-500',
+          icon: <Wheat className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Північний форпост'
+        };
+      case 'Ternopil':
+        return {
+          gradient: 'from-teal-600 to-green-700',
+          icon: <Castle className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Файне місто'
+        };
+      case 'Chernivtsi':
+        return {
+          gradient: 'from-red-700 to-rose-900',
+          icon: <Building2 className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Буковинська перлина'
+        };
+      case 'Khmelnytskyi':
+        return {
+          gradient: 'from-indigo-600 to-purple-700',
+          icon: <Shield className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Подільський край'
+        };
+      case 'Chernihiv':
+        return {
+          gradient: 'from-slate-600 to-gray-800',
+          icon: <Church className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Місто легенд'
+        };
+      case 'IvanoFrankivsk':
+        return {
+          gradient: 'from-sky-600 to-blue-800',
+          icon: <Mountain className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Прикарпаття'
+        };
+      case 'Kirovohrad':
+        return {
+          gradient: 'from-amber-500 to-yellow-600',
+          icon: <Wheat className="w-12 h-12 text-white drop-shadow-md" />,
+          description: 'Золоте серце'
         };
       default:
         return {
@@ -217,7 +305,7 @@ const App: React.FC = () => {
       {/* Welcome / Region Selection Modal */}
       {isRegionModalOpen && !showIntro && (
         <div className="fixed inset-0 z-[100] bg-slate-900/95 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-6xl w-full p-6 md:p-10 text-center animate-in fade-in zoom-in duration-300 relative overflow-hidden my-auto">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-7xl w-full p-6 md:p-10 text-center animate-in fade-in zoom-in duration-300 relative overflow-hidden my-auto">
             
             {/* Background Accent */}
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600"></div>
@@ -234,17 +322,17 @@ const App: React.FC = () => {
             </p>
             
             {/* Region Grid - Modern Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5">
               {(Object.keys(REGION_CONFIG) as RegionName[]).map((region) => {
                 const visuals = getRegionVisuals(region);
                 return (
                   <button
                     key={region}
                     onClick={() => handleRegionSelect(region)}
-                    className="group relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 flex flex-col h-56"
+                    className="group relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 flex flex-col h-48 sm:h-56"
                   >
                     {/* Visual Header */}
-                    <div className={`h-32 bg-gradient-to-br ${visuals.gradient} flex items-center justify-center relative overflow-hidden`}>
+                    <div className={`h-24 sm:h-32 bg-gradient-to-br ${visuals.gradient} flex items-center justify-center relative overflow-hidden`}>
                        {/* Background Pattern */}
                        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent scale-150"></div>
                        
@@ -255,11 +343,11 @@ const App: React.FC = () => {
                     </div>
 
                     {/* Content Body */}
-                    <div className="flex-1 p-4 flex flex-col items-center justify-center bg-white relative z-10">
-                      <span className="font-bold text-slate-800 text-base md:text-lg group-hover:text-teal-700 transition-colors leading-tight mb-1">
+                    <div className="flex-1 p-3 sm:p-4 flex flex-col items-center justify-center bg-white relative z-10">
+                      <span className="font-bold text-slate-800 text-sm sm:text-base md:text-lg group-hover:text-teal-700 transition-colors leading-tight mb-1">
                         {REGION_CONFIG[region].label.replace(' область', '')}
                       </span>
-                      <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+                      <span className="text-[10px] sm:text-xs text-slate-400 font-medium uppercase tracking-wider">
                         {visuals.description}
                       </span>
                       
@@ -290,16 +378,14 @@ const App: React.FC = () => {
             </h1>
             <div className="flex items-center gap-1.5 mt-1">
               <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wide">
-                {activeRegion ? REGION_CONFIG[activeRegion].label : 'Оберіть регіон'}
+                {activeRegion ? REGION_CONFIG[activeRegion].label : 'Вся Україна'}
               </span>
-              {activeRegion && (
-                <button 
-                  onClick={() => setIsRegionModalOpen(true)}
-                  className="text-[10px] text-teal-600 hover:text-teal-800 hover:underline font-bold px-1.5 py-0.5 rounded bg-teal-50"
-                >
-                  ЗМІНИТИ
-                </button>
-              )}
+              <button 
+                onClick={() => setIsRegionModalOpen(true)}
+                className="text-[10px] text-teal-600 hover:text-teal-800 hover:underline font-bold px-1.5 py-0.5 rounded bg-teal-50"
+              >
+                ЗМІНИТИ
+              </button>
             </div>
           </div>
         </div>
