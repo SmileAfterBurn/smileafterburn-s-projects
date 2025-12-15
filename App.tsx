@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Info } from 'lucide-react';
+import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Info, Heart } from 'lucide-react';
 import { MapView } from './components/MapView';
 import { TableView } from './components/TableView';
 import { GeminiChat } from './components/GeminiChat';
@@ -481,10 +481,20 @@ const App: React.FC = () => {
           
           <button
              onClick={() => setIsAboutOpen(true)}
-             className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors hidden sm:block"
-             title="Про проект"
+             className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg font-medium text-xs transition-colors"
+             title="Про проект та Партнери"
           >
-            <Info className="w-5 h-5" />
+            <Info className="w-4 h-4" />
+            <span>Про нас</span>
+          </button>
+
+          {/* New Donate Button for Visibility */}
+          <button
+            onClick={() => { setIsAboutOpen(true); }}
+            className="hidden md:flex items-center justify-center p-2 text-rose-500 hover:bg-rose-50 rounded-full transition-colors"
+            title="Підтримати проект"
+          >
+            <Heart className="w-5 h-5 fill-rose-500" />
           </button>
 
           {/* Remote Support Button */}
