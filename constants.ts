@@ -298,6 +298,70 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     budget: 0,
     region: 'Dnipro'
   },
+  
+  // ================= ADDED DNIPRO ACTORS =================
+  {
+    id: 'dnipro_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА" (Дніпро)',
+    address: 'м. Дніпро, вул. Набережна Перемоги',
+    lat: 48.4400,
+    lng: 35.0600,
+    category: 'Благодійний фонд',
+    services: 'Психосоціальна підтримка, гуманітарна допомога ВПО.',
+    phone: '+380 50 460 2240',
+    email: 'dnipro@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Dnipro',
+    workingHours: 'Пн-Пт 09:00-17:00'
+  },
+  {
+    id: 'dnipro_proliska',
+    name: 'Гуманітарна місія "Проліска" (Дніпро)',
+    address: 'м. Дніпро, вул. Набережна Січеславська, 15',
+    lat: 48.4700,
+    lng: 35.0400,
+    category: 'Громадська організація',
+    services: 'Соціальний супровід, матеріальна допомога, психологічна підтримка.',
+    phone: '+380 93 202 22 32',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Dnipro'
+  },
+  {
+    id: 'dnipro_redcross',
+    name: 'Червоний Хрест (Дніпро)',
+    address: 'м. Дніпро, пров. Універсальний, 6',
+    lat: 48.4500,
+    lng: 35.0300,
+    category: 'Міжнародна організація',
+    services: 'Гуманітарна допомога, навчання, соціальні послуги.',
+    phone: '+38 056 371 22 22',
+    email: 'dp@redcross.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Dnipro'
+  },
+   {
+    id: 'dnipro_rokada',
+    name: 'БФ "Рокада" (Дніпро)',
+    address: 'м. Дніпро',
+    lat: 48.4600,
+    lng: 35.0500,
+    category: 'Благодійний фонд',
+    services: 'Соціальна адаптація біженців та ВПО, психологічна підтримка.',
+    phone: '+38 067 447 38 40',
+    email: 'dnipro@rokada.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Dnipro'
+  },
+
   {
     id: 'kharkiv_caritas',
     name: 'БФ "Карітас Харків"',
@@ -328,6 +392,85 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     budget: 0,
     region: 'Zaporizhzhia'
   },
+
+  // ================= ADDED ZAPORIZHZHIA ACTORS =================
+  {
+    id: 'zp_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА" (Запоріжжя) - Головний офіс',
+    address: 'м. Запоріжжя, вул. Незалежної України, 82',
+    lat: 47.8480,
+    lng: 35.1380,
+    category: 'Благодійний фонд',
+    services: 'Гуманітарна допомога, психосоціальна підтримка, захист дітей, кейс-менеджмент.',
+    phone: '+380 50 460 2240',
+    email: 'zp@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-17:00'
+  },
+  {
+    id: 'zp_caritas',
+    name: 'БФ "Карітас Запоріжжя"',
+    address: 'м. Запоріжжя, вул. Семафорна, 8',
+    lat: 47.8150,
+    lng: 35.1700,
+    category: 'Благодійний фонд',
+    services: 'Гуманітарна допомога (продукти, гігієна), догляд вдома, робота з дітьми, кризовий центр.',
+    phone: '+38 050 322 46 00',
+    email: 'caritas.zp@gmail.com',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Zaporizhzhia'
+  },
+  {
+    id: 'zp_redcross',
+    name: 'Товариство Червоного Хреста (Запоріжжя)',
+    address: 'м. Запоріжжя, вул. Поштова, 4а',
+    lat: 47.8300,
+    lng: 35.1400,
+    category: 'Міжнародна організація',
+    services: 'Евакуація, видача гуманітарної допомоги, курси першої допомоги.',
+    phone: '+38 061 764 28 92',
+    email: 'zp@redcross.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Zaporizhzhia'
+  },
+  {
+    id: 'zp_beluga',
+    name: 'Волонтерський центр "Белуга"',
+    address: 'м. Запоріжжя, вул. Олександрівська, 75',
+    lat: 47.8250,
+    lng: 35.1500,
+    category: 'Волонтерський штаб',
+    services: 'Харчування для ВПО, продуктові набори.',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Zaporizhzhia'
+  },
+  {
+    id: 'zp_spivdiia',
+    name: 'СпівДія хаб Запоріжжя',
+    address: 'м. Запоріжжя',
+    lat: 47.8500,
+    lng: 35.1200,
+    category: 'Громадська організація',
+    services: 'Координація допомоги, освітні проекти, гуманітарна підтримка молоді.',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Zaporizhzhia'
+  },
+
   {
     id: 'volyn_dept_soc',
     name: 'Департамент соціальної політики Луцької міської ради',
@@ -359,7 +502,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Kherson'
   },
 
-  // ================= TERNOPIL REGION (NEW) =================
+  // ================= TERNOPIL REGION =================
   {
     id: 'ternopil_posmishka',
     name: 'БФ "ПОСМІШКА ЮА" (Тернопіль)',
@@ -424,7 +567,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Ternopil'
   },
 
-  // ================= CHERNIVTSI REGION (NEW) =================
+  // ================= CHERNIVTSI REGION =================
   {
     id: 'chernivtsi_posmishka',
     name: 'БФ "ПОСМІШКА ЮА" (Чернівці)',
@@ -489,7 +632,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Chernivtsi'
   },
 
-  // ================= KHMELNYTSKYI REGION (NEW) =================
+  // ================= KHMELNYTSKYI REGION =================
   {
     id: 'khmel_posmishka',
     name: 'БФ "ПОСМІШКА ЮА" (Хмельницький)',
@@ -554,7 +697,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Khmelnytskyi'
   },
 
-  // ================= CHERNIHIV REGION (NEW) =================
+  // ================= CHERNIHIV REGION =================
   {
     id: 'chernihiv_posmishka',
     name: 'БФ "ПОСМІШКА ЮА" (Чернігів)',
@@ -1518,7 +1661,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Mykolaiv'
   },
   
-  // --- MYKOLAIV NEW ACTORS ---
+  // --- MYKOLAIV NEW ACTORS (Previous) ---
   {
     id: 'mk_10kvitnya_1',
     name: 'ГО «Десяте квітня» (Миколаїв)',
@@ -1603,6 +1746,85 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     category: 'Міжнародна організація',
     services: 'ПЗПСП, Грошові виплати, Кейс-менеджмент.',
     phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Mykolaiv'
+  },
+
+  // ================= NEW ADDITIONS FOR MYKOLAIV (REQUESTED) =================
+  {
+    id: 'mk_innov_social',
+    name: 'ГО «Інноваційні соціальні рішення» (Кейс-менеджмент)',
+    address: 'м. Миколаїв',
+    lat: 46.9780,
+    lng: 31.9900,
+    category: 'Громадська організація',
+    services: 'Послуга з ведення випадку / Кейс-менеджмент для осіб, які постраждали від домашнього насильства та/або насиль­ства за ознакою статі (UNFPA).',
+    phone: '+38 (068) 216 24 61',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Mykolaiv',
+    additionalPhones: ['+38 (095) 591 27 63']
+  },
+  {
+    id: 'mk_mobile_brigades',
+    name: 'Мобільні бригади соціально-психологічної допомоги',
+    address: 'м. Миколаїв та область',
+    lat: 46.9700,
+    lng: 32.0000,
+    category: 'Соціальна служба',
+    services: 'Допомога особам, які постраждали від домашнього насильства та/або насильства за ознакою статі.',
+    phone: '+38 (096) 064 33 58',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Mykolaiv',
+    additionalPhones: ['+38 (050) 533 07 09', '+38 (096) 141 52 64']
+  },
+  {
+    id: 'mk_drc_bilozirka',
+    name: 'DRC (Мобільний безпечний простір)',
+    address: 'с. Білозірка, вул. Соборна, 106 (Будинок культури)',
+    lat: 47.0392,
+    lng: 32.2223,
+    category: 'Міжнародна організація',
+    services: 'Мобільний безпечний простір для жінок та дівчат на базі Будинку культури Білозірського району.',
+    phone: '+38 (063) 179 83 12',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Mykolaiv'
+  },
+  {
+    id: 'mk_innov_social_career',
+    name: 'Жіночий центр працевлаштування (ГО «ІСР»)',
+    address: 'м. Миколаїв, вул. Івана Виговського, 1',
+    lat: 46.9650,
+    lng: 31.9850,
+    category: 'Громадська організація',
+    services: 'Жіночий центр працевлаштування за підтримки Фонду ООН у галузі народонаселення, UNFPA.',
+    phone: '+38 (067) 349 81 04',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Mykolaiv'
+  },
+  {
+    id: 'mk_medical_teams',
+    name: 'Medical Teams International',
+    address: 'м. Миколаїв та область',
+    lat: 46.9800,
+    lng: 32.0100,
+    category: 'Міжнародна організація',
+    services: 'Мобільні бригади психосоціальної та медичної підтримки.',
+    phone: '+38 (099) 360 49 44',
     email: '',
     status: 'Active',
     driveFolderUrl: DRIVE_URL,

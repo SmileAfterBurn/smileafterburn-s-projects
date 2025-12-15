@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Send, User, Loader2, Download, Type, Eye, Mic, MicOff } from 'lucide-react';
 import { analyzeData, LiveSession } from '../services/geminiService';
@@ -92,10 +93,15 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
       }
     } else {
       // Start
-      liveSessionRef.current = new LiveSession(organizations, (active) => {
-        setIsVoiceActive(active);
-      });
-      await liveSessionRef.current.connect();
+      try {
+        liveSessionRef.current = new LiveSession(organizations, (active) => {
+          setIsVoiceActive(active);
+        });
+        await liveSessionRef.current.connect();
+      } catch (e) {
+        console.error("Failed to start voice chat:", e);
+        alert("Не вдалося запустити голосовий чат. Перевірте дозволи мікрофону або наявність API ключа.");
+      }
     }
   };
 

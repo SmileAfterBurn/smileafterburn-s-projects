@@ -2,15 +2,27 @@
 import { GoogleGenAI, GenerateContentResponse, LiveServerMessage, Modality } from "@google/genai";
 import { Organization } from "../types";
 
-const getClient = () => {
-  const apiKey = process.env.API_KEY;
-  if (!apiKey) {
-    throw new Error("API Key not found");
+// Safe access to API Key to prevent ReferenceError if process is undefined
+const getApiKey = () => {
+  try {
+    return process.env.API_KEY;
+  } catch (e) {
+    console.warn("process.env.API_KEY is not accessible");
+    return undefined;
   }
+};
+
+const getClient = () => {
+  const apiKey = getApiKey();
+  
+  if (!apiKey) {
+    throw new Error("API Key not found. Please ensure process.env.API_KEY is set.");
+  }
+
   return new GoogleGenAI({ apiKey });
 };
 
-// --- Text Analysis (Existing) ---
+// --- Text Analysis ---
 
 export const analyzeData = async (
   query: string, 
@@ -30,7 +42,6 @@ export const analyzeData = async (
       budget: o.budget, 
       status: o.status, 
       region: o.region,
-      // New fields for detailed view
       workingHours: o.workingHours,
       additionalPhones: o.additionalPhones,
       establishedDate: o.establishedDate
@@ -41,38 +52,36 @@ export const analyzeData = async (
       contents: `База даних організацій: ${dataContext}\n\nЗапитання користувача: ${query}`,
       config: {
         temperature: 0.6, 
-        systemInstruction: `Ти — пані Думка, турботлива та мудра цифрова помічниця із соціальних питань. Ти працюєш на Всеукраїнській Мапі соціальних послуг (Київ, Львів, Харків, Одеса, Дніпро, Тернопіль, Чернівці та інші регіони).
+        systemInstruction: `Ти — пані Думка, турботлива та мудра цифрова помічниця із соціальних питань. Ти працюєш на Всеукраїнській Мапі соціальних послуг.
 
 ТВОЯ ОСОБИСТІСТЬ:
 - Тон: **доброзичливий, заспокійливий, оптимістичний**.
 - Мова: **Виключно українська**.
 
 ТВОЇ ФУНКЦІЇ:
-1. **Детальна інформація**: Якщо користувач запитує "детальніше", "години роботи" або "як давно працюють", ти МАЄШ використовувати поля \`workingHours\` (графік), \`additionalPhones\` (додаткові номери) та \`establishedDate\` (дата заснування).
-   - Якщо це **муніципальна установа (соцзахист)**, підкресли, що це державна структура.
-   - Якщо це **Карітас** або **Рокада**, зазнач їхній міжнародний досвід.
-   - Якщо відомий рік заснування, підкресли досвід (наприклад: "Вони допомагають людям вже з 2013 року").
+1. **Детальна інформація**: Якщо запитують деталі, використовуй графік роботи, додаткові телефони та дату заснування.
 2. **Пошук допомоги**: Допомагай знайти послуги за запитом у конкретному регіоні.
-3. **Перенаправлення**: Нагадуй про кнопку "Запит на перенаправлення" у картці організації для фахівців.
+3. **Перенаправлення**: Нагадуй про кнопку "Запит на перенаправлення".
 
 ПРАВИЛА ВІДПОВІДІ:
 - Будь лаконічною, але теплою.
 - Використовуй жирний шрифт для **назв**, **телефонів** та **графіку роботи**.
-- Якщо даних (наприклад, графіку) немає у базі, м'яко скажи: "На жаль, точний графік зараз не зазначено, раджу зателефонувати перед візитом".`
+- Якщо даних немає, порадь зателефонувати.`
       }
     });
 
-    return response.text || "Вибачте, любі, я зараз трохи замислилась. Спробуйте запитати ще раз.";
+    return response.text || "Вибачте, я зараз не можу відповісти. Спробуйте пізніше.";
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "Ой, сталась технічна помилка. Будь ласка, перевірте з'єднання, і ми спробуємо знову.";
+    // Return a friendly message instead of throwing
+    return "Вибачте, виникла технічна помилка зі зв'язком. Спробуйте ще раз або перевірте налаштування ключа.";
   }
 };
 
-// --- Live Audio Session (New) ---
+// --- Live Audio Session ---
 
 export class LiveSession {
-  private client: GoogleGenAI;
+  private client: GoogleGenAI | null = null;
   private inputAudioContext: AudioContext | null = null;
   private outputAudioContext: AudioContext | null = null;
   private nextStartTime = 0;
@@ -84,19 +93,41 @@ export class LiveSession {
   private isActive = false;
 
   constructor(private organizations: Organization[], private onStatusChange: (active: boolean) => void) {
-    this.client = getClient();
+    try {
+        this.client = getClient();
+    } catch (e) {
+        console.error("Failed to initialize Gemini client:", e);
+        this.client = null;
+    }
   }
 
   async connect() {
+    if (!this.client) {
+        console.error("Gemini client is not initialized.");
+        this.disconnect();
+        throw new Error("API Key missing");
+    }
+
     this.isActive = true;
     this.onStatusChange(true);
 
     try {
-      this.inputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
-      this.outputAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-      this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) {
+          throw new Error("AudioContext not supported");
+      }
 
-      // Prepare Context for System Instruction with detailed info
+      this.inputAudioContext = new AudioContextClass({ sampleRate: 16000 });
+      this.outputAudioContext = new AudioContextClass({ sampleRate: 24000 });
+      
+      try {
+        this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (err) {
+        console.error("Microphone access denied:", err);
+        throw new Error("Microphone access denied");
+      }
+
+      // Prepare Context
       const dataContext = JSON.stringify(this.organizations.map(o => ({
         name: o.name,
         address: o.address,
@@ -104,11 +135,7 @@ export class LiveSession {
         region: o.region,
         phone: o.phone,
         category: o.category,
-        budget: o.budget,
-        // Include details for voice as well
-        workingHours: o.workingHours,
-        additionalPhones: o.additionalPhones,
-        establishedDate: o.establishedDate
+        workingHours: o.workingHours
       })), null, 2);
 
       const sessionPromise = this.client.live.connect({
@@ -118,19 +145,7 @@ export class LiveSession {
           speechConfig: {
             voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } },
           },
-          systemInstruction: `Ти — пані Думка, голос підтримки Всеукраїнської Мапи соціальних послуг.
-
-ТВОЯ ОСОБИСТІСТЬ:
-- Тон: **доброзичливий, спокійний, заспокійливий та підбадьорливий**.
-- Мова: **Українська**.
-
-ТВОЯ МІСІЯ:
-Допомагати людям знаходити послуги по всій Україні (включаючи Київ, Харків, Львів, Одесу, Дніпро, Тернопіль, Чернівці та інші міста).
-Ти маєш доступ до детальної інформації про благодійні фонди (як Карітас, Рокада, Посмішка ЮА) та державні органи соцзахисту.
-Якщо тебе запитують деталі про організацію — озвуч графік роботи та досвід організації, якщо ці дані є.
-Відповідай коротко і з турботою.
-
-Дані про організації: ${dataContext}`,
+          systemInstruction: `Ти — пані Думка, голос підтримки Всеукраїнської Мапи соціальних послуг. Тон: доброзичливий. Мова: Українська. Допомагай знайти послуги. Дані: ${dataContext}`,
         },
         callbacks: {
           onopen: () => {
@@ -156,6 +171,7 @@ export class LiveSession {
     } catch (error) {
       console.error("Failed to start live session", error);
       this.disconnect();
+      throw error; // Re-throw to be caught by UI
     }
   }
 
@@ -206,18 +222,11 @@ export class LiveSession {
 
   private playAudio(buffer: AudioBuffer) {
     if (!this.outputAudioContext) return;
-
-    // Ensure we don't schedule in the past
     this.nextStartTime = Math.max(this.nextStartTime, this.outputAudioContext.currentTime);
-
     const source = this.outputAudioContext.createBufferSource();
     source.buffer = buffer;
     source.connect(this.outputAudioContext.destination);
-    
-    source.onended = () => {
-      this.sources.delete(source);
-    };
-
+    source.onended = () => this.sources.delete(source);
     source.start(this.nextStartTime);
     this.nextStartTime += buffer.duration;
     this.sources.add(source);
@@ -234,7 +243,6 @@ export class LiveSession {
   disconnect() {
     this.isActive = false;
     this.onStatusChange(false);
-    
     this.stopAllAudio();
 
     if (this.session) {
@@ -243,39 +251,35 @@ export class LiveSession {
       });
     }
 
-    if (this.scriptProcessor) this.scriptProcessor.disconnect();
-    if (this.inputSource) this.inputSource.disconnect();
-    
-    this.stream?.getTracks().forEach(track => track.stop());
-    this.inputAudioContext?.close();
-    this.outputAudioContext?.close();
+    try {
+      if (this.scriptProcessor) this.scriptProcessor.disconnect();
+      if (this.inputSource) this.inputSource.disconnect();
+      this.stream?.getTracks().forEach(track => track.stop());
+      this.inputAudioContext?.close();
+      this.outputAudioContext?.close();
+    } catch(e) {
+      console.warn("Error closing audio contexts", e);
+    }
     
     this.session = null;
     this.stream = null;
   }
 
-  // --- Utils ---
-
   private createBlob(data: Float32Array) {
     const l = data.length;
     const int16 = new Int16Array(l);
     for (let i = 0; i < l; i++) {
-      // Clamp values
       let s = Math.max(-1, Math.min(1, data[i]));
       int16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
     }
     const bytes = new Uint8Array(int16.buffer);
-    
-    // Manual Base64 encoding to avoid external lib dependency issues in some envs
     let binary = '';
     const len = bytes.byteLength;
     for (let i = 0; i < len; i++) {
       binary += String.fromCharCode(bytes[i]);
     }
-    const base64 = btoa(binary);
-
     return {
-      data: base64,
+      data: btoa(binary),
       mimeType: 'audio/pcm;rate=16000',
     };
   }
@@ -299,7 +303,6 @@ export class LiveSession {
     const dataInt16 = new Int16Array(data.buffer);
     const frameCount = dataInt16.length / numChannels;
     const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
-
     for (let channel = 0; channel < numChannels; channel++) {
       const channelData = buffer.getChannelData(channel);
       for (let i = 0; i < frameCount; i++) {

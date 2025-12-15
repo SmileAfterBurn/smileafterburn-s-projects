@@ -1,12 +1,13 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield } from 'lucide-react';
+import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Info } from 'lucide-react';
 import { MapView } from './components/MapView';
 import { TableView } from './components/TableView';
 import { GeminiChat } from './components/GeminiChat';
 import { IntroModal } from './components/IntroModal';
 import { RemoteSupportModal } from './components/RemoteSupportModal';
-import { ReferralModal } from './components/ReferralModal'; // Import Referral Modal
+import { ReferralModal } from './components/ReferralModal';
+import { AboutModal } from './components/AboutModal';
 import { INITIAL_ORGANIZATIONS, REGION_CONFIG } from './constants';
 import { Organization, ViewMode, RegionName } from './types';
 
@@ -17,17 +18,16 @@ const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isChatOpen, setIsChatOpen] = useState(false);
   
-  // Remote Support Modal State
+  // Modals State
   const [isRemoteSupportOpen, setIsRemoteSupportOpen] = useState(false);
-
-  // Referral Modal State
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [referralOrg, setReferralOrg] = useState<Organization | null>(null);
 
   // Sidebar state for Split View
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   // Region State
-  const [activeRegion, setActiveRegion] = useState<RegionName>('All'); // Default to All
+  const [activeRegion, setActiveRegion] = useState<RegionName>('All');
   const [isRegionModalOpen, setIsRegionModalOpen] = useState(false);
 
   // Intro/Onboarding State
@@ -39,25 +39,91 @@ const App: React.FC = () => {
 
   // Initialization Logic
   useEffect(() => {
+    // 1. Check Intro status
     const hasSeenIntro = localStorage.getItem('hide_intro_annotation');
     if (hasSeenIntro === 'true') {
       setShowIntro(false);
-      // Ensure modal is open on first load if not explicitly set otherwise, or keep closed and default to 'All'
-      setIsRegionModalOpen(true);
     } else {
       setShowIntro(true);
+      // Intro modal handles its own open state
+      return; 
     }
-  }, []);
+
+    // 2. Parse URL Params (Wrapped in try-catch for safety)
+    let regionParam = null;
+    let orgParam = null;
+    
+    try {
+      const params = new URLSearchParams(window.location.search);
+      regionParam = params.get('region');
+      orgParam = params.get('org');
+    } catch (e) {
+      console.debug("Could not parse URL params", e);
+    }
+
+    let regionSet = false;
+
+    if (regionParam && REGION_CONFIG[regionParam as RegionName]) {
+      setActiveRegion(regionParam as RegionName);
+      regionSet = true;
+    }
+
+    if (orgParam) {
+      const orgExists = organizations.find(o => o.id === orgParam);
+      if (orgExists) {
+        setSelectedOrgId(orgParam);
+        // If org exists, check its region if region wasn't explicitly set in URL
+        if (!regionSet && orgExists.region) {
+          setActiveRegion(orgExists.region);
+          regionSet = true;
+        }
+      }
+    }
+
+    // 3. Open Region Modal only if no URL params and intro passed
+    if (!regionSet && !orgParam) {
+      setIsRegionModalOpen(true);
+    }
+  }, [organizations]);
+
+  // Sync URL with State
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      
+      if (activeRegion && activeRegion !== 'All') {
+        params.set('region', activeRegion);
+      } else {
+        params.delete('region');
+      }
+
+      if (selectedOrgId) {
+        params.set('org', selectedOrgId);
+      } else {
+        params.delete('org');
+      }
+
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState(null, '', newUrl);
+    } catch (e) {
+      // Ignore security errors in sandboxed environments (e.g. blob URLs)
+      console.debug("Could not update URL state:", e);
+    }
+  }, [activeRegion, selectedOrgId]);
 
   const handleIntroComplete = () => {
     setShowIntro(false);
-    setIsRegionModalOpen(true);
+    // Only open region modal if no region is currently active (e.g. from URL)
+    if (activeRegion === 'All') {
+      setIsRegionModalOpen(true);
+    }
   };
 
   const handleRegionSelect = (region: RegionName) => {
     setActiveRegion(region);
     setIsRegionModalOpen(false);
-    // Reset selection when changing regions
+    // Reset selection when changing regions ONLY if we aren't just initialized
+    // But for manual user action, yes, reset.
     setSelectedOrgId(null);
   };
 
@@ -75,7 +141,6 @@ const App: React.FC = () => {
     if (name.includes("ПОСМІШКА ЮА")) return 1;
 
     // Priority 2: Communal/State Institutions
-    // Checks for specific keywords in name or category
     if (
       category.includes("КОМУНАЛЬН") || 
       name.includes("ДЕПАРТАМЕНТ") || 
@@ -140,7 +205,7 @@ const App: React.FC = () => {
     setReferralOrg(org);
   };
 
-  // Determine Map Center and Zoom with strict validation to prevent NaN errors
+  // Determine Map Center and Zoom
   const mapCenter: [number, number] = useMemo(() => {
     if (activeRegion && REGION_CONFIG[activeRegion]) {
       return REGION_CONFIG[activeRegion].center;
@@ -289,6 +354,11 @@ const App: React.FC = () => {
         <IntroModal onComplete={handleIntroComplete} />
       )}
 
+      {/* About Modal */}
+      {isAboutOpen && (
+        <AboutModal onClose={() => setIsAboutOpen(false)} />
+      )}
+
       {/* Referral Modal */}
       {referralOrg && (
         <ReferralModal 
@@ -400,4 +470,155 @@ const App: React.FC = () => {
             <input
               type="text"
               placeholder="Пошук (назва, категорія, адреса, контакти)..."
-              
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-slate-100 border-transparent rounded-full text-sm focus:bg-white focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition-all outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          
+          <button
+             onClick={() => setIsAboutOpen(true)}
+             className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors hidden sm:block"
+             title="Про проект"
+          >
+            <Info className="w-5 h-5" />
+          </button>
+
+          {/* Remote Support Button */}
+          <button 
+            onClick={() => setIsRemoteSupportOpen(true)}
+            className="hidden sm:flex items-center gap-2 px-3 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-lg font-bold text-xs transition-colors border border-rose-200"
+            title="Дистанційна підтримка будь-де"
+          >
+            <PhoneForwarded className="w-4 h-4" />
+            <span className="hidden md:inline">Дистанційна підтримка</span>
+          </button>
+
+          {/* View Toggles */}
+          <div className="hidden md:flex bg-slate-100 rounded-lg p-1 gap-1 mr-2">
+            <button
+              onClick={() => { setViewMode(ViewMode.Grid); setIsSidebarOpen(true); }}
+              className={`p-2 rounded-md transition ${viewMode === ViewMode.Grid ? 'bg-white shadow text-teal-600' : 'text-slate-500 hover:text-slate-700'}`}
+              title="Таблиця"
+            >
+              <TableIcon className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => { setViewMode(ViewMode.Split); setIsSidebarOpen(true); }}
+              className={`p-2 rounded-md transition ${viewMode === ViewMode.Split ? 'bg-white shadow text-teal-600' : 'text-slate-500 hover:text-slate-700'}`}
+              title="Розділений вид"
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode(ViewMode.Map)}
+              className={`p-2 rounded-md transition ${viewMode === ViewMode.Map ? 'bg-white shadow text-teal-600' : 'text-slate-500 hover:text-slate-700'}`}
+              title="Карта"
+            >
+              <MapIcon className="w-4 h-4" />
+            </button>
+          </div>
+
+          <button
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition border ${
+                isChatOpen 
+                ? 'bg-teal-50 border-teal-200 text-teal-700' 
+                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <Sparkles className="w-4 h-4" />
+            <span className="hidden sm:inline">Помічниця</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-1 flex overflow-hidden relative">
+        
+        {/* Container handling layout logic */}
+        <div className={`flex-1 flex ${viewMode === ViewMode.Split ? 'flex-col md:flex-row relative' : 'flex-col'}`}>
+          
+          {/* Table Section */}
+          <div className={`
+            transition-all duration-300 ease-in-out overflow-hidden
+            ${viewMode === ViewMode.Split
+               ? (isSidebarOpen ? 'h-1/2 md:h-full w-full md:w-1/2 border-b md:border-b-0 md:border-r border-slate-200 opacity-100' : 'h-0 md:h-full w-full md:w-0 border-none opacity-0')
+               : (viewMode === ViewMode.Grid ? 'h-full w-full opacity-100' : 'hidden')
+            }
+          `}>
+            {viewMode !== ViewMode.Map && (
+              <TableView 
+                organizations={filteredOrgs} 
+                selectedOrgId={selectedOrgId}
+                onSelectOrg={handleOrgSelect}
+                filterStatus={filterStatus}
+                onFilterStatusChange={setFilterStatus}
+                filterCategory={filterCategory}
+                onFilterCategoryChange={setFilterCategory}
+                availableCategories={availableCategories}
+              />
+            )}
+          </div>
+
+          {/* Map Section */}
+          <div className={`
+            relative bg-slate-200 transition-all duration-300 ease-in-out
+            ${viewMode === ViewMode.Split
+               ? (isSidebarOpen ? 'h-1/2 md:h-full w-full md:w-1/2' : 'h-full w-full')
+               : (viewMode === ViewMode.Map ? 'h-full w-full' : 'hidden')
+            }
+          `}>
+            {/* Toggle Button for Sidebar (Only in Split View) */}
+            {viewMode === ViewMode.Split && (
+               <button
+                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                 className={`
+                   absolute z-[40] flex items-center justify-center bg-white border border-slate-300 shadow-sm text-slate-500 hover:text-teal-600 hover:bg-slate-50 transition-all focus:outline-none
+                   /* Mobile positioning: Top edge, horizontal toggle */
+                   left-1/2 -translate-x-1/2 top-0 w-10 h-5 rounded-b-md border-t-0
+                   /* Desktop positioning: Left edge, vertical toggle */
+                   md:left-0 md:top-1/2 md:-translate-y-1/2 md:w-5 md:h-10 md:rounded-r-md md:rounded-bl-none md:border-l-0
+                 `}
+                 title={isSidebarOpen ? "Згорнути панель" : "Розгорнути панель"}
+               >
+                 {/* Icons based on state and screen size */}
+                 <div className="hidden md:block">
+                   {isSidebarOpen ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
+                 </div>
+                 <div className="block md:hidden">
+                   {isSidebarOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                 </div>
+               </button>
+            )}
+
+            {viewMode !== ViewMode.Grid && (
+               <MapView 
+                 organizations={filteredOrgs}
+                 selectedOrgId={selectedOrgId}
+                 onSelectOrg={handleOrgSelect}
+                 onOpenReferral={handleOpenReferral}
+                 center={mapCenter}
+                 zoom={mapZoom}
+               />
+            )}
+          </div>
+
+        </div>
+
+        {/* AI Chat Overlay */}
+        <GeminiChat 
+          organizations={filteredOrgs}
+          isOpen={isChatOpen} 
+          onClose={() => setIsChatOpen(false)} 
+        />
+
+      </main>
+    </div>
+  );
+};
+
+export default App;
