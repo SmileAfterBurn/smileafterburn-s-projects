@@ -548,7 +548,7 @@ const App: React.FC = () => {
 
                 {/* Filter Popover */}
                 {isFilterOpen && (
-                  <div className="absolute top-full left-2 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-slate-100 p-4 z-50 animate-in zoom-in-95 duration-200">
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[calc(100vw-32px)] sm:w-72 sm:left-auto sm:translate-x-0 md:left-2 bg-white rounded-xl shadow-2xl border border-slate-100 p-4 z-50 animate-in zoom-in-95 duration-200">
                     <h4 className="font-bold text-sm text-slate-800 mb-3">Статус організації</h4>
                     <div className="space-y-2 mb-4">
                       {['Active', 'Pending', 'Inactive'].map(status => (
@@ -601,7 +601,7 @@ const App: React.FC = () => {
             {viewMode === ViewMode.Split && (
                <button
                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                 className="absolute z-[40] flex items-center justify-center bg-white border border-slate-300 shadow-sm text-slate-500 hover:text-teal-600 hover:bg-slate-50 transition-all focus:outline-none left-1/2 -translate-x-1/2 top-0 w-10 h-5 rounded-b-md border-t-0 md:left-0 md:top-1/2 md:-translate-y-1/2 md:w-5 md:h-10 md:rounded-r-md md:rounded-bl-none md:border-l-0"
+                 className="absolute z-[40] flex items-center justify-center bg-white border border-slate-300 shadow-sm text-slate-500 hover:text-teal-600 hover:bg-slate-50 transition-all focus:outline-none left-1/2 -translate-x-1/2 top-0 md:left-0 md:top-1/2 md:-translate-y-1/2 w-10 h-5 rounded-b-md border-t-0 md:w-5 md:h-10 md:rounded-r-md md:rounded-bl-none md:border-l-0"
                >
                  <div className="hidden md:block">{isSidebarOpen ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}</div>
                  <div className="block md:hidden">{isSidebarOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</div>
@@ -628,3 +628,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+    

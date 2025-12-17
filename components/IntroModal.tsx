@@ -9,7 +9,7 @@ interface IntroModalProps {
 const SLIDES = [
   {
     title: "Ласкаво просимо на Мапу Послуг!",
-    text: "Ми об'єднали понад 100 організацій у 20 регіонах України в єдину мережу допомоги. Знаходьте перевірені благодійні фонди, державні соцслужби, шелтери та гуманітарні штаби у своєму місті.",
+    text: "Ми об'єднали понад 100 організацій у 20+ регіонах України в єдину мережу допомоги. Знаходьте перевірені благодійні фонди, державні соцслужби, шелтери та гуманітарні штаби у своєму місті.",
   },
   {
     title: "Дистанційна підтримка",
@@ -52,7 +52,7 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
     if (hasStarted && isPlaying) {
       speak(SLIDES[currentStep].text);
     }
-  }, [currentStep]);
+  }, [currentStep]); // Removed isPlaying/hasStarted to prevent double-triggering
 
   const speak = (text: string) => {
     // Always cancel before speaking new text

@@ -223,7 +223,7 @@ export const MapView: React.FC<MapViewProps> = ({
               }} as any)}
               zIndexOffset={isSelected ? 1000 : 0}
             >
-              <Popup className="min-w-[300px]">
+              <Popup className="min-w-[250px] max-w-[calc(100vw-40px)]"> {/* Adjusted for responsiveness */}
                 <div className="p-1">
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-bold text-base text-slate-800 flex items-center gap-1 pr-2">
@@ -309,3 +309,4 @@ export const MapView: React.FC<MapViewProps> = ({
     </div>
   );
 };
+    
