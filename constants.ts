@@ -298,10 +298,10 @@ export const REMOTE_SUPPORT_ACTORS: RemoteSupportActor[] = [
 ];
 
 export const INITIAL_ORGANIZATIONS: Organization[] = [
-  // === ZAPORIZHZHIA (HOME OF POSMISHKA) ===
+  // --- ZAPORIZHZHIA REGION (Core Partner: Posmishka UA) ---
   {
     id: 'zap_posmishka',
-    name: 'БФ «Посмішка ЮА»',
+    name: 'БФ «Посмішка ЮА» (Запоріжжя)',
     region: 'Zaporizhzhia',
     address: 'м. Запоріжжя, проспект Соборний, 151',
     lat: 47.8488,
@@ -314,7 +314,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     driveFolderUrl: '',
     budget: 0,
     website: 'https://posmishka.org.ua',
-    notes: 'Генеральний партнер проекту. Працює по всій Україні.'
+    notes: 'Генеральний партнер проекту'
   },
   {
     id: 'zap_caritas',
@@ -329,61 +329,55 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     email: 'caritas.zp@gmail.com',
     status: 'Active',
     driveFolderUrl: '',
-    budget: 0,
-    website: 'https://caritas-zp.org'
+    budget: 0
   },
-
-  // === KYIV ===
   {
-    id: 'kyiv_hq_redcross',
-    name: 'Червоний Хрест України (Національний комітет)',
-    region: 'Kyiv',
-    address: 'м. Київ, вул. Пушкінська, 30',
-    lat: 50.4450,
-    lng: 30.5180,
+    id: 'zap_redcross',
+    name: 'Червоний Хрест Запоріжжя',
+    region: 'Zaporizhzhia',
+    address: 'м. Запоріжжя, вул. Поштова, 4',
+    lat: 47.8300,
+    lng: 35.1400,
     category: 'Благодійна організація',
-    services: 'Перша допомога, гуманітарна підтримка, розшук зниклих, навчання населення',
-    phone: '0 800 332 656',
-    email: 'national@redcross.org.ua',
+    services: 'Гуманітарна допомога, евакуація',
+    phone: '',
+    email: '',
     status: 'Active',
     driveFolderUrl: '',
-    budget: 0,
-    website: 'https://redcross.org.ua'
+    budget: 0
   },
   {
-    id: 'kyiv_soc_dept',
-    name: 'Департамент соціальної політики КМДА',
-    region: 'Kyiv',
-    address: 'м. Київ, пр-т Любомира Гузара, 7',
-    lat: 50.4350,
-    lng: 30.4100,
+    id: 'zap_soc_dept',
+    name: 'Департамент соцзахисту населення ЗОДА',
+    region: 'Zaporizhzhia',
+    address: 'м. Запоріжжя, вул. Олександрівська, 48',
+    lat: 47.8250,
+    lng: 35.1700,
     category: 'Державна соціальна служба',
-    services: 'Соціальні виплати, субсидії, допомога пільговикам, координація соцслужб',
-    phone: '(044) 405-92-60',
-    email: 'social@kyivcity.gov.ua',
+    services: 'Державні виплати, допомога ВПО',
+    phone: '(061) 764-41-45',
+    email: '',
     status: 'Active',
     driveFolderUrl: '',
-    budget: 0,
-    website: 'https://dsp.kyivcity.gov.ua'
-  },
-  {
-    id: 'kyiv_right_protection',
-    name: 'БФ «Право на захист» (Київ)',
-    region: 'Kyiv',
-    address: 'м. Київ, вул. Щекавицька, 55',
-    lat: 50.4700,
-    lng: 30.5100,
-    category: 'Благодійна організація',
-    services: 'Юридична допомога ВПО, біженцям та особам без громадянства',
-    phone: '(044) 337-15-56',
-    email: 'pr@r2p.org.ua',
-    status: 'Active',
-    driveFolderUrl: '',
-    budget: 0,
-    website: 'https://r2p.org.ua'
+    budget: 0
   },
 
-  // === DNIPRO ===
+  // --- DNIPRO REGION (Core Partner: Posmishka UA) ---
+  {
+    id: 'dnipro_posmishka',
+    name: 'БФ «Посмішка ЮА» (Дніпро)',
+    region: 'Dnipro',
+    address: 'м. Дніпро, вул. Набережна Перемоги, 26Б',
+    lat: 48.4500,
+    lng: 35.0600,
+    category: 'Благодійна організація',
+    services: 'Психосоціальна підтримка, гуманітарна допомога ВПО',
+    phone: '+380 50 460 22 40',
+    email: 'dnipro@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
   {
     id: 'dnipro_angely',
     name: 'БФ «Янголи Спасіння»',
@@ -414,65 +408,62 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     driveFolderUrl: '',
     budget: 0
   },
-
-  // === LVIV ===
   {
-    id: 'lviv_nezlamni',
-    name: 'Національний реабілітаційний центр «НЕЗЛАМНІ»',
-    region: 'Lviv',
-    address: 'м. Львів, вул. Івана Мазепи, 25',
-    lat: 49.8600,
-    lng: 24.0300,
-    category: 'Охорона здоров\'я',
-    services: 'Медична евакуація, протезування, фізична та психологічна реабілітація',
-    phone: '0 800 333 003',
-    email: '',
-    status: 'Active',
-    driveFolderUrl: '',
-    budget: 0,
-    website: 'https://unbroken.org.ua'
-  },
-  {
-    id: 'lviv_caritas',
-    name: 'Карітас Львів УГКЦ',
-    region: 'Lviv',
-    address: 'м. Львів, вул. Коперника, 31/1',
-    lat: 49.8350,
-    lng: 24.0250,
+    id: 'dnipro_caritas',
+    name: 'Карітас Донецьк у Дніпрі',
+    region: 'Dnipro',
+    address: 'м. Дніпро, вул. Гостомельська, 5',
+    lat: 48.4800,
+    lng: 35.0300,
     category: 'Благодійна організація',
-    services: 'Допомога ВПО, дітям, людям з інвалідністю, благодійна їдальня',
-    phone: '(032) 261-38-92',
-    email: 'caritaslviv@gmail.com',
+    services: 'Гуманітарна допомога, соціальний супровід',
+    phone: '',
+    email: '',
     status: 'Active',
     driveFolderUrl: '',
     budget: 0
   },
 
-  // === KHARKIV ===
+  // --- ZHYTOMYR REGION (Partner: Posmishka UA) ---
   {
-    id: 'kharkiv_soc_protection',
-    name: 'Управління соціального захисту населення',
-    region: 'Kharkiv',
-    address: 'м. Харків, вул. Тобольська, 42',
-    lat: 50.0300,
-    lng: 36.2200,
+    id: 'zhy_posmishka',
+    name: 'БФ «Посмішка ЮА» (Житомир)',
+    region: 'Zhytomyr',
+    address: 'м. Житомир, Житомирська область',
+    lat: 50.2547,
+    lng: 28.6587,
+    category: 'Благодійна організація',
+    services: 'Дитячі простори, психологічна допомога',
+    phone: '+380 50 460 22 40',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'zhy_caritas',
+    name: 'Карітас-Житомир',
+    region: 'Zhytomyr',
+    address: 'м. Житомир, вул. Бердичівська, 61',
+    lat: 50.2450,
+    lng: 28.6700,
+    category: 'Благодійна організація',
+    services: 'Гуманітарна допомога, робота з дітьми',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'zhy_soc',
+    name: 'Департамент соцзахисту Житомирської ОДА',
+    region: 'Zhytomyr',
+    address: 'м. Житомир, майдан Корольова, 1',
+    lat: 50.2520,
+    lng: 28.6600,
     category: 'Державна соціальна служба',
-    services: 'Державна допомога, реєстрація ВПО, субсидії',
-    phone: '',
-    email: '',
-    status: 'Active',
-    driveFolderUrl: '',
-    budget: 0
-  },
-  {
-    id: 'kharkiv_station',
-    name: 'Волонтерський пункт «Південний вокзал»',
-    region: 'Kharkiv',
-    address: 'м. Харків, Привокзальна площа, 1',
-    lat: 49.9850,
-    lng: 36.2100,
-    category: 'Благодійна організація',
-    services: 'Зустріч евакуаційних потягів, психологічна допомога, харчування',
+    services: 'Державні виплати, субсидії',
     phone: '',
     email: '',
     status: 'Active',
@@ -480,57 +471,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     budget: 0
   },
 
-  // === ODESA ===
-  {
-    id: 'odesa_monsters',
-    name: 'БФ «Корпорація Монстрів»',
-    region: 'Odesa',
-    address: 'м. Одеса, пров. Онілової, 16',
-    lat: 46.4800,
-    lng: 30.7300,
-    category: 'Благодійна організація',
-    services: 'Медична допомога, гуманітарна підтримка, допомога військовим та лікарням',
-    phone: '',
-    email: 'monstrov.org@gmail.com',
-    status: 'Active',
-    driveFolderUrl: '',
-    budget: 0,
-    website: 'https://monstrov.org'
-  },
-  {
-    id: 'odesa_caritas',
-    name: 'Карітас Одеса УГКЦ',
-    region: 'Odesa',
-    address: 'м. Одеса, вул. Південна, 40/1',
-    lat: 46.4700,
-    lng: 30.7100,
-    category: 'Благодійна організація',
-    services: 'Гуманітарна допомога, дитячі центри, догляд вдома',
-    phone: '+380 48 704 00 45',
-    email: 'caritasodessa@post.com',
-    status: 'Active',
-    driveFolderUrl: '',
-    budget: 0
-  },
-
-  // === IVANO-FRANKIVSK ===
-  {
-    id: 'if_warm_city',
-    name: 'Тепле Місто',
-    region: 'IvanoFrankivsk',
-    address: 'м. Івано-Франківськ',
-    lat: 48.9200,
-    lng: 24.7100,
-    category: 'Благодійна організація',
-    services: 'Координація волонтерів, підтримка переселенців, соціальні ініціативи',
-    phone: '',
-    email: '',
-    status: 'Active',
-    driveFolderUrl: '',
-    budget: 0
-  },
-
-  // --- MYKOLAIV REGION ---
+  // --- MYKOLAIV REGION (From CSV) ---
   {
     id: 'myk_dms',
     name: 'Управління ДМС у Миколаївській області',
@@ -660,7 +601,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     website: 'https://www.nikpravda.com.ua/pobudovani-sheltery-dlya-pereselentsiv-vyyavylys-nepotribnymy/'
   },
 
-  // --- KHERSON REGION ---
+  // --- KHERSON REGION (From CSV) ---
   {
     id: 'khe_soc_center',
     name: 'Херсонський обласний центр соціальних служб',
@@ -772,5 +713,518 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     driveFolderUrl: '',
     budget: 0,
     website: 'https://www.radiosvoboda.org/a/istoriyi-khersontsiv-ostriv-shelter/33555733.html'
+  },
+
+  // --- KYIV REGION ---
+  {
+    id: 'kyiv_hq_redcross',
+    name: 'Червоний Хрест України (Національний комітет)',
+    region: 'Kyiv',
+    address: 'м. Київ, вул. Пушкінська, 30',
+    lat: 50.4450,
+    lng: 30.5180,
+    category: 'Благодійна організація',
+    services: 'Перша допомога, гуманітарна підтримка, розшук зниклих, навчання населення',
+    phone: '0 800 332 656',
+    email: 'national@redcross.org.ua',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0,
+    website: 'https://redcross.org.ua'
+  },
+  {
+    id: 'kyiv_soc_dept',
+    name: 'Департамент соціальної політики КМДА',
+    region: 'Kyiv',
+    address: 'м. Київ, пр-т Любомира Гузара, 7',
+    lat: 50.4350,
+    lng: 30.4100,
+    category: 'Державна соціальна служба',
+    services: 'Соціальні виплати, субсидії, допомога пільговикам, координація соцслужб',
+    phone: '(044) 405-92-60',
+    email: 'social@kyivcity.gov.ua',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0,
+    website: 'https://dsp.kyivcity.gov.ua'
+  },
+  {
+    id: 'kyiv_right_protection',
+    name: 'БФ «Право на захист» (Київ)',
+    region: 'Kyiv',
+    address: 'м. Київ, вул. Щекавицька, 55',
+    lat: 50.4700,
+    lng: 30.5100,
+    category: 'Благодійна організація',
+    services: 'Юридична допомога ВПО, біженцям та особам без громадянства',
+    phone: '(044) 337-15-56',
+    email: 'pr@r2p.org.ua',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0,
+    website: 'https://r2p.org.ua'
+  },
+  {
+    id: 'kyiv_caritas',
+    name: 'Карітас Київ',
+    region: 'Kyiv',
+    address: 'м. Київ, вул. Микитенка, 7Б',
+    lat: 50.4850,
+    lng: 30.6000,
+    category: 'Благодійна організація',
+    services: 'Соціальні центри, гуманітарна допомога, робота з дітьми',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- LVIV REGION ---
+  {
+    id: 'lviv_nezlamni',
+    name: 'Національний реабілітаційний центр «НЕЗЛАМНІ»',
+    region: 'Lviv',
+    address: 'м. Львів, вул. Івана Мазепи, 25',
+    lat: 49.8600,
+    lng: 24.0300,
+    category: 'Охорона здоров\'я',
+    services: 'Медична евакуація, протезування, фізична та психологічна реабілітація',
+    phone: '0 800 333 003',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0,
+    website: 'https://unbroken.org.ua'
+  },
+  {
+    id: 'lviv_caritas',
+    name: 'Карітас Львів УГКЦ',
+    region: 'Lviv',
+    address: 'м. Львів, вул. Коперника, 31/1',
+    lat: 49.8350,
+    lng: 24.0250,
+    category: 'Благодійна організація',
+    services: 'Допомога ВПО, дітям, людям з інвалідністю, благодійна їдальня',
+    phone: '(032) 261-38-92',
+    email: 'caritaslviv@gmail.com',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'lviv_malta',
+    name: 'Мальтійська служба допомоги',
+    region: 'Lviv',
+    address: 'м. Львів, вул. Богомольця, 8',
+    lat: 49.8370,
+    lng: 24.0350,
+    category: 'Благодійна організація',
+    services: 'Гуманітарна допомога, польова кухня, медичний супровід',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- KHARKIV REGION ---
+  {
+    id: 'kharkiv_soc_protection',
+    name: 'Управління соціального захисту населення',
+    region: 'Kharkiv',
+    address: 'м. Харків, вул. Тобольська, 42',
+    lat: 50.0300,
+    lng: 36.2200,
+    category: 'Державна соціальна служба',
+    services: 'Державна допомога, реєстрація ВПО, субсидії',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'kharkiv_station',
+    name: 'Волонтерський пункт «Південний вокзал»',
+    region: 'Kharkiv',
+    address: 'м. Харків, Привокзальна площа, 1',
+    lat: 49.9850,
+    lng: 36.2100,
+    category: 'Благодійна організація',
+    services: 'Зустріч евакуаційних потягів, психологічна допомога, харчування',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'kharkiv_caritas',
+    name: 'Карітас Харків',
+    region: 'Kharkiv',
+    address: 'м. Харків, вул. Молочна, 3',
+    lat: 49.9800,
+    lng: 36.2500,
+    category: 'Благодійна організація',
+    services: 'Гуманітарна допомога, кризова підтримка',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- ODESA REGION ---
+  {
+    id: 'odesa_monsters',
+    name: 'БФ «Корпорація Монстрів»',
+    region: 'Odesa',
+    address: 'м. Одеса, пров. Онілової, 16',
+    lat: 46.4800,
+    lng: 30.7300,
+    category: 'Благодійна організація',
+    services: 'Медична допомога, гуманітарна підтримка, допомога військовим та лікарням',
+    phone: '',
+    email: 'monstrov.org@gmail.com',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0,
+    website: 'https://monstrov.org'
+  },
+  {
+    id: 'odesa_caritas',
+    name: 'Карітас Одеса УГКЦ',
+    region: 'Odesa',
+    address: 'м. Одеса, вул. Південна, 40/1',
+    lat: 46.4700,
+    lng: 30.7100,
+    category: 'Благодійна організація',
+    services: 'Гуманітарна допомога, дитячі центри, догляд вдома',
+    phone: '+380 48 704 00 45',
+    email: 'caritasodessa@post.com',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'odesa_tenth_april',
+    name: 'ГО «Десяте квітня»',
+    region: 'Odesa',
+    address: 'м. Одеса, вул. Героїв Крут, 15',
+    lat: 46.4500,
+    lng: 30.7200,
+    category: 'Благодійна організація',
+    services: 'Юридична допомога біженцям та ВПО, соціальний захист',
+    phone: '0 800 33 28 58',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- IVANO-FRANKIVSK REGION ---
+  {
+    id: 'if_warm_city',
+    name: 'Тепле Місто',
+    region: 'IvanoFrankivsk',
+    address: 'м. Івано-Франківськ, вул. Тринітарська, 11',
+    lat: 48.9200,
+    lng: 24.7100,
+    category: 'Благодійна організація',
+    services: 'Координація волонтерів, підтримка переселенців, соціальні ініціативи',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'if_caritas',
+    name: 'Карітас Івано-Франківськ',
+    region: 'IvanoFrankivsk',
+    address: 'м. Івано-Франківськ, вул. Крихівецька, 102',
+    lat: 48.9000,
+    lng: 24.6800,
+    category: 'Благодійна організація',
+    services: 'Догляд вдома, гуманітарна допомога, притулок для вразливих груп',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- VOLYN REGION ---
+  {
+    id: 'volyn_caritas',
+    name: 'Карітас-Волинь',
+    region: 'Volyn',
+    address: 'м. Нововолинськ, вул. Святого Володимира, 3',
+    lat: 50.7300,
+    lng: 24.1600,
+    category: 'Благодійна організація',
+    services: 'Гуманітарна допомога, соціальна їдальня',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'lutsk_soc',
+    name: 'Департамент соцполітики Луцької міськради',
+    region: 'Volyn',
+    address: 'м. Луцьк, пр. Волі, 4А',
+    lat: 50.7470,
+    lng: 25.3250,
+    category: 'Державна соціальна служба',
+    services: 'Соціальні виплати, допомога ВПО',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- RIVNE REGION ---
+  {
+    id: 'rivne_rokada',
+    name: 'БФ «Рокада» (Рівне)',
+    region: 'Rivne',
+    address: 'м. Рівне',
+    lat: 50.6200,
+    lng: 26.2500,
+    category: 'Благодійна організація',
+    services: 'Соціальна адаптація ВПО, психологічна допомога',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'rivne_soc',
+    name: 'Управління праці та соцзахисту населення Рівного',
+    region: 'Rivne',
+    address: 'м. Рівне, вул. Соборна, 12',
+    lat: 50.6190,
+    lng: 26.2510,
+    category: 'Державна соціальна служба',
+    services: 'Державні допомоги, субсидії',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- SUMY REGION ---
+  {
+    id: 'sumy_proliska',
+    name: 'Гуманітарна місія «Проліска» (Суми)',
+    region: 'Sumy',
+    address: 'м. Суми',
+    lat: 50.9070,
+    lng: 34.8000,
+    category: 'Благодійна організація',
+    services: 'Евакуація, матеріальна допомога, будівельні матеріали',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'sumy_center',
+    name: 'Сумський міський центр соціальних служб',
+    region: 'Sumy',
+    address: 'м. Суми, вул. Харківська, 42',
+    lat: 50.9100,
+    lng: 34.8200,
+    category: 'Державна соціальна служба',
+    services: 'Робота з сім\'ями у СЖО, психологічна підтримка',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- TERNOPIL REGION ---
+  {
+    id: 'tern_caritas',
+    name: 'Карітас Тернопіль',
+    region: 'Ternopil',
+    address: 'м. Тернопіль, вул. Замонастирська, 1',
+    lat: 49.5500,
+    lng: 25.6000,
+    category: 'Благодійна організація',
+    services: 'Гуманітарна допомога, благодійна їдальня, домашня опіка',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- CHERNIVTSI REGION ---
+  {
+    id: 'chern_redcross',
+    name: 'Червоний Хрест Чернівці',
+    region: 'Chernivtsi',
+    address: 'м. Чернівці, вул. Г. Майдану, 31',
+    lat: 48.2900,
+    lng: 25.9300,
+    category: 'Благодійна організація',
+    services: 'Гуманітарна допомога, навчання першій допомозі',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'chern_rokada',
+    name: 'БФ «Рокада» (Чернівці)',
+    region: 'Chernivtsi',
+    address: 'м. Чернівці',
+    lat: 48.2950,
+    lng: 25.9400,
+    category: 'Благодійна організація',
+    services: 'Психологічна підтримка, інтеграція ВПО',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- KHMELNYTSKYI REGION ---
+  {
+    id: 'khm_caritas',
+    name: 'Карітас Хмельницький',
+    region: 'Khmelnytskyi',
+    address: 'м. Хмельницький, вул. Зарічанська, 10/3',
+    lat: 49.4300,
+    lng: 27.0000,
+    category: 'Благодійна організація',
+    services: 'Центр для дітей та молоді, гуманітарна допомога',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'khm_soc',
+    name: 'Управління праці та соцзахисту Хмельницької міськради',
+    region: 'Khmelnytskyi',
+    address: 'м. Хмельницький, вул. Проскурівського підпілля, 32',
+    lat: 49.4200,
+    lng: 26.9800,
+    category: 'Державна соціальна служба',
+    services: 'Соціальні виплати, допомога малозабезпеченим',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- CHERNIHIV REGION ---
+  {
+    id: 'che_redcross',
+    name: 'Червоний Хрест Чернігів',
+    region: 'Chernihiv',
+    address: 'м. Чернігів, пр-т Миру, 44',
+    lat: 51.4900,
+    lng: 31.2900,
+    category: 'Благодійна організація',
+    services: 'Гуманітарна допомога, відновлення житла',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'che_rokada',
+    name: 'БФ «Рокада» (Чернігів)',
+    region: 'Chernihiv',
+    address: 'м. Чернігів',
+    lat: 51.5000,
+    lng: 31.3000,
+    category: 'Благодійна організація',
+    services: 'Соціальний супровід, психологічна допомога',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- POLTAVA REGION ---
+  {
+    id: 'polt_caritas',
+    name: 'Карітас Полтава',
+    region: 'Poltava',
+    address: 'м. Полтава, вул. Пилипа Орлика, 20/1',
+    lat: 49.5800,
+    lng: 34.5500,
+    category: 'Благодійна організація',
+    services: 'Гуманітарна допомога, кризовий центр',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'polt_light_of_hope',
+    name: 'БО «Світло надії»',
+    region: 'Poltava',
+    address: 'м. Полтава, вул. С. Петлюри, 28',
+    lat: 49.5900,
+    lng: 34.5600,
+    category: 'Благодійна організація',
+    services: 'Притулок для жінок, протидія домашньому насильству, допомога ВПО',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+
+  // --- KIROVOHRAD REGION ---
+  {
+    id: 'krop_tenth_april',
+    name: 'ГО «Десяте квітня» (Кропивницький)',
+    region: 'Kirovohrad',
+    address: 'м. Кропивницький',
+    lat: 48.5100,
+    lng: 32.2600,
+    category: 'Благодійна організація',
+    services: 'Юридична та гуманітарна допомога ВПО',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
+  },
+  {
+    id: 'krop_redcross',
+    name: 'Червоний Хрест Кіровоградщини',
+    region: 'Kirovohrad',
+    address: 'м. Кропивницький, вул. Гоголя, 98',
+    lat: 48.5050,
+    lng: 32.2700,
+    category: 'Благодійна організація',
+    services: 'Видача гуманітарної допомоги, навчання населення',
+    phone: '',
+    email: '',
+    status: 'Active',
+    driveFolderUrl: '',
+    budget: 0
   }
 ];
