@@ -147,35 +147,37 @@ const App: React.FC = () => {
     const name = org.name.toLowerCase();
     const category = org.category.toLowerCase();
 
-    // 1. Posmishka Sobornyi (Main)
-    if (name.includes("посмішка") && name.includes("соборний")) return 1;
-    
-    // 2. Posmishka Nezalezhnoi (Office 2)
-    if (name.includes("посмішка") && name.includes("незалежної")) return 2;
-    
-    // 3. NGO Divchata
-    if (name.includes("дівчата")) return 3;
+    // 1. Posmishka UA (Top Priority)
+    if (name.includes("посмішка") || name.includes("posmishka")) return 1;
 
-    // 4. Municipal Institutions (Social Protection, Departments)
+    // 2. NGO Divchata
+    if (name.includes("дівчата") || name.includes("divchata")) return 2;
+
+    // 3. Municipal/State
     if (
-      category.includes("комунальн") || 
+      category.includes("комунальн") ||
+      category.includes("державн") ||
       name.includes("департамент") || 
       name.includes("управління") || 
       name.includes("центр соціальних") || 
-      name.includes("служба")
+      name.includes("служба") ||
+      name.includes("рада")
+    ) return 3;
+
+    // 4. International/Major NGOs
+    if (
+      name.includes("червоний хрест") || name.includes("red cross") ||
+      name.includes("карітас") || name.includes("caritas") ||
+      name.includes("проліска") || name.includes("proliska") ||
+      name.includes("рокада") || name.includes("rokada") || 
+      name.includes("irc") ||
+      name.includes("оон") || name.includes("un") ||
+      name.includes("unicef") ||
+      name.includes("мальтійська")
     ) return 4;
 
-    // 5. International/Major NGOs (Red Cross, Caritas)
-    if (
-      name.includes("червоний хрест") || 
-      name.includes("карітас") ||
-      name.includes("проліска") ||
-      name.includes("рокада") || 
-      name.includes("irc")
-    ) return 5;
-
-    // 6. Others
-    return 6;
+    // 5. Others
+    return 5;
   };
 
   const filteredOrgs = organizations.filter(c => {

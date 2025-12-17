@@ -79,6 +79,12 @@ export const REGION_CONFIG: Record<RegionName, { center: [number, number], zoom:
     label: 'Чернігівська область',
     image: 'https://upload.wikimedia.org/wikipedia/commons/d/d3/Coat_of_Arms_of_Chernihiv_Oblast.svg'
   },
+  'Poltava': {
+    center: [49.5883, 34.5514],
+    zoom: 11,
+    label: 'Полтавська область',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Coat_of_Arms_of_Poltava_Oblast.svg'
+  },
   'IvanoFrankivsk': {
     center: [48.9226, 24.7111],
     zoom: 12,
@@ -257,7 +263,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     id: 'zp_posmishka',
     name: 'БФ "Посмішка ЮА" (Соборний)',
     address: 'м. Запоріжжя, пр. Соборний, 189',
-    lat: 47.8480, // Updated approx coordinates
+    lat: 47.8480,
     lng: 35.1380,
     category: 'Благодійний фонд',
     services: 'Гуманітарна допомога, психосоціальна підтримка, захист дітей, кейс-менеджмент.',
@@ -273,7 +279,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     id: 'zp_posmishka_office2',
     name: 'БФ "Посмішка ЮА" (Незалежної України)',
     address: 'м. Запоріжжя, вул. Незалежної України, 90',
-    lat: 47.8450, // Approx coordinates near main office
+    lat: 47.8450,
     lng: 35.1350,
     category: 'Благодійний фонд',
     services: 'Додатковий офіс реєстрації та допомоги.',
@@ -286,7 +292,336 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     workingHours: 'Пн-Пт 09:00-17:00'
   },
   
-  // --- MUNICIPAL & CARITAS ADDITIONS FOR REQUESTED REGIONS ---
+  // ================= ENSURING POSMISHKA UA IN EVERY REGION =================
+  
+  // Odesa
+  {
+    id: 'od_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Одеса, Одеська область',
+    lat: 46.4825,
+    lng: 30.7233,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Odesa',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    establishedDate: '2013'
+  },
+  
+  // Mykolaiv
+  {
+    id: 'mk_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Миколаїв, Миколаївська область',
+    lat: 46.9600,
+    lng: 32.0100,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Mykolaiv',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    establishedDate: '2013'
+  },
+
+  // Kherson
+  {
+    id: 'ks_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Херсон, Херсонська область',
+    lat: 46.6400,
+    lng: 32.6100,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Kherson',
+    workingHours: 'Пн-Пт 09:00-18:00',
+    establishedDate: '2013'
+  },
+
+  // Dnipro
+  {
+    id: 'dnipro_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Дніпро, вул. Набережна Перемоги',
+    lat: 48.4400,
+    lng: 35.0600,
+    category: 'Благодійний фонд',
+    services: 'Психосоціальна підтримка, гуманітарна допомога ВПО.',
+    phone: '+380 50 460 2240',
+    email: 'dnipro@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Dnipro',
+    workingHours: 'Пн-Пт 09:00-17:00'
+  },
+
+  // Poltava (Added)
+  {
+    id: 'poltava_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Полтава, Полтавська область',
+    lat: 49.5883,
+    lng: 34.5514,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Poltava',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Volyn (Added)
+  {
+    id: 'volyn_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Луцьк, Волинська область',
+    lat: 50.7472,
+    lng: 25.3254,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Volyn',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Ternopil
+  {
+    id: 'ternopil_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Тернопіль, Тернопільська область',
+    lat: 49.5535,
+    lng: 25.5948,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Ternopil',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Chernivtsi
+  {
+    id: 'chernivtsi_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Чернівці, Чернівецька область',
+    lat: 48.2921,
+    lng: 25.9352,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Chernivtsi',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Khmelnytskyi
+  {
+    id: 'khmel_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Хмельницький, Хмельницька область',
+    lat: 49.4230,
+    lng: 26.9871,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Khmelnytskyi',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Chernihiv
+  {
+    id: 'chernihiv_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Чернігів, Чернігівська область',
+    lat: 51.4982,
+    lng: 31.2893,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Chernihiv',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Rivne
+  {
+    id: 'rivne_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Рівне, Рівненська область',
+    lat: 50.6199,
+    lng: 26.2516,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Rivne',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Sumy
+  {
+    id: 'sumy_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Суми, Сумська область',
+    lat: 50.9077,
+    lng: 34.7981,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Sumy',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Kharkiv
+  {
+    id: 'kharkiv_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Харків',
+    lat: 49.9935,
+    lng: 36.2304,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна). Екстрена допомога.',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Kharkiv',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Ivano-Frankivsk
+  {
+    id: 'if_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Івано-Франківськ, Івано-Франківська область',
+    lat: 48.9226,
+    lng: 24.7111,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'IvanoFrankivsk',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Kirovohrad
+  {
+    id: 'kr_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Кропивницький, Кіровоградська область',
+    lat: 48.5079,
+    lng: 32.2623,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Kirovohrad',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Zhytomyr
+  {
+    id: 'zt_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Житомир, Житомирська область',
+    lat: 50.2547,
+    lng: 28.6587,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Zhytomyr',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Kyiv
+  {
+    id: 'kyiv_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Київ',
+    lat: 50.4501,
+    lng: 30.5234,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна). Координаційний центр програм.',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Kyiv',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // Lviv
+  {
+    id: 'lviv_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА"',
+    address: 'м. Львів',
+    lat: 49.8397,
+    lng: 24.0297,
+    category: 'Благодійний фонд',
+    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна). Гуманітарна допомога для ВПО.',
+    phone: '+380 50 460 2240',
+    email: 'contact@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 100000000,
+    region: 'Lviv',
+    workingHours: 'Пн-Пт 09:00-18:00'
+  },
+
+  // --- MUNICIPAL & OTHER ORGANIZATIONS ---
   {
     id: 'odesa_dept_soc',
     name: 'Департамент праці та соціальної політики ОМР',
@@ -332,27 +667,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     budget: 0,
     region: 'Dnipro'
   },
-  
-  // ================= ADDED DNIPRO ACTORS =================
-  {
-    id: 'dnipro_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Дніпро)',
-    address: 'м. Дніпро, вул. Набережна Перемоги',
-    lat: 48.4400,
-    lng: 35.0600,
-    category: 'Благодійний фонд',
-    services: 'Психосоціальна підтримка, гуманітарна допомога ВПО.',
-    phone: '+380 50 460 2240',
-    email: 'dnipro@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 0,
-    region: 'Dnipro',
-    workingHours: 'Пн-Пт 09:00-17:00'
-  },
   {
     id: 'dnipro_proliska',
-    name: 'Гуманітарна місія "Проліска" (Дніпро)',
+    name: 'Гуманітарна місія "Проліска"',
     address: 'м. Дніпро, вул. Набережна Січеславська, 15',
     lat: 48.4700,
     lng: 35.0400,
@@ -367,7 +684,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'dnipro_redcross',
-    name: 'Червоний Хрест (Дніпро)',
+    name: 'Червоний Хрест',
     address: 'м. Дніпро, пров. Універсальний, 6',
     lat: 48.4500,
     lng: 35.0300,
@@ -382,7 +699,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
    {
     id: 'dnipro_rokada',
-    name: 'БФ "Рокада" (Дніпро)',
+    name: 'БФ "Рокада"',
     address: 'м. Дніпро',
     lat: 48.4600,
     lng: 35.0500,
@@ -444,7 +761,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'zp_redcross',
-    name: 'Товариство Червоного Хреста (Запоріжжя)',
+    name: 'Товариство Червоного Хреста',
     address: 'м. Запоріжжя, вул. Поштова, 4а',
     lat: 47.8300,
     lng: 35.1400,
@@ -519,27 +836,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Kherson'
   },
 
-  // ================= TERNOPIL REGION =================
-  {
-    id: 'ternopil_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Тернопіль)',
-    address: 'м. Тернопіль, Тернопільська область',
-    lat: 49.5535,
-    lng: 25.5948,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Ternopil',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'ternopil_rokada',
-    name: 'БФ "Рокада" (Тернопіль)',
+    name: 'БФ "Рокада"',
     address: 'м. Тернопіль, вул. Злуки, 4',
     lat: 49.5620,
     lng: 25.6120,
@@ -570,7 +869,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'ternopil_soc',
-    name: 'Управління соціальної політики (Тернопіль)',
+    name: 'Управління соціальної політики',
     address: 'м. Тернопіль, вул. Лисенка, 8',
     lat: 49.5500,
     lng: 25.6000,
@@ -584,27 +883,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Ternopil'
   },
 
-  // ================= CHERNIVTSI REGION =================
-  {
-    id: 'chernivtsi_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Чернівці)',
-    address: 'м. Чернівці, Чернівецька область',
-    lat: 48.2921,
-    lng: 25.9352,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Chernivtsi',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'chernivtsi_rokada',
-    name: 'БФ "Рокада" (Чернівці)',
+    name: 'БФ "Рокада"',
     address: 'м. Чернівці, вул. Сімовича, 21а',
     lat: 48.2880,
     lng: 25.9380,
@@ -635,7 +916,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'chernivtsi_soc',
-    name: 'Департамент соціального захисту населення (Чернівці)',
+    name: 'Департамент соціального захисту населення',
     address: 'м. Чернівці, вул. Героїв Майдану, 176',
     lat: 48.2700,
     lng: 25.9600,
@@ -649,27 +930,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Chernivtsi'
   },
 
-  // ================= KHMELNYTSKYI REGION =================
-  {
-    id: 'khmel_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Хмельницький)',
-    address: 'м. Хмельницький, Хмельницька область',
-    lat: 49.4230,
-    lng: 26.9871,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Khmelnytskyi',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'khmel_rokada',
-    name: 'БФ "Рокада" (Хмельницький)',
+    name: 'БФ "Рокада"',
     address: 'м. Хмельницький, вул. Панаса Мирного, 1/2',
     lat: 49.4450,
     lng: 27.0150,
@@ -700,7 +963,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'khmel_soc',
-    name: 'Управління праці та соціального захисту населення (Хмельницький)',
+    name: 'Управління праці та соціального захисту населення',
     address: 'м. Хмельницький, вул. Проскурівського підпілля, 32',
     lat: 49.4200,
     lng: 26.9800,
@@ -714,27 +977,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Khmelnytskyi'
   },
 
-  // ================= CHERNIHIV REGION =================
-  {
-    id: 'chernihiv_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Чернігів)',
-    address: 'м. Чернігів, Чернігівська область',
-    lat: 51.4982,
-    lng: 31.2893,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Chernihiv',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'chernihiv_rokada',
-    name: 'БФ "Рокада" (Чернігів)',
+    name: 'БФ "Рокада"',
     address: 'м. Чернігів, проспект Перемоги, 13',
     lat: 51.4920,
     lng: 31.2970,
@@ -779,27 +1024,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Chernihiv'
   },
 
-  // ================= RIVNE REGION =================
-  {
-    id: 'rivne_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Рівне)',
-    address: 'м. Рівне, Рівненська область',
-    lat: 50.6199,
-    lng: 26.2516,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Rivne',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'rivne_rokada',
-    name: 'БФ "Рокада" (Рівне)',
+    name: 'БФ "Рокада"',
     address: 'м. Рівне, вул. Володимира Стельмаха, 11',
     lat: 50.6250,
     lng: 26.2600,
@@ -830,7 +1057,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'rivne_caritas',
-    name: 'БФ "Карітас-Спес" (Рівне)',
+    name: 'БФ "Карітас-Спес"',
     address: 'м. Рівне, вул. Соборна, 213',
     lat: 50.6150,
     lng: 26.2400,
@@ -844,27 +1071,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Rivne'
   },
 
-  // ================= SUMY REGION =================
-  {
-    id: 'sumy_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Суми)',
-    address: 'м. Суми, Сумська область',
-    lat: 50.9077,
-    lng: 34.7981,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Sumy',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'sumy_rokada',
-    name: 'БФ "Рокада" (Суми)',
+    name: 'БФ "Рокада"',
     address: 'м. Суми, вул. Комбрига Євгена Коростельова, 9',
     lat: 50.9120,
     lng: 34.8050,
@@ -909,27 +1118,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Sumy'
   },
 
-  // ================= KHARKIV REGION =================
-  {
-    id: 'kharkiv_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Харків)',
-    address: 'м. Харків',
-    lat: 49.9935,
-    lng: 36.2304,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна). Екстрена допомога.',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Kharkiv',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'kharkiv_rokada',
-    name: 'БФ "Рокада" (Харків)',
+    name: 'БФ "Рокада"',
     address: 'м. Харків, вул. 23-го Серпня, буд. 11-А',
     lat: 50.0330,
     lng: 36.2230,
@@ -961,7 +1152,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'kharkiv_soc',
-    name: 'Управління соціального захисту населення (Харків)',
+    name: 'Управління соціального захисту населення',
     address: 'м. Харків',
     lat: 49.9900,
     lng: 36.2400,
@@ -992,7 +1183,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'kharkiv_redcross',
-    name: 'Червоний Хрест (Харків)',
+    name: 'Червоний Хрест',
     address: 'м. Харків, вул. Новгородська, 4',
     lat: 50.0150,
     lng: 36.2300,
@@ -1007,7 +1198,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'kharkiv_irc',
-    name: 'International Rescue Committee (IRC) - Харків',
+    name: 'International Rescue Committee (IRC)',
     address: 'м. Харків',
     lat: 49.9940,
     lng: 36.2310,
@@ -1023,7 +1214,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'kharkiv_proliska',
-    name: 'Гуманітарна місія «Проліска» (Харків)',
+    name: 'Гуманітарна місія «Проліска»',
     address: 'м. Харків',
     lat: 50.0000,
     lng: 36.2500,
@@ -1037,27 +1228,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Kharkiv'
   },
 
-  // ================= IVANO-FRANKIVSK REGION =================
-  {
-    id: 'if_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Івано-Франківськ)',
-    address: 'м. Івано-Франківськ, Івано-Франківська область',
-    lat: 48.9226,
-    lng: 24.7111,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'IvanoFrankivsk',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'if_rokada',
-    name: 'БФ "Рокада" (Івано-Франківськ)',
+    name: 'БФ "Рокада"',
     address: 'м. Івано-Франківськ, вул. Промислова 2Г',
     lat: 48.9400, 
     lng: 24.7200,
@@ -1102,27 +1275,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'IvanoFrankivsk'
   },
 
-  // ================= KIROVOHRAD REGION =================
-  {
-    id: 'kr_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Кропивницький)',
-    address: 'м. Кропивницький, Кіровоградська область',
-    lat: 48.5079,
-    lng: 32.2623,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Kirovohrad',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'kr_rokada',
-    name: 'БФ "Рокада" (Кропивницький)',
+    name: 'БФ "Рокада"',
     address: 'м. Кропивницький, вул. Братів Ельворті, 7 (офіс №309, 326, 317)',
     lat: 48.5150, 
     lng: 32.2650,
@@ -1167,27 +1322,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Kirovohrad'
   },
 
-  // ================= ZHYTOMYR REGION =================
-  {
-    id: 'zt_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Житомир)',
-    address: 'м. Житомир, Житомирська область',
-    lat: 50.2547,
-    lng: 28.6587,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Zhytomyr',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'zt_rokada',
-    name: 'БФ "Рокада" (Житомир)',
+    name: 'БФ "Рокада"',
     address: 'м. Житомир, майдан Перемоги, 10, БЦ Імперіал',
     lat: 50.2530, 
     lng: 28.6650,
@@ -1202,10 +1339,9 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     workingHours: 'Пн-Пт 09:00-18:00'
   },
 
-  // ================= VOLYN REGION =================
   {
     id: 'volyn_rokada',
-    name: 'БФ "Рокада" (Волинь)',
+    name: 'БФ "Рокада"',
     address: 'м. Луцьк, вул. Потапова, 1а',
     lat: 50.7580,
     lng: 25.3180,
@@ -1220,24 +1356,6 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     workingHours: 'Пн-Пт 09:00-18:00'
   },
 
-  // ================= KYIV REGION =================
-  {
-    id: 'kyiv_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Київ)',
-    address: 'м. Київ',
-    lat: 50.4501,
-    lng: 30.5234,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна). Координаційний центр програм.',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Kyiv',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'kyiv_css',
     name: 'Київський міський центр соціальних служб',
@@ -1303,7 +1421,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'kyiv_rokada',
-    name: 'БФ "Рокада" (Київ)',
+    name: 'БФ "Рокада"',
     address: 'м. Київ, вул. Чумака, 5',
     lat: 50.4350,
     lng: 30.4300,
@@ -1335,7 +1453,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'kyiv_irc',
-    name: 'International Rescue Committee (IRC) - Київ',
+    name: 'International Rescue Committee (IRC)',
     address: 'м. Київ',
     lat: 50.4505,
     lng: 30.5230,
@@ -1350,24 +1468,6 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     additionalPhones: ['Olena.velychko@rescue.org (Protection and Rule of Law Coordinator)']
   },
 
-  // ================= LVIV REGION =================
-  {
-    id: 'lviv_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Львів)',
-    address: 'м. Львів',
-    lat: 49.8397,
-    lng: 24.0297,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна). Гуманітарна допомога для ВПО.',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Lviv',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   {
     id: 'lviv_css',
     name: 'Львівський міський центр соціальних служб',
@@ -1416,7 +1516,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'lviv_neevka',
-    name: 'БФ "Рокада" (Львів)',
+    name: 'БФ "Рокада"',
     address: 'м. Львів, вул. Здоров’я, 6',
     lat: 49.8320,
     lng: 24.0050,
@@ -1447,7 +1547,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'lviv_irc',
-    name: 'International Rescue Committee (IRC) - Львів',
+    name: 'International Rescue Committee (IRC)',
     address: 'м. Львів',
     lat: 49.8400,
     lng: 24.0300,
@@ -1559,63 +1659,11 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     budget: 950000,
     region: 'Kherson'
   },
-  {
-    id: '7',
-    name: 'БФ "ПОСМІШКА ЮА" (Одеса)',
-    address: 'м. Одеса, Одеська область',
-    lat: 46.4825,
-    lng: 30.7233,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Odesa',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013',
-    additionalPhones: ['+380671234567', '+380999876543']
-  },
-  {
-    id: '8',
-    name: 'БФ "ПОСМІШКА ЮА" (Миколаїв)',
-    address: 'м. Миколаїв, Миколаївська область',
-    lat: 46.9600,
-    lng: 32.0100,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Mykolaiv',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
-  {
-    id: '9',
-    name: 'БФ "ПОСМІШКА ЮА" (Херсон)',
-    address: 'м. Херсон, Херсонська область',
-    lat: 46.6400,
-    lng: 32.6100,
-    category: 'Благодійний фонд',
-    services: 'Всі види допомоги (гуманітарна, психологічна, соціальна)',
-    phone: '+380 50 460 2240',
-    email: 'contact@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 100000000,
-    region: 'Kherson',
-    workingHours: 'Пн-Пт 09:00-18:00',
-    establishedDate: '2013'
-  },
   
   // --- NEW ROKADA/CARITAS FOR MYKOLAIV ---
   {
     id: 'mk_rokada',
-    name: 'БФ "Рокада" (Миколаїв)',
+    name: 'БФ "Рокада"',
     address: 'м. Миколаїв, вул. Соборна, 12А',
     lat: 46.9730,
     lng: 31.9920,
@@ -1664,7 +1712,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   // --- GO DIVCHATA CONTACTS ---
   {
     id: 'divchata_mk_1',
-    name: 'ГО "Дівчата" (Миколаїв)',
+    name: 'ГО "Дівчата"',
     address: 'м. Миколаїв',
     lat: 46.9730, // Adjusted coordinates for better visibility
     lng: 32.0050,
@@ -1681,7 +1729,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   // --- MYKOLAIV NEW ACTORS (Previous) ---
   {
     id: 'mk_10kvitnya_1',
-    name: 'ГО «Десяте квітня» (Миколаїв)',
+    name: 'ГО «Десяте квітня»',
     address: 'м. Миколаїв, вул. Соборна, 12б (офіс 205)',
     lat: 46.9725,
     lng: 31.9915,
@@ -1696,7 +1744,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'mk_10kvitnya_2',
-    name: 'ГО «Десяте квітня» (Первомайськ)',
+    name: 'ГО «Десяте квітня»',
     address: 'м. Первомайськ, пл. Шевченка, 2 (будівля кінотеатру)',
     lat: 48.0435,
     lng: 30.8488,
@@ -1711,7 +1759,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'mk_golosy_ditey',
-    name: 'БФ «Голоси дітей» (Миколаїв)',
+    name: 'БФ «Голоси дітей»',
     address: 'м. Миколаїв, вул. Набережна 5/7 (ріг вул. Фалеєвська)',
     lat: 46.9770,
     lng: 31.9870,
@@ -1741,7 +1789,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'mk_zatyshno',
-    name: 'Затишно Space (Миколаїв)',
+    name: 'Затишно Space',
     address: 'м. Миколаїв, вул. Марка Кропивницького, 79-А',
     lat: 46.9690,
     lng: 32.0050,
@@ -1756,7 +1804,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'mk_drc',
-    name: 'Данська Рада у справах Біженців (DRC) Миколаїв',
+    name: 'Данська Рада у справах Біженців (DRC)',
     address: 'м. Миколаїв, вул. Соборна, 14',
     lat: 46.9728,
     lng: 31.9918,
@@ -1773,7 +1821,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   // ================= NEW ADDITIONS FOR MYKOLAIV (REQUESTED) =================
   {
     id: 'mk_innov_social',
-    name: 'ГО «Інноваційні соціальні рішення» (Кейс-менеджмент)',
+    name: 'ГО «Інноваційні соціальні рішення»',
     address: 'м. Миколаїв',
     lat: 46.9780,
     lng: 31.9900,
@@ -1868,7 +1916,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'csv_mk_mobile_1',
-    name: 'Мобільна бригада (Миколаївська обл.)',
+    name: 'Мобільна бригада',
     address: 'Миколаївська область',
     lat: 47.4079,
     lng: 32.4395,
@@ -1901,7 +1949,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'csv_od_shelter_1',
-    name: 'Притулок для постраждалих (Одеса)',
+    name: 'Притулок для постраждалих',
     address: 'м. Одеса',
     lat: 46.4825,
     lng: 30.7326,
@@ -1917,7 +1965,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'csv_od_state_1',
-    name: 'Державний центр допомоги (Одеса)',
+    name: 'Державний центр допомоги',
     address: 'м. Одеса',
     lat: 46.4738,
     lng: 30.6658,
@@ -1933,7 +1981,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'csv_od_safe_1',
-    name: 'Безпечний простір (Подільський р-н)',
+    name: 'Безпечний простір',
     address: 'Одеська область, Подільський район',
     lat: 47.7486,
     lng: 29.6111,
@@ -1949,7 +1997,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'csv_ks_crisis_1',
-    name: 'Кризовий центр (Херсон)',
+    name: 'Кризовий центр',
     address: 'м. Херсон',
     lat: 46.6354,
     lng: 32.6178,
@@ -1965,7 +2013,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'csv_ks_mobile_1',
-    name: 'Мобільна група допомоги (Херсонщина)',
+    name: 'Мобільна група допомоги',
     address: 'Херсонська область',
     lat: 46.8384,
     lng: 33.3763,
@@ -1981,7 +2029,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'csv_ks_safe_1',
-    name: 'Денний центр / Safe Space (Херсон)',
+    name: 'Денний центр / Safe Space',
     address: 'м. Херсон',
     lat: 46.7533,
     lng: 33.1224,
