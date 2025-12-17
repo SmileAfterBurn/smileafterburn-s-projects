@@ -252,6 +252,40 @@ export const REMOTE_SUPPORT_ACTORS: RemoteSupportActor[] = [
 ];
 
 export const INITIAL_ORGANIZATIONS: Organization[] = [
+  // ================= ADDED ZAPORIZHZHIA ACTORS =================
+  {
+    id: 'zp_posmishka',
+    name: 'БФ "ПОСМІШКА ЮА" (Запоріжжя) - ГОЛОВНИЙ ОФІС',
+    address: 'м. Запоріжжя, пр. Соборний, 189',
+    lat: 47.8480, // Updated approx coordinates
+    lng: 35.1380,
+    category: 'Благодійний фонд',
+    services: 'Гуманітарна допомога, психосоціальна підтримка, захист дітей, кейс-менеджмент.',
+    phone: '+380 50 460 2240',
+    email: 'zp@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-17:00'
+  },
+  {
+    id: 'zp_posmishka_office2',
+    name: 'БФ "ПОСМІШКА ЮА" (Запоріжжя) - Офіс 2',
+    address: 'м. Запоріжжя, вул. Незалежної України, 90',
+    lat: 47.8450, // Approx coordinates near main office
+    lng: 35.1350,
+    category: 'Благодійний фонд',
+    services: 'Додатковий офіс реєстрації та допомоги.',
+    phone: '+380 50 460 2240',
+    email: 'zp@posmishka.org.ua',
+    status: 'Active',
+    driveFolderUrl: DRIVE_URL,
+    budget: 0,
+    region: 'Zaporizhzhia',
+    workingHours: 'Пн-Пт 09:00-17:00'
+  },
+  
   // --- MUNICIPAL & CARITAS ADDITIONS FOR REQUESTED REGIONS ---
   {
     id: 'odesa_dept_soc',
@@ -393,23 +427,6 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     region: 'Zaporizhzhia'
   },
 
-  // ================= ADDED ZAPORIZHZHIA ACTORS =================
-  {
-    id: 'zp_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Запоріжжя) - Головний офіс',
-    address: 'м. Запоріжжя, вул. Незалежної України, 82',
-    lat: 47.8480,
-    lng: 35.1380,
-    category: 'Благодійний фонд',
-    services: 'Гуманітарна допомога, психосоціальна підтримка, захист дітей, кейс-менеджмент.',
-    phone: '+380 50 460 2240',
-    email: 'zp@posmishka.org.ua',
-    status: 'Active',
-    driveFolderUrl: DRIVE_URL,
-    budget: 0,
-    region: 'Zaporizhzhia',
-    workingHours: 'Пн-Пт 09:00-17:00'
-  },
   {
     id: 'zp_caritas',
     name: 'БФ "Карітас Запоріжжя"',
