@@ -1,7 +1,8 @@
+
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, AttributionControl, ZoomControl } from 'react-leaflet';
 import { Organization } from '../types';
-import { MapPin, Heart, Phone, Mail, FileText, Locate, Navigation, Loader2 } from 'lucide-react';
+import { MapPin, Heart, Phone, Mail, FileText, Locate, Navigation, Loader2, AlertCircle } from 'lucide-react';
 import L from 'leaflet';
 
 // Function to create custom SVG icons with enhanced selected state
@@ -58,7 +59,9 @@ const isValidCoordinate = (lat: any, lng: any): boolean => {
     typeof lat === 'number' && 
     typeof lng === 'number' && 
     Number.isFinite(lat) && 
-    Number.isFinite(lng)
+    Number.isFinite(lng) &&
+    !isNaN(lat) &&
+    !isNaN(lng)
   );
 };
 
@@ -66,14 +69,20 @@ const isValidCoordinate = (lat: any, lng: any): boolean => {
 const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
   const map = useMap();
   useEffect(() => {
+    if (!map) return;
+    
+    // Safety check before flying
     if (center && isValidCoordinate(center[0], center[1])) {
       try {
+        // Invalidate size to handle layout changes (like opening sidebar)
+        map.invalidateSize();
         map.flyTo(center, zoom, { 
           duration: 1.5,
           easeLinearity: 0.25
         });
       } catch (e) {
-        console.warn("Leaflet flyTo error:", e);
+        // Suppress flyer error to keep app stable
+        console.warn("Map update error suppressed");
       }
     }
   }, [center, zoom, map]);
@@ -151,10 +160,12 @@ export const MapView: React.FC<MapViewProps> = ({
   
   const hasSelectedLocation = selectedOrg && isValidCoordinate(selectedOrg.lat, selectedOrg.lng);
   
+  // Calculate Target Center with Fallback
   const targetCenter: [number, number] = hasSelectedLocation
     ? [selectedOrg!.lat, selectedOrg!.lng] as [number, number]
     : (center && isValidCoordinate(center[0], center[1]) ? (center as [number, number]) : [46.9750, 31.9946] as [number, number]);
 
+  // Final Safety Check
   const safeCenter: [number, number] = isValidCoordinate(targetCenter[0], targetCenter[1])
     ? targetCenter
     : [46.9750, 31.9946];
@@ -236,6 +247,14 @@ export const MapView: React.FC<MapViewProps> = ({
                         Прокласти маршрут
                       </a>
                     </div>
+                    
+                    {/* Important Notes Section */}
+                    {org.notes && (
+                      <div className="bg-amber-50 p-2.5 rounded border border-amber-200 text-xs text-amber-900 flex gap-2 items-start leading-snug">
+                         <AlertCircle size={14} className="mt-0.5 shrink-0 text-amber-600" />
+                         <span>{org.notes}</span>
+                      </div>
+                    )}
                     
                     <div className="bg-slate-50 p-2 rounded border border-slate-100">
                       <p className="text-xs font-bold text-slate-700 mb-1">Послуги:</p>

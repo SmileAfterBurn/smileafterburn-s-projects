@@ -58,7 +58,7 @@ const App: React.FC = () => {
       regionParam = params.get('region');
       orgParam = params.get('org');
     } catch (e) {
-      console.debug("Could not parse URL params", e);
+      // Silently fail in sandboxes
     }
 
     let regionSet = false;
@@ -89,25 +89,28 @@ const App: React.FC = () => {
   // Sync URL with State
   useEffect(() => {
     try {
-      const params = new URLSearchParams(window.location.search);
-      
-      if (activeRegion && activeRegion !== 'All') {
-        params.set('region', activeRegion);
-      } else {
-        params.delete('region');
-      }
+      // Check if we are in a secure context where history manipulation is allowed
+      if (window.history && typeof window.history.replaceState === 'function') {
+        const params = new URLSearchParams(window.location.search);
+        
+        if (activeRegion && activeRegion !== 'All') {
+          params.set('region', activeRegion);
+        } else {
+          params.delete('region');
+        }
 
-      if (selectedOrgId) {
-        params.set('org', selectedOrgId);
-      } else {
-        params.delete('org');
-      }
+        if (selectedOrgId) {
+          params.set('org', selectedOrgId);
+        } else {
+          params.delete('org');
+        }
 
-      const newUrl = `${window.location.pathname}?${params.toString()}`;
-      window.history.replaceState(null, '', newUrl);
+        const newUrl = `${window.location.pathname}?${params.toString()}`;
+        window.history.replaceState(null, '', newUrl);
+      }
     } catch (e) {
-      // Ignore security errors in sandboxed environments (e.g. blob URLs)
-      console.debug("Could not update URL state:", e);
+      // Ignore security errors in sandboxed environments (e.g. blob URLs, iframes)
+      // This prevents the red error message in the console
     }
   }, [activeRegion, selectedOrgId]);
 

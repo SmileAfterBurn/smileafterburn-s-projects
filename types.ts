@@ -21,6 +21,7 @@ export interface Organization {
   additionalPhones?: string[];
   establishedDate?: string; // Year or full date string
   website?: string;
+  notes?: string; // Важливі примітки (безпека, умови прийому)
 }
 
 export interface RemoteSupportActor {
