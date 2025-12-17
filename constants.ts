@@ -255,7 +255,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   // ================= ADDED ZAPORIZHZHIA ACTORS =================
   {
     id: 'zp_posmishka',
-    name: 'БФ "ПОСМІШКА ЮА" (Запоріжжя) - ГОЛОВНИЙ ОФІС',
+    name: 'БФ "Посмішка ЮА" (Соборний)',
     address: 'м. Запоріжжя, пр. Соборний, 189',
     lat: 47.8480, // Updated approx coordinates
     lng: 35.1380,
@@ -271,7 +271,7 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   },
   {
     id: 'zp_posmishka_office2',
-    name: 'БФ "ПОСМІШКА ЮА" (Запоріжжя) - Офіс 2',
+    name: 'БФ "Посмішка ЮА" (Незалежної України)',
     address: 'м. Запоріжжя, вул. Незалежної України, 90',
     lat: 47.8450, // Approx coordinates near main office
     lng: 35.1350,

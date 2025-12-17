@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Info, Heart, Menu, X, Filter, Check } from 'lucide-react';
+import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Info, Heart, Menu, X, Filter, Check, MessageCircle } from 'lucide-react';
 import { MapView } from './components/MapView';
 import { TableView } from './components/TableView';
 import { GeminiChat } from './components/GeminiChat';
@@ -10,6 +10,9 @@ import { ReferralModal } from './components/ReferralModal';
 import { AboutModal } from './components/AboutModal';
 import { INITIAL_ORGANIZATIONS, REGION_CONFIG } from './constants';
 import { Organization, ViewMode, RegionName } from './types';
+
+// Avatar URL for the button
+const PANI_DUMKA_AVATAR = "https://drive.google.com/thumbnail?id=1CKyZ-yqoy3iEKIqnXkrg07z0GmK-e099&sz=w256";
 
 const App: React.FC = () => {
   const [organizations] = useState<Organization[]>(INITIAL_ORGANIZATIONS);
@@ -139,21 +142,40 @@ const App: React.FC = () => {
     Array.from(new Set(organizations.map(o => o.category))).sort(), 
   [organizations]);
 
-  // Priority Sorting
+  // Priority Sorting Logic Updated
   const getOrganizationPriority = (org: Organization) => {
-    const name = org.name.toUpperCase();
-    const category = org.category.toUpperCase();
-    if (name.includes("ПОСМІШКА ЮА")) return 1;
+    const name = org.name.toLowerCase();
+    const category = org.category.toLowerCase();
+
+    // 1. Posmishka Sobornyi (Main)
+    if (name.includes("посмішка") && name.includes("соборний")) return 1;
+    
+    // 2. Posmishka Nezalezhnoi (Office 2)
+    if (name.includes("посмішка") && name.includes("незалежної")) return 2;
+    
+    // 3. NGO Divchata
+    if (name.includes("дівчата")) return 3;
+
+    // 4. Municipal Institutions (Social Protection, Departments)
     if (
-      category.includes("КОМУНАЛЬН") || 
-      name.includes("ДЕПАРТАМЕНТ") || 
-      name.includes("УПРАВЛІННЯ") || 
-      name.includes("ЛІКАРНЯ") || 
-      name.includes("ЦЕНТР") || 
-      name.includes("СЛУЖБА")
-    ) return 2;
-    if (name.includes("ДІВЧАТА")) return 3;
-    return 4;
+      category.includes("комунальн") || 
+      name.includes("департамент") || 
+      name.includes("управління") || 
+      name.includes("центр соціальних") || 
+      name.includes("служба")
+    ) return 4;
+
+    // 5. International/Major NGOs (Red Cross, Caritas)
+    if (
+      name.includes("червоний хрест") || 
+      name.includes("карітас") ||
+      name.includes("проліска") ||
+      name.includes("рокада") || 
+      name.includes("irc")
+    ) return 5;
+
+    // 6. Others
+    return 6;
   };
 
   const filteredOrgs = organizations.filter(c => {
@@ -231,14 +253,6 @@ const App: React.FC = () => {
     return REGION_CONFIG['All'].zoom;
   }, [activeRegion]);
 
-  const getRegionVisuals = (region: RegionName) => {
-    switch (region) {
-      case 'All': return { gradient: 'from-blue-600 to-yellow-500', icon: <Globe className="w-12 h-12 text-white drop-shadow-md" />, description: 'Єдина країна' };
-      // ... (keeping visuals concise for brevity, logic is same)
-      default: return { gradient: 'from-slate-400 to-slate-600', icon: <MapPin className="w-12 h-12 text-white" />, description: 'Регіон' };
-    }
-  };
-
   // Calculate active filter count
   const activeFilterCount = selectedStatuses.length + selectedCategories.length;
 
@@ -253,7 +267,6 @@ const App: React.FC = () => {
       {/* Region Modal */}
       {isRegionModalOpen && !showIntro && (
         <div className="fixed inset-0 z-[100] bg-slate-900/95 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          {/* ... Modal content similar to previous, just using standard logic ... */}
           <div className="bg-white rounded-3xl shadow-2xl max-w-7xl w-full p-6 md:p-10 text-center animate-in fade-in zoom-in duration-300 relative overflow-hidden my-auto">
              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600"></div>
              <h1 className="text-3xl font-extrabold text-slate-800 mb-2">Вітаємо на Мапі соціальних послуг</h1>
@@ -270,26 +283,32 @@ const App: React.FC = () => {
       )}
 
       {/* Main Header */}
-      <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 shrink-0 z-20 relative">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-teal-600 rounded-lg flex items-center justify-center text-white shadow-sm shadow-teal-200">
+      <header className="h-auto md:h-18 bg-white border-b border-slate-200 flex flex-wrap md:flex-nowrap items-center justify-between px-4 py-2 shrink-0 z-20 relative gap-y-2">
+        
+        {/* Logo Area */}
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="w-9 h-9 bg-teal-600 rounded-lg flex items-center justify-center text-white shadow-sm shadow-teal-200 shrink-0">
             <HeartHandshake className="w-5 h-5" />
           </div>
-          <div className="hidden sm:block">
+          <div>
             <h1 className="font-bold text-lg tracking-tight text-slate-800 leading-none">
               Мапа послуг
             </h1>
             <div className="flex items-center gap-1.5 mt-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide truncate max-w-[150px]">
                 {activeRegion ? REGION_CONFIG[activeRegion].label : 'Вся Україна'}
               </span>
-              <button onClick={() => setIsRegionModalOpen(true)} className="text-[10px] text-teal-600 hover:underline font-bold bg-teal-50 px-1.5 rounded">ЗМІНИТИ</button>
+              <button onClick={() => setIsRegionModalOpen(true)} className="text-[10px] text-teal-600 hover:underline font-bold bg-teal-50 px-1.5 rounded shrink-0">ЗМІНИТИ</button>
             </div>
           </div>
+          {/* Mobile Menu Toggle */}
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg ml-auto">
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
 
         {/* Desktop Search */}
-        <div className="flex-1 max-w-md mx-4 hidden lg:block">
+        <div className="flex-1 max-w-lg mx-4 hidden lg:block">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
@@ -302,61 +321,59 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Action Buttons Area */}
+        <div className="flex items-center gap-2 md:ml-auto w-full md:w-auto justify-between md:justify-end overflow-x-auto pb-1 md:pb-0">
           
           {/* Support Project (Heart) */}
           <button
             onClick={() => setIsAboutOpen(true)}
-            className="hidden md:flex items-center justify-center w-10 h-10 text-rose-500 hover:bg-rose-50 rounded-full transition-colors"
+            className="flex items-center justify-center w-10 h-10 text-rose-500 hover:bg-rose-50 rounded-full transition-colors shrink-0"
             title="Підтримати проект"
           >
             <Heart className="w-6 h-6 fill-rose-500" />
           </button>
 
-          {/* Remote Support (Blue/Indigo - NOT Red) */}
+          {/* Remote Support Button */}
           <button 
             onClick={() => setIsRemoteSupportOpen(true)}
-            className="hidden sm:flex items-center gap-2 px-3 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg font-bold text-xs transition-colors border border-indigo-100"
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-full font-bold text-xs transition-colors border border-indigo-100 shrink-0 shadow-sm"
             title="Телефони гарячих ліній та онлайн допомога"
           >
             <PhoneForwarded className="w-4 h-4" />
-            <span className="hidden lg:inline">Дистанційна підтримка</span>
+            <span>Дистанційна підтримка</span>
           </button>
 
-          {/* Helper (Assistant) - Reverted name to 'Помічниця' */}
+          {/* Assistant Button (Big with Avatar) */}
           <button
             onClick={() => setIsChatOpen(!isChatOpen)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition border ${
+            className={`flex items-center gap-3 px-1.5 py-1.5 pr-4 rounded-full transition-all border shadow-sm shrink-0 group ${
                 isChatOpen 
-                ? 'bg-teal-50 border-teal-200 text-teal-700' 
-                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                ? 'bg-teal-50 border-teal-200 text-teal-800' 
+                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
             }`}
           >
-            <Sparkles className="w-4 h-4" />
-            <span className="hidden sm:inline">Помічниця</span>
+            <div className="w-9 h-9 rounded-full overflow-hidden border border-slate-200 group-hover:border-teal-300 transition-colors">
+               <img src={PANI_DUMKA_AVATAR} alt="Думка" className="w-full h-full object-cover" />
+            </div>
+            <div className="flex flex-col items-start leading-none">
+               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Помічниця</span>
+               <span className="font-bold text-sm">Думка</span>
+            </div>
           </button>
 
           {/* Desktop View Toggles */}
-          <div className="hidden md:flex bg-slate-100 rounded-lg p-1 gap-1 ml-2">
+          <div className="hidden md:flex bg-slate-100 rounded-lg p-1 gap-1 ml-2 shrink-0">
             <button onClick={() => { setViewMode(ViewMode.Grid); setIsSidebarOpen(true); }} className={`p-1.5 rounded transition ${viewMode === ViewMode.Grid ? 'bg-white shadow text-teal-600' : 'text-slate-400'}`}><TableIcon size={18} /></button>
             <button onClick={() => { setViewMode(ViewMode.Split); setIsSidebarOpen(true); }} className={`p-1.5 rounded transition ${viewMode === ViewMode.Split ? 'bg-white shadow text-teal-600' : 'text-slate-400'}`}><LayoutGrid size={18} /></button>
             <button onClick={() => setViewMode(ViewMode.Map)} className={`p-1.5 rounded transition ${viewMode === ViewMode.Map ? 'bg-white shadow text-teal-600' : 'text-slate-400'}`}><MapIcon size={18} /></button>
           </div>
-
-          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </div>
 
-        {/* Mobile Menu (Simplified) */}
+        {/* Mobile Menu (Simplified - removed Filters and Remote Support since they are visible now) */}
         {isMobileMenuOpen && (
-          <div className="absolute top-16 left-0 w-full bg-white border-b border-slate-200 shadow-xl z-[60] flex flex-col p-4 animate-in slide-in-from-top-2 duration-200 md:hidden">
+          <div className="absolute top-full left-0 w-full bg-white border-b border-slate-200 shadow-xl z-[60] flex flex-col p-4 animate-in slide-in-from-top-2 duration-200 md:hidden">
              <input type="text" placeholder="Пошук..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full p-3 bg-slate-100 rounded-xl mb-4 text-sm" />
-             <div className="grid grid-cols-2 gap-3">
-               <button onClick={() => { setIsRemoteSupportOpen(true); setIsMobileMenuOpen(false); }} className="flex items-center gap-2 p-3 bg-indigo-50 text-indigo-700 rounded-xl font-bold text-sm"><PhoneForwarded size={16} /> Підтримка</button>
-               <button onClick={() => { setIsAboutOpen(true); setIsMobileMenuOpen(false); }} className="flex items-center gap-2 p-3 bg-rose-50 text-rose-600 rounded-xl font-bold text-sm"><Heart size={16} /> Донат</button>
-             </div>
-             <div className="grid grid-cols-3 gap-2 mt-4 bg-slate-100 p-1 rounded-xl">
+             <div className="grid grid-cols-3 gap-2 mt-2 bg-slate-100 p-1 rounded-xl">
                 <button onClick={() => { setViewMode(ViewMode.Grid); setIsSidebarOpen(true); setIsMobileMenuOpen(false); }} className={`p-2 rounded-lg text-xs font-bold ${viewMode === ViewMode.Grid ? 'bg-white shadow' : ''}`}>Таблиця</button>
                 <button onClick={() => { setViewMode(ViewMode.Split); setIsSidebarOpen(true); setIsMobileMenuOpen(false); }} className={`p-2 rounded-lg text-xs font-bold ${viewMode === ViewMode.Split ? 'bg-white shadow' : ''}`}>Спільний</button>
                 <button onClick={() => { setViewMode(ViewMode.Map); setIsMobileMenuOpen(false); }} className={`p-2 rounded-lg text-xs font-bold ${viewMode === ViewMode.Map ? 'bg-white shadow' : ''}`}>Мапа</button>
