@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Info, Heart, Menu, X, Filter, Check, MessageCircle } from 'lucide-react';
+import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Info, Heart, Menu, X, Filter, Check, MessageCircle, Gem, Lock } from 'lucide-react';
 import { MapView } from './components/MapView';
 import { TableView } from './components/TableView';
 import { GeminiChat } from './components/GeminiChat';
@@ -13,6 +13,40 @@ import { Organization, ViewMode, RegionName } from './types';
 
 // Avatar URL for the button
 const PANI_DUMKA_AVATAR = "https://drive.google.com/thumbnail?id=1CKyZ-yqoy3iEKIqnXkrg07z0GmK-e099&sz=w256";
+
+// Custom Tryzub Icon (Contour only)
+const Tryzub = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 200 280" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="16" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    {...props}
+  >
+    {/* Middle vertical */}
+    <path d="M100 20 V 220" />
+    
+    {/* Outer Left */}
+    <path d="M35 20 V 150 C 35 210 100 250 100 250" />
+    
+    {/* Outer Right */}
+    <path d="M165 20 V 150 C 165 210 100 250 100 250" />
+    
+    {/* Inner Left */}
+    <path d="M70 20 V 150 C 70 180 100 190 100 190" />
+    
+    {/* Inner Right */}
+    <path d="M130 20 V 150 C 130 180 100 190 100 190" />
+  </svg>
+);
+
+// Map string icon names to components
+const ICON_COMPONENTS: Record<string, React.ElementType> = {
+  Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Gem, Tryzub
+};
 
 const App: React.FC = () => {
   const [organizations] = useState<Organization[]>(INITIAL_ORGANIZATIONS);
@@ -39,11 +73,41 @@ const App: React.FC = () => {
   // Intro/Onboarding State
   const [showIntro, setShowIntro] = useState(false);
 
+  // Geo-Blocking State
+  const [isAllowedLocation, setIsAllowedLocation] = useState<boolean | null>(null);
+
   // --- NEW FILTER STATE ---
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const filterRef = useRef<HTMLDivElement>(null);
+
+  // Geo-Blocking Check
+  useEffect(() => {
+    const checkLocation = async () => {
+      try {
+        // Simple IP-based country check
+        // Note: Using a public API. In production, this should be done on the server/CDN side (e.g., Cloudflare)
+        // for better security and performance.
+        const response = await fetch('https://ipapi.co/json/');
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        
+        // Allow UA (Ukraine). 
+        // Logic: If country is UA, allow. If API fails, allow (fail-open) to not block valid users on bad connection.
+        if (data.country_code === 'UA') {
+          setIsAllowedLocation(true);
+        } else {
+          setIsAllowedLocation(false);
+        }
+      } catch (error) {
+        console.warn("Geo-check failed, allowing access by default for safety:", error);
+        setIsAllowedLocation(true); // Fail-open
+      }
+    };
+
+    checkLocation();
+  }, []);
 
   // Close filter dropdown when clicking outside
   useEffect(() => {
@@ -258,6 +322,34 @@ const App: React.FC = () => {
   // Calculate active filter count
   const activeFilterCount = selectedStatuses.length + selectedCategories.length;
 
+  // GEO BLOCK SCREEN
+  if (isAllowedLocation === false) {
+    return (
+      <div className="h-screen w-full bg-slate-900 flex items-center justify-center p-4">
+        <div className="bg-white max-w-md w-full rounded-2xl p-8 text-center shadow-2xl">
+          <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Lock size={32} />
+          </div>
+          <h1 className="text-2xl font-bold text-slate-800 mb-2">Обмежений доступ</h1>
+          <p className="text-slate-600 mb-6">
+            З метою безпеки та оптимізації ресурсів, доступ до "Інклюзивної мапи соціальних послуг" дозволено лише з території України.
+          </p>
+          <div className="space-y-3">
+             <button 
+               onClick={() => setIsAllowedLocation(true)}
+               className="w-full py-3 bg-teal-600 text-white font-bold rounded-xl hover:bg-teal-700 transition"
+             >
+               Я українець за кордоном
+             </button>
+             <p className="text-xs text-slate-400">
+               Натискаючи цю кнопку, ви підтверджуєте, що використовуєте ресурс для пошуку допомоги громадянам України.
+             </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen flex flex-col bg-slate-50 overflow-hidden relative font-sans">
       
@@ -269,16 +361,44 @@ const App: React.FC = () => {
       {/* Region Modal */}
       {isRegionModalOpen && !showIntro && (
         <div className="fixed inset-0 z-[100] bg-slate-900/95 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-7xl w-full p-6 md:p-10 text-center animate-in fade-in zoom-in duration-300 relative overflow-hidden my-auto">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-7xl w-full p-6 md:p-10 text-center animate-in fade-in zoom-in duration-300 relative overflow-hidden my-auto flex flex-col max-h-[90vh]">
              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-teal-400 via-blue-500 to-indigo-600"></div>
-             <h1 className="text-3xl font-extrabold text-slate-800 mb-2">Вітаємо на Мапі соціальних послуг</h1>
-             <p className="text-slate-500 mb-8">Оберіть ваш регіон</p>
-             <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-              {(Object.keys(REGION_CONFIG) as RegionName[]).sort().map(region => (
-                <button key={region} onClick={() => handleRegionSelect(region)} className="p-4 bg-slate-100 hover:bg-teal-50 hover:text-teal-700 rounded-xl transition font-bold text-sm">
-                  {REGION_CONFIG[region].label}
-                </button>
-              ))}
+             <h1 className="text-3xl font-extrabold text-slate-800 mb-2 shrink-0">Вітаємо всіх, хто шукає допомогу та підтримку на нашій мапі.</h1>
+             <p className="text-slate-500 mb-6 shrink-0">Оберіть ваш регіон, щоб побачити доступні послуги допомоги</p>
+             
+             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 p-4 overflow-y-auto custom-scrollbar">
+              {(Object.keys(REGION_CONFIG) as RegionName[]).sort().map(region => {
+                const config = REGION_CONFIG[region];
+                const Icon = ICON_COMPONENTS[config.icon] || Globe;
+                
+                return (
+                  <button 
+                    key={region} 
+                    onClick={() => handleRegionSelect(region)} 
+                    className="group flex flex-col items-center gap-3 transition-transform hover:-translate-y-1 focus:outline-none"
+                  >
+                    <div className={`w-full aspect-[4/3] rounded-2xl shadow-lg flex items-center justify-center bg-gradient-to-br ${config.gradient} text-white group-hover:shadow-xl transition-all border-b-4 border-black/10 group-hover:border-black/20 overflow-hidden relative`}>
+                       {config.customImage ? (
+                         <img 
+                           src={config.customImage} 
+                           alt={config.label} 
+                           className="w-20 h-20 object-contain drop-shadow-md brightness-0 invert" 
+                         />
+                       ) : (
+                         <Icon className="w-12 h-12 drop-shadow-md" strokeWidth={2} />
+                       )}
+                    </div>
+                    <div className="text-center">
+                       <div className="font-bold text-slate-700 text-sm group-hover:text-teal-600 transition-colors">{config.label.replace(' область', '')}</div>
+                       <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{config.description}</div>
+                    </div>
+                  </button>
+                );
+              })}
+             </div>
+             
+             <div className="mt-4 text-xs text-slate-300 font-medium uppercase tracking-widest">
+                Інклюзивна мапа соціальних послуг України
              </div>
           </div>
         </div>
@@ -462,7 +582,7 @@ const App: React.FC = () => {
                 organizations={filteredOrgs} 
                 selectedOrgId={selectedOrgId}
                 onSelectOrg={handleOrgSelect}
-                filterStatus="All" // Deprecated props, functionality moved to app level
+                filterStatus="All"
                 onFilterStatusChange={() => {}}
                 filterCategory="All"
                 onFilterCategoryChange={() => {}}

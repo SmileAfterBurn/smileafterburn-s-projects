@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, Heart, Share2, Github, Mail, Globe, Award, Wallet, ArrowRight, Target, Users, ShieldCheck } from 'lucide-react';
+import { X, Heart, Share2, Github, Mail, Globe, Award, Wallet, ArrowRight, Target, Users, ShieldCheck, Briefcase } from 'lucide-react';
 
 interface AboutModalProps {
   onClose: () => void;
@@ -49,7 +49,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
             onClick={() => setActiveTab('partners')}
             className={`flex-1 py-3 text-sm font-bold transition-colors relative ${activeTab === 'partners' ? 'text-teal-700 bg-teal-50' : 'text-slate-500 hover:bg-slate-50'}`}
           >
-            Партнери
+            Для Бізнесу та Партнерів
             {activeTab === 'partners' && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-teal-600"></div>}
           </button>
           <button 
@@ -121,9 +121,25 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
 
            {activeTab === 'partners' && (
              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-               <div className="text-center mb-6">
-                 <h3 className="text-lg font-bold text-slate-800">Наші партнери та друзі</h3>
-                 <p className="text-sm text-slate-500">Ми будуємо мережу добра разом</p>
+               <div className="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
+                 <div className="absolute right-0 top-0 opacity-10">
+                   <Briefcase size={120} />
+                 </div>
+                 <h3 className="text-xl font-bold mb-2 relative z-10">Станьте генеральним партнером</h3>
+                 <p className="text-slate-300 text-sm mb-4 max-w-md relative z-10">
+                   Ваш бренд може допомогти тисячам українців знайти підтримку. Ми пропонуємо інтеграцію вашого логотипу, згадки у ЗМІ та статус соціально-відповідального бізнесу.
+                 </p>
+                 <a 
+                   href="mailto:sponsorship@social-map.ua?subject=Спонсорство"
+                   className="inline-flex items-center gap-2 bg-white text-slate-900 px-5 py-2.5 rounded-lg font-bold hover:bg-slate-100 transition relative z-10"
+                 >
+                   <Mail className="w-4 h-4" />
+                   Отримати презентацію
+                 </a>
+               </div>
+
+               <div className="text-center mb-4 mt-6">
+                 <h3 className="text-lg font-bold text-slate-800">Наші поточні партнери</h3>
                </div>
 
                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -134,29 +150,15 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose }) => {
                       <p className="text-xs text-slate-500">Генеральний партнер, гуманітарна підтримка.</p>
                     </div>
                   </div>
-                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4 opacity-75">
-                    <div className="w-12 h-12 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 font-bold border border-slate-100">?</div>
+                  <div className="bg-white p-4 rounded-xl border-2 border-dashed border-slate-200 shadow-sm flex items-center gap-4 opacity-75 hover:opacity-100 hover:border-teal-300 transition-all cursor-pointer group">
+                    <div className="w-12 h-12 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 group-hover:text-teal-500 font-bold border border-slate-100 group-hover:bg-teal-50 transition-colors">
+                       <Briefcase className="w-5 h-5" />
+                    </div>
                     <div>
-                      <h4 className="font-bold text-slate-800">Ваш логотип тут</h4>
-                      <p className="text-xs text-slate-500">Станьте спонсором проекту</p>
+                      <h4 className="font-bold text-slate-800 group-hover:text-teal-700 transition-colors">Ваш логотип тут</h4>
+                      <p className="text-xs text-slate-500">Приєднуйтесь до ініціативи</p>
                     </div>
                   </div>
-               </div>
-
-               <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 mt-4 text-center">
-                 <h3 className="font-bold text-slate-800 mb-2">Шукаємо партнерів!</h3>
-                 <p className="text-sm text-slate-600 mb-4">
-                   Ми відкриті до співпраці з IT-компаніями, державними установами та медіа.
-                 </p>
-                 <div className="flex gap-3 justify-center">
-                    <a 
-                      href="mailto:support@social-map.ua?subject=Партнерство"
-                      className="px-5 py-2.5 bg-slate-900 text-white font-medium rounded-lg hover:bg-slate-800 transition flex items-center gap-2"
-                    >
-                      <Mail className="w-4 h-4" />
-                      Написати нам
-                    </a>
-                 </div>
                </div>
              </div>
            )}
