@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, AttributionControl, ZoomControl } from 'react-leaflet';
 import { Organization } from '../types';
 import { MapPin, Heart, Phone, Mail, FileText, Locate, Navigation, Loader2, AlertCircle } from 'lucide-react';
@@ -10,9 +10,9 @@ const isValCoord = (val: any): val is number =>
   typeof val === 'number' && !isNaN(val) && Number.isFinite(val);
 
 const isValidLatLng = (lat: any, lng: any): boolean => 
-  isValCoord(lat) && isValCoord(lng);
+  isValCoord(lat) && isValCoord(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180;
 
-// Function to create custom SVG icons with enhanced selected state
+// Function to create custom SVG icons
 const createCustomIcon = (color: string, size: number, isSelected: boolean = false) => {
   const strokeColor = isSelected ? '#fbbf24' : 'white'; 
   const strokeWidth = isSelected ? '3' : '2';
@@ -66,16 +66,16 @@ const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ cent
   useEffect(() => {
     if (!map) return;
     
-    if (center && isValidLatLng(center[0], center[1])) {
+    if (Array.isArray(center) && isValidLatLng(center[0], center[1])) {
       try {
-        map.invalidateSize();
         const safeZoom = isValCoord(zoom) ? zoom : 8;
-        map.flyTo(center, safeZoom, { 
+        map.invalidateSize();
+        map.flyTo(center as L.LatLngExpression, safeZoom, { 
           duration: 1.5,
           easeLinearity: 0.25
         });
       } catch (e) {
-        console.warn("Map update error suppressed", e);
+        console.warn("Leaflet flyTo error suppressed:", e);
       }
     }
   }, [center, zoom, map]);
@@ -117,7 +117,7 @@ const LocationMarker = () => {
 
   useEffect(() => {
     const onLocationFound = (e: L.LocationEvent) => {
-      if (isValidLatLng(e.latlng.lat, e.latlng.lng)) {
+      if (e.latlng && isValidLatLng(e.latlng.lat, e.latlng.lng)) {
         setPosition([e.latlng.lat, e.latlng.lng]);
         map.flyTo(e.latlng, 14, { duration: 1.5 });
       }
@@ -140,7 +140,11 @@ const LocationMarker = () => {
 
   const handleLocate = () => {
     setIsLoading(true);
-    map.locate({ setView: false, enableHighAccuracy: true });
+    try {
+      map.locate({ setView: false, enableHighAccuracy: true });
+    } catch (e) {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -175,29 +179,41 @@ export const MapView: React.FC<MapViewProps> = ({
   selectedOrgId, 
   onSelectOrg,
   onOpenReferral,
-  center = [48.3794, 31.1656], // Default to center of Ukraine
+  center = [48.3794, 31.1656], 
   zoom = 6
 }) => {
   const selectedOrg = organizations.find(c => c.id === selectedOrgId);
   
-  const hasSelectedLocation = selectedOrg && isValidLatLng(selectedOrg.lat, selectedOrg.lng);
-  
-  // Define fallback center explicitly
-  const defaultCenter: [number, number] = [48.3794, 31.1656];
-  
-  // Safe calculation of target center
-  const targetCenter: [number, number] = hasSelectedLocation
-    ? [selectedOrg!.lat, selectedOrg!.lng]
-    : (center && isValidLatLng(center[0], center[1]) ? center : defaultCenter);
+  // Stabilize the center coordinate array to prevent infinite flyTo loops
+  const targetCenter = useMemo<[number, number]>(() => {
+    if (selectedOrg && isValidLatLng(selectedOrg.lat, selectedOrg.lng)) {
+      return [selectedOrg.lat, selectedOrg.lng];
+    }
+    if (Array.isArray(center) && isValidLatLng(center[0], center[1])) {
+      return center;
+    }
+    return [48.3794, 31.1656]; // Ukraine center fallback
+  }, [selectedOrg, center]);
 
-  const safeZoom = isValCoord(zoom) ? zoom : 6;
-  const targetZoom = selectedOrg ? 15 : safeZoom;
+  const targetZoom = useMemo(() => {
+    if (selectedOrg) return 15;
+    return isValCoord(zoom) ? zoom : 6;
+  }, [selectedOrg, zoom]);
+
+  // If even fallback center is invalid (shouldn't happen), prevent crash
+  if (!isValidLatLng(targetCenter[0], targetCenter[1])) {
+    return (
+      <div className="h-full w-full bg-slate-100 flex items-center justify-center text-slate-400">
+        Помилка ініціалізації мапи
+      </div>
+    );
+  }
 
   return (
     <div className="h-full w-full relative z-0">
       <MapContainer
         center={targetCenter}
-        zoom={safeZoom}
+        zoom={targetZoom}
         style={{ height: '100%', width: '100%' }}
         scrollWheelZoom={true}
         dragging={true}
