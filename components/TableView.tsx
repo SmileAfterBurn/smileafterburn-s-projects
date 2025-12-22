@@ -60,9 +60,13 @@ export const TableView: React.FC<TableViewProps> = ({
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide whitespace-nowrap ${
                         org.status === 'Active' ? 'bg-green-100 text-green-700' :
                         org.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
+                        org.status === 'In Development' ? 'bg-blue-100 text-blue-700' :
                         'bg-slate-100 text-slate-500'
                       }`}>
-                        {org.status === 'Active' ? 'Активний' : org.status === 'Pending' ? 'Очікує' : 'Неактивний'}
+                        {org.status === 'Active' ? 'Активний' : 
+                         org.status === 'Pending' ? 'Очікує' : 
+                         org.status === 'In Development' ? 'В розробці' :
+                         'Неактивний'}
                       </span>
                     </div>
 

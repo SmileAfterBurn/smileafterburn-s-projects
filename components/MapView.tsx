@@ -43,6 +43,7 @@ const userLocationIcon = new L.DivIcon({
 });
 
 const defaultIcon = createCustomIcon('#0d9488', 36, false); // Teal-600
+const devIcon = createCustomIcon('#3b82f6', 36, false); // Blue-500 for In Development
 const selectedIcon = createCustomIcon('#dc2626', 52, true);  // Red-600, significantly larger
 
 interface MapViewProps {
@@ -209,12 +210,14 @@ export const MapView: React.FC<MapViewProps> = ({
 
           const isSelected = selectedOrgId === org.id;
           const cleanPhone = org.phone ? org.phone.replace(/[^\d+]/g, '') : '';
+          
+          const markerIcon = isSelected ? selectedIcon : (org.status === 'In Development' ? devIcon : defaultIcon);
 
           return (
             <Marker
               key={org.id}
               position={[org.lat, org.lng]}
-              icon={isSelected ? selectedIcon : defaultIcon}
+              icon={markerIcon}
               // Cast eventHandlers to any to bypass strict type checking
               {...({ eventHandlers: {
                 click: () => {
@@ -225,11 +228,24 @@ export const MapView: React.FC<MapViewProps> = ({
             >
               <Popup className="min-w-[250px] max-w-[calc(100vw-40px)]"> {/* Adjusted for responsiveness */}
                 <div className="p-1">
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-bold text-base text-slate-800 flex items-center gap-1 pr-2">
-                       <Heart className={`w-4 h-4 shrink-0 ${isSelected ? 'text-red-500 fill-red-500' : 'text-rose-500 fill-rose-500'}`} />
-                       {org.name}
-                    </h3>
+                  <div className="flex flex-col gap-2 mb-2">
+                    <div className="flex items-start justify-between">
+                      <h3 className="font-bold text-base text-slate-800 flex items-center gap-1 pr-2">
+                        <Heart className={`w-4 h-4 shrink-0 ${isSelected ? 'text-red-500 fill-red-500' : 'text-rose-500 fill-rose-500'}`} />
+                        {org.name}
+                      </h3>
+                    </div>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide w-fit ${
+                      org.status === 'Active' ? 'bg-green-100 text-green-700' :
+                      org.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
+                      org.status === 'In Development' ? 'bg-blue-100 text-blue-700' :
+                      'bg-slate-100 text-slate-500'
+                    }`}>
+                      {org.status === 'Active' ? 'Активний' : 
+                       org.status === 'Pending' ? 'Очікує' : 
+                       org.status === 'In Development' ? 'В розробці' : 
+                       'Неактивний'}
+                    </span>
                   </div>
                   <div className="space-y-2 mb-3">
                     <div className="flex flex-col gap-1">
@@ -309,4 +325,3 @@ export const MapView: React.FC<MapViewProps> = ({
     </div>
   );
 };
-    

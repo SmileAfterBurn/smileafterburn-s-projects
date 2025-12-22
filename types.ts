@@ -11,7 +11,7 @@ export interface Organization {
   services: string; // Відповідає колонці "Послуги"
   phone: string;    // Нове поле
   email: string;    // Нове поле
-  status: 'Active' | 'Inactive' | 'Pending';
+  status: 'Active' | 'Inactive' | 'Pending' | 'In Development';
   driveFolderUrl: string;
   budget: number;
   region: RegionName; // Нове поле для фільтрації по регіонах

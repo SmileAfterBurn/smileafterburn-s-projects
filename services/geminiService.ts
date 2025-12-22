@@ -47,8 +47,9 @@ export const analyzeData = async (
       establishedDate: o.establishedDate
     })), null, 2);
     
+    // Fix: Use 'gemini-3-flash-preview' for basic text tasks as per model selection rules
     const response: GenerateContentResponse = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       contents: `База даних організацій: ${dataContext}\n\nЗапитання користувача: ${query}`,
       config: {
         temperature: 0.7, 
@@ -187,6 +188,7 @@ export class LiveSession {
       const inputData = e.inputBuffer.getChannelData(0);
       const pcmBlob = this.createBlob(inputData);
       
+      // Fix: Strictly rely on sessionPromise resolve to send realtime input as per Live API guidelines
       sessionPromise.then((session) => {
         session.sendRealtimeInput({ media: pcmBlob });
       });

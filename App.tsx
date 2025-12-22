@@ -311,8 +311,13 @@ const App: React.FC = () => {
                   <div className="absolute top-full left-2 mt-2 w-72 bg-white rounded-xl shadow-2xl border border-slate-100 p-4 z-50">
                     <h4 className="font-bold text-sm mb-3">Статус</h4>
                     <div className="space-y-2 mb-4">
-                      {['Active', 'Pending', 'Inactive'].map(s => (
-                        <label key={s} className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={selectedStatuses.includes(s)} onChange={() => toggleStatus(s)} /> {s === 'Active' ? 'Активний' : s === 'Pending' ? 'Очікує' : 'Архів'}</label>
+                      {['Active', 'Pending', 'Inactive', 'In Development'].map(s => (
+                        <label key={s} className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={selectedStatuses.includes(s)} onChange={() => toggleStatus(s)} /> {
+                          s === 'Active' ? 'Активний' : 
+                          s === 'Pending' ? 'Очікує' : 
+                          s === 'In Development' ? 'В розробці' :
+                          'Архів'
+                        }</label>
                       ))}
                     </div>
                     <h4 className="font-bold text-sm mb-3 border-t pt-3">Категорія</h4>
