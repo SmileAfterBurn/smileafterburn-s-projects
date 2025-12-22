@@ -1,4 +1,3 @@
-
 import { Organization } from './types';
 
 export const INITIAL_ORGANIZATIONS: Organization[] = [
@@ -17,7 +16,8 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: '',
     budget: 0,
-    website: 'https://posmishka.org.ua'
+    website: 'https://posmishka.org.ua',
+    establishedDate: '2013'
   },
   {
     id: 'zap_posmishka_nezalezhnosti',
@@ -33,13 +33,14 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     status: 'Active',
     driveFolderUrl: '',
     budget: 0,
-    website: 'https://posmishka.org.ua'
+    website: 'https://posmishka.org.ua',
+    establishedDate: '2013'
   },
-  { id: 'kyiv_posmishka', name: 'БФ «Посмішка ЮА» (Київ)', region: 'Kyiv', address: 'м. Київ', lat: 50.4501, lng: 30.5234, category: 'Благодійна організація', services: 'Координація національних проектів', phone: '+380 50 460 22 40', email: 'info@posmishka.org.ua', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'dnipro_posmishka', name: 'БФ «Посмішка ЮА» (Дніпро)', region: 'Dnipro', address: 'м. Дніпро', lat: 48.4647, lng: 35.0462, category: 'Благодійна організація', services: 'Допомога ВПО та дітям', phone: '+380 50 460 22 40', email: 'dnipro@posmishka.org.ua', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'odesa_posmishka', name: 'БФ «Посмішка ЮА» (Одеса)', region: 'Odesa', address: 'м. Одеса', lat: 46.4825, lng: 30.7233, category: 'Благодійна організація', services: 'Мобільні бригади допомоги', phone: '+380 50 460 22 40', email: '', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'myk_posmishka', name: 'БФ «Посмішка ЮА» (Миколаїв)', region: 'Mykolaiv', address: 'м. Миколаїв', lat: 46.9750, lng: 31.9946, category: 'Благодійна організація', services: 'Гуманітарна місія', phone: '+380 50 460 22 40', email: '', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'kher_posmishka', name: 'БФ «Посмішка ЮА» (Херсон)', region: 'Kherson', address: 'м. Херсон', lat: 46.6354, lng: 32.6169, category: 'Благодійна організація', services: 'Екстрена допомога', phone: '+380 50 460 22 40', email: '', status: 'Active', driveFolderUrl: '', budget: 0 },
+  { id: 'kyiv_posmishka', name: 'БФ «Посмішка ЮА» (Київ)', region: 'Kyiv', address: 'м. Київ', lat: 50.4501, lng: 30.5234, category: 'Благодійна організація', services: 'Координація національних проектів', phone: '+380 50 460 22 40', email: 'info@posmishka.org.ua', status: 'Active', driveFolderUrl: '', budget: 0, establishedDate: '2013' },
+  { id: 'dnipro_posmishka', name: 'БФ «Посмішка ЮА» (Дніпро)', region: 'Dnipro', address: 'м. Дніпро', lat: 48.4647, lng: 35.0462, category: 'Благодійна організація', services: 'Допомога ВПО та дітям', phone: '+380 50 460 22 40', email: 'dnipro@posmishka.org.ua', status: 'Active', driveFolderUrl: '', budget: 0, establishedDate: '2013' },
+  { id: 'odesa_posmishka', name: 'БФ «Посмішка ЮА» (Одеса)', region: 'Odesa', address: 'м. Одеса', lat: 46.4825, lng: 30.7233, category: 'Благодійна організація', services: 'Мобільні бригади допомоги', phone: '+380 50 460 22 40', email: '', status: 'Active', driveFolderUrl: '', budget: 0, establishedDate: '2013' },
+  { id: 'myk_posmishka', name: 'БФ «Посмішка ЮА» (Миколаїв)', region: 'Mykolaiv', address: 'м. Миколаїв', lat: 46.9750, lng: 31.9946, category: 'Благодійна організація', services: 'Гуманітарна місія', phone: '+380 50 460 22 40', email: '', status: 'Active', driveFolderUrl: '', budget: 0, establishedDate: '2013' },
+  { id: 'kher_posmishka', name: 'БФ «Посмішка ЮА» (Херсон)', region: 'Kherson', address: 'м. Херсон', lat: 46.6354, lng: 32.6169, category: 'Благодійна організація', services: 'Екстрена допомога', phone: '+380 50 460 22 40', email: '', status: 'Active', driveFolderUrl: '', budget: 0, establishedDate: '2013' },
 
   // --- ХЕРСОНСЬКА ОБЛАСТЬ (НОВІ) ---
   {
@@ -118,6 +119,6 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
   { id: 'z16', name: 'УТОГ (Запоріжжя)', region: 'Zaporizhzhia', address: 'м. Запоріжжя', lat: 47.8388, lng: 35.1396, category: 'Громадська організація', services: 'Підтримка людей з порушенням слуху', phone: '+380669257543', email: '', status: 'Active', driveFolderUrl: '', budget: 0 },
 
   // --- КИЇВ ---
-  { id: 'k1', name: 'Червоний Хрест (Нацкомітет)', region: 'Kyiv', address: 'м. Київ, вул. Пушкінська, 30', lat: 50.4450, lng: 30.5180, category: 'Благодійна організація', services: 'Загальна допомога', phone: '0800332656', email: 'national@redcross.org.ua', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'k2', name: 'ГО "Дівчата" (Київ)', region: 'Kyiv', address: 'м. Київ', lat: 50.4530, lng: 30.5230, category: 'Громадська організація', services: 'Допомога жінкам', phone: '+380734603860', email: 'go.divchata@gmail.com', status: 'Active', driveFolderUrl: '', budget: 0 }
+  { id: 'k1', name: 'Червоний Хрест (Нацкомітет)', region: 'Kyiv', address: 'м. Київ, вул. Пушкінська, 30', lat: 50.4450, lng: 30.5180, category: 'Благодійна організація', services: 'Загальна допомога', phone: '0800332656', email: 'national@redcross.org.ua', status: 'Active', driveFolderUrl: '', budget: 0, establishedDate: '1918' },
+  { id: 'k2', name: 'ГО "Дівчата" (Київ)', region: 'Kyiv', address: 'м. Київ', lat: 50.4530, lng: 30.5230, category: 'Громадська організація', services: 'Допомога жінкам', phone: '+380734603860', email: 'go.divchata@gmail.com', status: 'Active', driveFolderUrl: '', budget: 0, establishedDate: '2016' }
 ];

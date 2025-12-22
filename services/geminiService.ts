@@ -5,18 +5,21 @@ import { Organization } from "../types";
 // Safe access to API Key to prevent ReferenceError if process is undefined
 const getApiKey = () => {
   try {
-    return process.env.API_KEY;
+    // Check if process and process.env exist before access
+    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+      return process.env.API_KEY;
+    }
   } catch (e) {
-    console.warn("process.env.API_KEY is not accessible");
-    return undefined;
+    console.warn("API_KEY access error:", e);
   }
+  return undefined;
 };
 
 const getClient = () => {
   const apiKey = getApiKey();
   
   if (!apiKey) {
-    throw new Error("API Key not found. Please ensure process.env.API_KEY is set.");
+    throw new Error("API Key not found. The app requires process.env.API_KEY to function correctly.");
   }
 
   return new GoogleGenAI({ apiKey });
@@ -31,7 +34,6 @@ export const analyzeData = async (
   try {
     const ai = getClient();
     
-    // Prepare concise context with ALL available details including new detailed fields
     const dataContext = JSON.stringify(organizations.map(o => ({
       name: o.name,
       address: o.address,
@@ -47,7 +49,6 @@ export const analyzeData = async (
       establishedDate: o.establishedDate
     })), null, 2);
     
-    // Fix: Use 'gemini-3-flash-preview' for basic text tasks as per model selection rules
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: `База даних організацій: ${dataContext}\n\nЗапитання користувача: ${query}`,
@@ -74,8 +75,7 @@ export const analyzeData = async (
     return response.text || "Вибачте, я зараз не можу відповісти. Спробуйте пізніше.";
   } catch (error) {
     console.error("Gemini API Error:", error);
-    // Return a friendly message instead of throwing
-    return "Вибачте, виникла технічна помилка зі зв'язком. Спробуйте ще раз або перевірте налаштування ключа.";
+    return "Вибачте, виникла технічна помилка зі зв'язком. Переконайтеся, що ви перебуваєте в Україні або використовуєте правильні налаштування.";
   }
 };
 
@@ -104,9 +104,8 @@ export class LiveSession {
 
   async connect() {
     if (!this.client) {
-        console.error("Gemini client is not initialized.");
         this.disconnect();
-        throw new Error("API Key missing");
+        throw new Error("API Key missing or invalid client");
     }
 
     this.isActive = true;
@@ -128,7 +127,6 @@ export class LiveSession {
         throw new Error("Microphone access denied");
       }
 
-      // Prepare Context
       const dataContext = JSON.stringify(this.organizations.map(o => ({
         name: o.name,
         address: o.address,
@@ -172,7 +170,7 @@ export class LiveSession {
     } catch (error) {
       console.error("Failed to start live session", error);
       this.disconnect();
-      throw error; // Re-throw to be caught by UI
+      throw error;
     }
   }
 
@@ -188,9 +186,10 @@ export class LiveSession {
       const inputData = e.inputBuffer.getChannelData(0);
       const pcmBlob = this.createBlob(inputData);
       
-      // Fix: Strictly rely on sessionPromise resolve to send realtime input as per Live API guidelines
       sessionPromise.then((session) => {
-        session.sendRealtimeInput({ media: pcmBlob });
+        if (this.isActive) {
+          session.sendRealtimeInput({ media: pcmBlob });
+        }
       });
     };
 
@@ -211,7 +210,9 @@ export class LiveSession {
           1
         );
         
-        this.playAudio(audioBuffer);
+        if (this.isActive) {
+          this.playAudio(audioBuffer);
+        }
       } catch (e) {
         console.error("Audio decoding error", e);
       }

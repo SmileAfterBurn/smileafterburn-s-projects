@@ -1,32 +1,35 @@
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, AttributionControl, ZoomControl } from 'react-leaflet';
 import { Organization } from '../types';
-import { MapPin, Heart, Phone, Mail, FileText, Locate, Navigation, Loader2, AlertCircle } from 'lucide-react';
+import { MapPin, Heart, Phone, Mail, FileText, Locate, Navigation, Loader2, AlertCircle, ExternalLink, Calendar } from 'lucide-react';
 import L from 'leaflet';
 
-// Utility for strict coordinate validation
-const isValCoord = (val: any): val is number => 
-  typeof val === 'number' && !isNaN(val) && Number.isFinite(val);
+// Utility for strict coordinate validation with type coercion
+const isValCoord = (val: any): val is number => {
+  const n = Number(val);
+  return typeof n === 'number' && !isNaN(n) && Number.isFinite(n);
+};
 
 const isValidLatLng = (lat: any, lng: any): boolean => 
-  isValCoord(lat) && isValCoord(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180;
+  isValCoord(lat) && isValCoord(lng) && Math.abs(Number(lat)) <= 90 && Math.abs(Number(lng)) <= 180;
 
 // Function to create custom SVG icons
 const createCustomIcon = (color: string, size: number, isSelected: boolean = false) => {
-  const strokeColor = isSelected ? '#fbbf24' : 'white'; 
+  const strokeColor = isSelected ? '#ffffff' : 'white'; 
   const strokeWidth = isSelected ? '3' : '2';
-  const dropShadow = isSelected 
-    ? 'drop-shadow(0 4px 6px rgba(0,0,0,0.5))' 
-    : 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))';
+  const shadowOpacity = isSelected ? '0.6' : '0.3';
+  const scale = isSelected ? '1.2' : '1';
   
   return new L.DivIcon({
-    className: 'custom-marker-icon',
+    className: 'custom-marker-wrapper',
     html: `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" style="filter: ${dropShadow}; width: 100%; height: 100%; transition: all 0.3s ease;">
-        <path d="M20 10c0 6-9 13-9 13s-9-7-9-13a6.5 6.5 0 0 1 13 0Z"></path>
-        <circle cx="12" cy="10" r="3" fill="white"></circle>
-      </svg>
+      <div style="transform: scale(${scale}); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${size}" height="${size}" fill="${color}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,${shadowOpacity}));">
+          <path d="M20 10c0 6-9 13-9 13s-9-7-9-13a6.5 6.5 0 0 1 13 0Z"></path>
+          <circle cx="12" cy="10" r="3" fill="white"></circle>
+        </svg>
+      </div>
     `,
     iconSize: [size, size],
     iconAnchor: [size / 2, size],
@@ -37,20 +40,20 @@ const createCustomIcon = (color: string, size: number, isSelected: boolean = fal
 const userLocationIcon = new L.DivIcon({
   className: 'user-location-icon',
   html: `
-    <div class="relative flex h-6 w-6">
+    <div class="relative flex h-8 w-8">
       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-      <span class="relative inline-flex rounded-full h-6 w-6 bg-blue-600 border-2 border-white shadow-md items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+      <span class="relative inline-flex rounded-full h-8 w-8 bg-blue-600 border-4 border-white shadow-lg items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
       </span>
     </div>
   `,
-  iconSize: [24, 24],
-  iconAnchor: [12, 12],
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
 });
 
 const defaultIcon = createCustomIcon('#0d9488', 36, false); 
 const devIcon = createCustomIcon('#3b82f6', 36, false); 
-const selectedIcon = createCustomIcon('#dc2626', 52, true);
+const selectedIcon = createCustomIcon('#e11d48', 48, true);
 
 interface MapViewProps {
   organizations: Organization[];
@@ -63,10 +66,16 @@ interface MapViewProps {
 
 const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
   const map = useMap();
+  const lastPosRef = useRef<string>("");
+
   useEffect(() => {
     if (!map) return;
     
+    // Check if coordinates are valid and different from the last flyTo to prevent loops
     if (Array.isArray(center) && isValidLatLng(center[0], center[1])) {
+      const posKey = `${center[0]},${center[1]},${zoom}`;
+      if (lastPosRef.current === posKey) return;
+
       try {
         const safeZoom = isValCoord(zoom) ? zoom : 8;
         map.invalidateSize();
@@ -74,6 +83,7 @@ const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ cent
           duration: 1.5,
           easeLinearity: 0.25
         });
+        lastPosRef.current = posKey;
       } catch (e) {
         console.warn("Leaflet flyTo error suppressed:", e);
       }
@@ -83,28 +93,30 @@ const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ cent
 };
 
 const MapLegend = () => (
-  <div className="leaflet-bottom leaflet-left mb-6 ml-4 pointer-events-auto z-[400] hidden sm:block">
-     <div className="bg-white/95 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-slate-200 flex flex-col gap-2.5">
-        <h4 className="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-0.5">Статус</h4>
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-teal-600 shadow-sm"></div>
-          <span className="text-xs font-medium text-slate-700">Активні</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></div>
-          <span className="text-xs font-medium text-slate-700">В розробці</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-600 shadow-sm"></div>
-          <span className="text-xs font-medium text-slate-700">Обрано</span>
-        </div>
-        <div className="h-px bg-slate-100 my-0.5"></div>
-        <div className="flex items-center gap-2">
-           <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
-            </span>
-          <span className="text-xs font-medium text-slate-700">Ви тут</span>
+  <div className="leaflet-bottom leaflet-left mb-8 ml-4 pointer-events-auto z-[400] hidden sm:block">
+     <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-slate-200 flex flex-col gap-3 min-w-[140px]">
+        <h4 className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-1">Легенда мапи</h4>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-3 h-3 rounded-full bg-[#0d9488] shadow-sm"></div>
+            <span className="text-xs font-bold text-slate-700">Активні</span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <div className="w-3 h-3 rounded-full bg-[#3b82f6] shadow-sm"></div>
+            <span className="text-xs font-bold text-slate-700">В розробці</span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <div className="w-3 h-3 rounded-full bg-[#e11d48] shadow-sm"></div>
+            <span className="text-xs font-bold text-slate-700">Обрано</span>
+          </div>
+          <div className="h-px bg-slate-100 my-1"></div>
+          <div className="flex items-center gap-2.5">
+             <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-600 border-2 border-white"></span>
+              </span>
+            <span className="text-xs font-bold text-slate-700">Ви тут</span>
+          </div>
         </div>
      </div>
   </div>
@@ -149,25 +161,25 @@ const LocationMarker = () => {
 
   return (
     <>
-      <div className="leaflet-top leaflet-left mt-20 ml-3 pointer-events-auto z-[400] absolute">
-         <div className="leaflet-control leaflet-bar">
+      <div className="leaflet-top leaflet-left mt-24 ml-3 pointer-events-auto z-[400] absolute">
+         <div className="leaflet-control leaflet-bar border-none shadow-lg overflow-hidden rounded-xl">
             <button 
               onClick={handleLocate}
-              className="bg-white hover:bg-slate-50 text-slate-700 w-[30px] h-[30px] flex items-center justify-center border-b border-slate-300 cursor-pointer shadow-sm transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+              className="bg-white hover:bg-slate-50 text-slate-700 w-11 h-11 flex items-center justify-center cursor-pointer transition-all active:scale-95 disabled:opacity-70"
               title="Знайти мене"
               disabled={isLoading}
             >
               {isLoading ? (
-                <Loader2 size={18} className="animate-spin text-teal-600" />
+                <Loader2 size={20} className="animate-spin text-teal-600" />
               ) : (
-                <Locate size={18} />
+                <Locate size={20} />
               )}
             </button>
          </div>
       </div>
       {position && isValidLatLng(position[0], position[1]) && (
         <Marker position={position} icon={userLocationIcon} zIndexOffset={2000}>
-          <Popup>Ви тут</Popup>
+          <Popup className="custom-popup-user">Ваше місцезнаходження</Popup>
         </Marker>
       )}
     </>
@@ -184,26 +196,24 @@ export const MapView: React.FC<MapViewProps> = ({
 }) => {
   const selectedOrg = organizations.find(c => c.id === selectedOrgId);
   
-  // Stabilize the center coordinate array to prevent infinite flyTo loops
   const targetCenter = useMemo<[number, number]>(() => {
     if (selectedOrg && isValidLatLng(selectedOrg.lat, selectedOrg.lng)) {
-      return [selectedOrg.lat, selectedOrg.lng];
+      return [Number(selectedOrg.lat), Number(selectedOrg.lng)];
     }
     if (Array.isArray(center) && isValidLatLng(center[0], center[1])) {
-      return center;
+      return [Number(center[0]), Number(center[1])];
     }
-    return [48.3794, 31.1656]; // Ukraine center fallback
+    return [48.3794, 31.1656]; 
   }, [selectedOrg, center]);
 
   const targetZoom = useMemo(() => {
     if (selectedOrg) return 15;
-    return isValCoord(zoom) ? zoom : 6;
+    return isValCoord(zoom) ? Number(zoom) : 6;
   }, [selectedOrg, zoom]);
 
-  // If even fallback center is invalid (shouldn't happen), prevent crash
   if (!isValidLatLng(targetCenter[0], targetCenter[1])) {
     return (
-      <div className="h-full w-full bg-slate-100 flex items-center justify-center text-slate-400">
+      <div className="h-full w-full bg-slate-100 flex items-center justify-center text-slate-400 font-bold uppercase tracking-widest text-xs">
         Помилка ініціалізації мапи
       </div>
     );
@@ -211,6 +221,24 @@ export const MapView: React.FC<MapViewProps> = ({
 
   return (
     <div className="h-full w-full relative z-0">
+      <style>{`
+        .leaflet-popup-content-wrapper {
+          border-radius: 1.5rem;
+          padding: 0;
+          overflow: hidden;
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .leaflet-popup-content {
+          margin: 0;
+          width: auto !important;
+        }
+        .leaflet-popup-close-button {
+          color: white !important;
+          padding: 12px !important;
+          font-size: 20px !important;
+          z-index: 50;
+        }
+      `}</style>
       <MapContainer
         center={targetCenter}
         zoom={targetZoom}
@@ -221,11 +249,11 @@ export const MapView: React.FC<MapViewProps> = ({
         attributionControl={false}
         zoomControl={false}
       >
-        <AttributionControl prefix="Розробник: Ілля Чернов" position="bottomright" />
-        <ZoomControl position="topleft" zoomInTitle="Наблизити" zoomOutTitle="Віддалити" />
+        <AttributionControl prefix="Ілля Чернов" position="bottomright" />
+        <ZoomControl position="topleft" />
 
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          attribution='&copy; OpenStreetMap'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
@@ -234,9 +262,7 @@ export const MapView: React.FC<MapViewProps> = ({
         <MapLegend />
 
         {organizations.map((org) => {
-          if (!isValidLatLng(org.lat, org.lng)) {
-            return null;
-          }
+          if (!isValidLatLng(org.lat, org.lng)) return null;
 
           const isSelected = selectedOrgId === org.id;
           const cleanPhone = org.phone ? org.phone.replace(/[^\d+]/g, '') : '';
@@ -245,93 +271,109 @@ export const MapView: React.FC<MapViewProps> = ({
           return (
             <Marker
               key={org.id}
-              position={[org.lat, org.lng]}
+              position={[Number(org.lat), Number(org.lng)]}
               icon={markerIcon}
               eventHandlers={{
                 click: () => onSelectOrg(org.id),
               }}
               zIndexOffset={isSelected ? 1000 : 0}
             >
-              <Popup className="min-w-[250px] max-w-[calc(100vw-40px)]">
-                <div className="p-1">
-                  <div className="flex flex-col gap-2 mb-2">
-                    <h3 className="font-bold text-base text-slate-800 flex items-center gap-1 pr-2">
-                      <Heart className={`w-4 h-4 shrink-0 ${isSelected ? 'text-red-500 fill-red-500' : 'text-rose-500 fill-rose-500'}`} />
+              <Popup className="min-w-[280px] max-w-[320px]">
+                <div className="flex flex-col">
+                  {/* Popup Header */}
+                  <div className={`p-5 pb-4 ${isSelected ? 'bg-rose-600' : 'bg-teal-700'} text-white`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-[9px] font-black uppercase tracking-widest border border-white/10">
+                        {org.category}
+                      </span>
+                      {org.establishedDate && (
+                        <span className="px-2 py-0.5 rounded-full bg-black/20 backdrop-blur-sm text-[9px] font-bold ml-1 border border-white/10">
+                          {org.establishedDate}
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="font-bold text-lg leading-tight flex items-start gap-2 pr-4">
                       {org.name}
                     </h3>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide w-fit ${
-                      org.status === 'Active' ? 'bg-green-100 text-green-700' :
-                      org.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
-                      org.status === 'In Development' ? 'bg-blue-100 text-blue-700' :
-                      'bg-slate-100 text-slate-500'
-                    }`}>
-                      {org.status === 'Active' ? 'Активний' : 
-                       org.status === 'Pending' ? 'Очікує' : 
-                       org.status === 'In Development' ? 'В розробці' : 
-                       'Неактивний'}
-                    </span>
                   </div>
-                  <div className="space-y-2 mb-3">
-                    <div className="flex flex-col gap-1">
-                      <p className="text-sm text-slate-600 flex items-start gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                        {org.address}
-                      </p>
-                      <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${org.lat},${org.lng}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[11px] text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-1 pl-5"
-                      >
-                        <Navigation className="w-3 h-3" />
-                        Прокласти маршрут
-                      </a>
-                    </div>
-                    
-                    {org.notes && (
-                      <div className="bg-amber-50 p-2.5 rounded border border-amber-200 text-xs text-amber-900 flex gap-2 items-start leading-snug">
-                         <AlertCircle size={14} className="mt-0.5 shrink-0 text-amber-600" />
-                         <span>{org.notes}</span>
+
+                  {/* Popup Body */}
+                  <div className="p-5 space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex flex-col gap-1.5">
+                        <p className="text-sm text-slate-600 flex items-start gap-2 leading-snug">
+                          <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-slate-400" />
+                          {org.address}
+                        </p>
+                        <a
+                          href={`https://www.google.com/maps/dir/?api=1&destination=${org.lat},${org.lng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 pl-6 group"
+                        >
+                          <Navigation className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                          Навігація
+                        </a>
                       </div>
-                    )}
-                    
-                    <div className="bg-slate-50 p-2 rounded border border-slate-100">
-                      <p className="text-xs font-bold text-slate-700 mb-1">Послуги:</p>
-                      <p className="text-xs text-slate-600 leading-snug">{org.services}</p>
-                    </div>
 
-                    <div className="pt-2 border-t border-slate-100 space-y-2">
-                      {org.phone && (
-                        <div className="flex items-center gap-2 text-xs text-slate-700">
-                            <Phone className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-                            <a href={`tel:${cleanPhone}`} className="hover:underline hover:text-teal-700 font-medium">
-                              {org.phone}
-                            </a>
+                      {org.establishedDate && (
+                        <div className="flex items-center gap-2 text-xs text-slate-500 pl-1">
+                           <Calendar size={14} className="text-slate-400" />
+                           <span>Засновано: <b>{org.establishedDate}</b></span>
                         </div>
                       )}
-                      {org.email && (
-                        <div className="flex items-center gap-2 text-xs text-slate-700">
-                            <Mail className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-                            <a href={`mailto:${org.email}`} className="hover:underline hover:text-teal-700 font-medium break-all">
-                              {org.email}
-                            </a>
+
+                      {org.notes && (
+                        <div className="bg-amber-50 p-3 rounded-xl border border-amber-100 text-xs text-amber-900 flex gap-2.5 items-start">
+                           <AlertCircle size={16} className="shrink-0 text-amber-500" />
+                           <span className="leading-relaxed">{org.notes}</span>
                         </div>
+                      )}
+
+                      <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Основні послуги:</p>
+                        <p className="text-xs text-slate-700 leading-relaxed font-medium">{org.services}</p>
+                      </div>
+
+                      <div className="space-y-2 pt-1">
+                        {org.phone && (
+                          <a href={`tel:${cleanPhone}`} className="flex items-center gap-2.5 text-sm font-bold text-slate-800 hover:text-teal-700 transition-colors py-1 group">
+                              <Phone className="w-4 h-4 text-teal-600 group-hover:scale-110 transition-transform" />
+                              {org.phone}
+                          </a>
+                        )}
+                        {org.email && (
+                          <a href={`mailto:${org.email}`} className="flex items-center gap-2.5 text-sm font-bold text-slate-800 hover:text-teal-700 transition-colors py-1 group break-all">
+                              <Mail className="w-4 h-4 text-teal-600 group-hover:scale-110 transition-transform" />
+                              {org.email}
+                          </a>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="pt-2 flex flex-col gap-2">
+                      {org.email && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); onOpenReferral(org); }}
+                          className="w-full flex items-center justify-center gap-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-black uppercase tracking-widest py-3.5 rounded-xl transition-all shadow-md active:scale-95"
+                        >
+                          <FileText className="w-4 h-4" />
+                          Надіслати запит
+                        </button>
+                      )}
+                      {org.website && (
+                        <a
+                          href={org.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full flex items-center justify-center gap-2.5 bg-white border-2 border-slate-100 hover:border-teal-200 text-slate-700 text-xs font-black uppercase tracking-widest py-3 rounded-xl transition-all active:scale-95"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          Сайт організації
+                        </a>
                       )}
                     </div>
                   </div>
-
-                  {org.email && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onOpenReferral(org);
-                      }}
-                      className="w-full mt-2 flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold py-2 px-3 rounded transition-colors"
-                    >
-                      <FileText className="w-3.5 h-3.5" />
-                      Запит на перенаправлення
-                    </button>
-                  )}
                 </div>
               </Popup>
             </Marker>
