@@ -8,22 +8,7 @@
     <!-- Primary Meta Tags -->
     <title>Інклюзивна мапа соціальних послуг України | Допомога поруч</title>
     <meta name="title" content="Інклюзивна мапа соціальних послуг України | Допомога поруч" />
-    <meta name="description" content="Єдина мапа перевірених благодійних фондів, центрів допомоги та соціальних послуг. Знаходьте допомогу у своєму регіоні. Проект створено волонтерами для українців." />
-    <meta name="keywords" content="допомога, ВПО, мапа послуг, благодійність, соціальний захист, Україна, волонтери" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://social-map.ua/" />
-    <meta property="og:title" content="Інклюзивна мапа соціальних послуг України" />
-    <meta property="og:description" content="Знаходьте найближчі пункти допомоги, шелтери та соціальні служби. Працює по всій Україні." />
-    <meta property="og:image" content="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1200&auto=format&fit=crop" />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://social-map.ua/" />
-    <meta property="twitter:title" content="Інклюзивна мапа соціальних послуг України" />
-    <meta property="twitter:description" content="Знаходьте найближчі пункти допомоги, шелтери та соціальні служби. Працює по всій Україні." />
-    <meta property="twitter:image" content="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1200&auto=format&fit=crop" />
+    <meta name="description" content="Єдина мапа перевірених благодійних фондів, центрів допомоги та соціальних послуг. Знаходьте допомогу у своєму регіоні." />
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +24,6 @@
       body {
         font-family: 'Montserrat', sans-serif;
       }
-      /* Custom scrollbar for webkit */
       ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
@@ -54,23 +38,30 @@
       ::-webkit-scrollbar-thumb:hover {
         background: #94a3b8;
       }
+      .leaflet-container {
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
-    "leaflet": "https://aistudiocdn.com/leaflet@^1.9.4",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.460.0",
-    "react-leaflet": "https://aistudiocdn.com/react-leaflet@^5.0.0"
-  }
-}
-</script>
-</head>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.3.1",
+        "react/": "https://esm.sh/react@18.3.1/",
+        "react-dom": "https://esm.sh/react-dom@18.3.1",
+        "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+        "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+        "leaflet": "https://esm.sh/leaflet@1.9.4",
+        "react-leaflet": "https://esm.sh/react-leaflet@4.2.1",
+        "lucide-react": "https://esm.sh/lucide-react@0.344.0",
+        "@google/genai": "https://esm.sh/@google/genai@1.30.0"
+      }
+    }
+    </script>
+  </head>
   <body class="bg-slate-50 text-slate-900 antialiased overflow-hidden">
     <div id="root"></div>
+    <script type="module" src="index.tsx"></script>
   </body>
 </html>
-    

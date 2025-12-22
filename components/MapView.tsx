@@ -5,9 +5,16 @@ import { Organization } from '../types';
 import { MapPin, Heart, Phone, Mail, FileText, Locate, Navigation, Loader2, AlertCircle } from 'lucide-react';
 import L from 'leaflet';
 
+// Utility for strict coordinate validation
+const isValCoord = (val: any): val is number => 
+  typeof val === 'number' && !isNaN(val) && Number.isFinite(val);
+
+const isValidLatLng = (lat: any, lng: any): boolean => 
+  isValCoord(lat) && isValCoord(lng);
+
 // Function to create custom SVG icons with enhanced selected state
 const createCustomIcon = (color: string, size: number, isSelected: boolean = false) => {
-  const strokeColor = isSelected ? '#fbbf24' : 'white'; // Amber-400 for selected, White for default
+  const strokeColor = isSelected ? '#fbbf24' : 'white'; 
   const strokeWidth = isSelected ? '3' : '2';
   const dropShadow = isSelected 
     ? 'drop-shadow(0 4px 6px rgba(0,0,0,0.5))' 
@@ -27,7 +34,6 @@ const createCustomIcon = (color: string, size: number, isSelected: boolean = fal
   });
 };
 
-// User Location Icon (Blue Dot with Pulse)
 const userLocationIcon = new L.DivIcon({
   className: 'user-location-icon',
   html: `
@@ -42,9 +48,9 @@ const userLocationIcon = new L.DivIcon({
   iconAnchor: [12, 12],
 });
 
-const defaultIcon = createCustomIcon('#0d9488', 36, false); // Teal-600
-const devIcon = createCustomIcon('#3b82f6', 36, false); // Blue-500 for In Development
-const selectedIcon = createCustomIcon('#dc2626', 52, true);  // Red-600, significantly larger
+const defaultIcon = createCustomIcon('#0d9488', 36, false); 
+const devIcon = createCustomIcon('#3b82f6', 36, false); 
+const selectedIcon = createCustomIcon('#dc2626', 52, true);
 
 interface MapViewProps {
   organizations: Organization[];
@@ -55,42 +61,55 @@ interface MapViewProps {
   zoom?: number;
 }
 
-const isValidCoordinate = (lat: any, lng: any): boolean => {
-  return (
-    typeof lat === 'number' && 
-    typeof lng === 'number' && 
-    Number.isFinite(lat) && 
-    Number.isFinite(lng) &&
-    !isNaN(lat) &&
-    !isNaN(lng)
-  );
-};
-
-// Component to handle imperative map animations (flyTo)
 const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
   const map = useMap();
   useEffect(() => {
     if (!map) return;
     
-    // Safety check before flying
-    if (center && isValidCoordinate(center[0], center[1])) {
+    if (center && isValidLatLng(center[0], center[1])) {
       try {
-        // Invalidate size to handle layout changes (like opening sidebar)
         map.invalidateSize();
-        map.flyTo(center, zoom, { 
+        const safeZoom = isValCoord(zoom) ? zoom : 8;
+        map.flyTo(center, safeZoom, { 
           duration: 1.5,
           easeLinearity: 0.25
         });
       } catch (e) {
-        // Suppress flyer error to keep app stable
-        console.warn("Map update error suppressed");
+        console.warn("Map update error suppressed", e);
       }
     }
   }, [center, zoom, map]);
   return null;
 };
 
-// Component to handle Geolocation
+const MapLegend = () => (
+  <div className="leaflet-bottom leaflet-left mb-6 ml-4 pointer-events-auto z-[400] hidden sm:block">
+     <div className="bg-white/95 backdrop-blur-sm p-3 rounded-xl shadow-lg border border-slate-200 flex flex-col gap-2.5">
+        <h4 className="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-0.5">Статус</h4>
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-teal-600 shadow-sm"></div>
+          <span className="text-xs font-medium text-slate-700">Активні</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm"></div>
+          <span className="text-xs font-medium text-slate-700">В розробці</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-600 shadow-sm"></div>
+          <span className="text-xs font-medium text-slate-700">Обрано</span>
+        </div>
+        <div className="h-px bg-slate-100 my-0.5"></div>
+        <div className="flex items-center gap-2">
+           <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
+            </span>
+          <span className="text-xs font-medium text-slate-700">Ви тут</span>
+        </div>
+     </div>
+  </div>
+);
+
 const LocationMarker = () => {
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -98,13 +117,15 @@ const LocationMarker = () => {
 
   useEffect(() => {
     const onLocationFound = (e: L.LocationEvent) => {
-      setPosition([e.latlng.lat, e.latlng.lng]);
-      map.flyTo(e.latlng, 14, { duration: 1.5 });
+      if (isValidLatLng(e.latlng.lat, e.latlng.lng)) {
+        setPosition([e.latlng.lat, e.latlng.lng]);
+        map.flyTo(e.latlng, 14, { duration: 1.5 });
+      }
       setIsLoading(false);
     };
 
     const onLocationError = (e: L.ErrorEvent) => {
-      alert("Не вдалося визначити місцезнаходження: " + e.message);
+      console.warn("Location error:", e.message);
       setIsLoading(false);
     };
 
@@ -140,7 +161,7 @@ const LocationMarker = () => {
             </button>
          </div>
       </div>
-      {position && (
+      {position && isValidLatLng(position[0], position[1]) && (
         <Marker position={position} icon={userLocationIcon} zIndexOffset={2000}>
           <Popup>Ви тут</Popup>
         </Marker>
@@ -154,63 +175,55 @@ export const MapView: React.FC<MapViewProps> = ({
   selectedOrgId, 
   onSelectOrg,
   onOpenReferral,
-  center = [46.9750, 31.9946],
-  zoom = 8
+  center = [48.3794, 31.1656], // Default to center of Ukraine
+  zoom = 6
 }) => {
   const selectedOrg = organizations.find(c => c.id === selectedOrgId);
   
-  const hasSelectedLocation = selectedOrg && isValidCoordinate(selectedOrg.lat, selectedOrg.lng);
+  const hasSelectedLocation = selectedOrg && isValidLatLng(selectedOrg.lat, selectedOrg.lng);
   
-  // Calculate Target Center with Fallback
+  // Define fallback center explicitly
+  const defaultCenter: [number, number] = [48.3794, 31.1656];
+  
+  // Safe calculation of target center
   const targetCenter: [number, number] = hasSelectedLocation
-    ? [selectedOrg!.lat, selectedOrg!.lng] as [number, number]
-    : (center && isValidCoordinate(center[0], center[1]) ? (center as [number, number]) : [46.9750, 31.9946] as [number, number]);
+    ? [selectedOrg!.lat, selectedOrg!.lng]
+    : (center && isValidLatLng(center[0], center[1]) ? center : defaultCenter);
 
-  // Final Safety Check
-  const safeCenter: [number, number] = isValidCoordinate(targetCenter[0], targetCenter[1])
-    ? targetCenter
-    : [46.9750, 31.9946];
-
-  const targetZoom = selectedOrg ? 15 : zoom;
+  const safeZoom = isValCoord(zoom) ? zoom : 6;
+  const targetZoom = selectedOrg ? 15 : safeZoom;
 
   return (
     <div className="h-full w-full relative z-0">
-      <style>{`
-        @keyframes bounce-slight {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-5px); }
-        }
-      `}</style>
       <MapContainer
-        center={safeCenter}
-        zoom={zoom}
+        center={targetCenter}
+        zoom={safeZoom}
         style={{ height: '100%', width: '100%' }}
         scrollWheelZoom={true}
         dragging={true}
         className="z-0"
         attributionControl={false}
         zoomControl={false}
-        markerZoomAnimation={true}
       >
         <AttributionControl prefix="Розробник: Ілля Чернов" position="bottomright" />
         <ZoomControl position="topleft" zoomInTitle="Наблизити" zoomOutTitle="Віддалити" />
 
         <TileLayer
-          attribution=""
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         
-        <MapUpdater center={safeCenter} zoom={targetZoom} />
+        <MapUpdater center={targetCenter} zoom={targetZoom} />
         <LocationMarker />
+        <MapLegend />
 
         {organizations.map((org) => {
-          if (!isValidCoordinate(org.lat, org.lng)) {
+          if (!isValidLatLng(org.lat, org.lng)) {
             return null;
           }
 
           const isSelected = selectedOrgId === org.id;
           const cleanPhone = org.phone ? org.phone.replace(/[^\d+]/g, '') : '';
-          
           const markerIcon = isSelected ? selectedIcon : (org.status === 'In Development' ? devIcon : defaultIcon);
 
           return (
@@ -218,23 +231,18 @@ export const MapView: React.FC<MapViewProps> = ({
               key={org.id}
               position={[org.lat, org.lng]}
               icon={markerIcon}
-              // Cast eventHandlers to any to bypass strict type checking
-              {...({ eventHandlers: {
-                click: () => {
-                  onSelectOrg(org.id);
-                },
-              }} as any)}
+              eventHandlers={{
+                click: () => onSelectOrg(org.id),
+              }}
               zIndexOffset={isSelected ? 1000 : 0}
             >
-              <Popup className="min-w-[250px] max-w-[calc(100vw-40px)]"> {/* Adjusted for responsiveness */}
+              <Popup className="min-w-[250px] max-w-[calc(100vw-40px)]">
                 <div className="p-1">
                   <div className="flex flex-col gap-2 mb-2">
-                    <div className="flex items-start justify-between">
-                      <h3 className="font-bold text-base text-slate-800 flex items-center gap-1 pr-2">
-                        <Heart className={`w-4 h-4 shrink-0 ${isSelected ? 'text-red-500 fill-red-500' : 'text-rose-500 fill-rose-500'}`} />
-                        {org.name}
-                      </h3>
-                    </div>
+                    <h3 className="font-bold text-base text-slate-800 flex items-center gap-1 pr-2">
+                      <Heart className={`w-4 h-4 shrink-0 ${isSelected ? 'text-red-500 fill-red-500' : 'text-rose-500 fill-rose-500'}`} />
+                      {org.name}
+                    </h3>
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide w-fit ${
                       org.status === 'Active' ? 'bg-green-100 text-green-700' :
                       org.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' :
@@ -264,7 +272,6 @@ export const MapView: React.FC<MapViewProps> = ({
                       </a>
                     </div>
                     
-                    {/* Important Notes Section */}
                     {org.notes && (
                       <div className="bg-amber-50 p-2.5 rounded border border-amber-200 text-xs text-amber-900 flex gap-2 items-start leading-snug">
                          <AlertCircle size={14} className="mt-0.5 shrink-0 text-amber-600" />
@@ -278,29 +285,22 @@ export const MapView: React.FC<MapViewProps> = ({
                     </div>
 
                     <div className="pt-2 border-t border-slate-100 space-y-2">
-                      <div className="flex items-center gap-2 text-xs text-slate-700">
-                          <Phone className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-                          {org.phone ? (
+                      {org.phone && (
+                        <div className="flex items-center gap-2 text-xs text-slate-700">
+                            <Phone className="w-3.5 h-3.5 text-teal-600 shrink-0" />
                             <a href={`tel:${cleanPhone}`} className="hover:underline hover:text-teal-700 font-medium">
                               {org.phone}
                             </a>
-                          ) : (
-                            <span className="text-slate-400 italic">Не вказано</span>
-                          )}
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-slate-700">
-                          <Mail className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-                          {org.email ? (
-                            <a 
-                              href={`mailto:${org.email}?subject=Запит%20на%20допомогу`} 
-                              className="hover:underline hover:text-teal-700 font-medium break-all"
-                            >
+                        </div>
+                      )}
+                      {org.email && (
+                        <div className="flex items-center gap-2 text-xs text-slate-700">
+                            <Mail className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                            <a href={`mailto:${org.email}`} className="hover:underline hover:text-teal-700 font-medium break-all">
                               {org.email}
                             </a>
-                          ) : (
-                            <span className="text-slate-400 italic">Не вказано</span>
-                          )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 

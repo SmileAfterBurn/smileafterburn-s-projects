@@ -34,7 +34,6 @@ const Tryzub = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-// Map string icon names to components
 const ICON_COMPONENTS: Record<string, React.ElementType> = {
   Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Gem, Tryzub
 };
@@ -194,7 +193,6 @@ const App: React.FC = () => {
     const priorityB = getOrganizationPriority(b);
     if (priorityA !== priorityB) return priorityA - priorityB;
     
-    // Stable sort for Posmishka to preserve DB order (Sobornyi above Nezalezhnoi)
     if (priorityA === 1) {
       return INITIAL_ORGANIZATIONS.indexOf(a) - INITIAL_ORGANIZATIONS.indexOf(b);
     }
@@ -215,8 +213,22 @@ const App: React.FC = () => {
   const toggleCategory = (category: string) => setSelectedCategories(prev => prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]);
   const resetFilters = () => { setSelectedStatuses([]); setSelectedCategories([]); setSearchTerm(''); };
 
-  const mapCenter: [number, number] = useMemo(() => activeRegion && REGION_CONFIG[activeRegion] ? REGION_CONFIG[activeRegion].center : REGION_CONFIG['All'].center, [activeRegion]);
-  const mapZoom = useMemo(() => activeRegion && REGION_CONFIG[activeRegion] ? REGION_CONFIG[activeRegion].zoom : REGION_CONFIG['All'].zoom, [activeRegion]);
+  // Strict check for mapCenter and mapZoom to prevent NaN
+  const mapCenter: [number, number] = useMemo(() => {
+    const config = (activeRegion && REGION_CONFIG[activeRegion]) ? REGION_CONFIG[activeRegion] : REGION_CONFIG['All'];
+    const c = config.center;
+    if (Array.isArray(c) && typeof c[0] === 'number' && !isNaN(c[0]) && typeof c[1] === 'number' && !isNaN(c[1])) {
+      return c as [number, number];
+    }
+    return [48.3794, 31.1656]; // Ukraine center
+  }, [activeRegion]);
+
+  const mapZoom = useMemo(() => {
+    const config = (activeRegion && REGION_CONFIG[activeRegion]) ? REGION_CONFIG[activeRegion] : REGION_CONFIG['All'];
+    const z = config.zoom;
+    return (typeof z === 'number' && !isNaN(z)) ? z : 6;
+  }, [activeRegion]);
+
   const activeFilterCount = selectedStatuses.length + selectedCategories.length;
 
   if (isAllowedLocation === false) {
