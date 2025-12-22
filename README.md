@@ -1,7 +1,7 @@
 # Інклюзивна Мапа Соціальних Послуг України
 
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+<img width="1200" height="475" alt="GHBanner" src="[https://drive.google.com/file/d/1LyrD2aNKbMvRtnK-J6PH3ph8qfFlDrur/view?usp=sharing]" />
 </div>
 
 Цифрова платформа для пошуку соціальних послуг та гуманітарної допомоги на території України з інтеграцією AI-помічниці **пані Думки**.
