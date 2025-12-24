@@ -134,7 +134,7 @@ This is **Інклюзивна Мапа Соціальних Послуг Укр
 npm install
 
 # Create environment file (required)
-cp .env.example .env.local  # Then add VITE_GEMINI_API_KEY
+# Create .env.local and add VITE_GEMINI_API_KEY=your_api_key_here
 
 # Start development server
 npm run dev  # Runs on http://localhost:5173
@@ -163,8 +163,8 @@ npm run test:watch
 ## Common Tasks
 
 ### Adding a New Organization
-1. Edit `constants.ts` (or `organizations.ts` depending on structure)
-2. Add a new object to `INITIAL_ORGANIZATIONS` array
+1. Edit `organizations.ts` file
+2. Add a new object to the `INITIAL_ORGANIZATIONS` array
 3. Include all required fields: `id`, `name`, `address`, `lat`, `lng`, `category`, `services`, `phone`, `email`, `status`, `region`
 4. Validate coordinates are correct for Ukraine
 5. Test the organization appears on both map and table
