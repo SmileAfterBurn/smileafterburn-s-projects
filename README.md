@@ -85,7 +85,7 @@
    
    Створіть файл `.env.local` в кореневій папці:
    ```
-   VITE_GEMINI_API_KEY=your_api_key_here
+   GEMINI_API_KEY=your_api_key_here
    ```
    
    ⚠️ **ВАЖЛИВО:** Ніколи не комітьте файл `.env.local` у Git! Він вже додан у `.gitignore`.
@@ -138,7 +138,7 @@ npm run build
 2. Створіть новий API key
 3. Додайте його в `.env.local`:
    ```
-   VITE_GEMINI_API_KEY=your_api_key_here
+   GEMINI_API_KEY=your_api_key_here
    ```
 4. ⚠️ **Ніколи не публікуйте цей ключ публічно!**
 
