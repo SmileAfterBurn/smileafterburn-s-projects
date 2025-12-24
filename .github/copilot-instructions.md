@@ -214,6 +214,10 @@ npm run test -- <pattern>  # Run specific tests
 - **NEVER commit `.env.local`** to Git (already in `.gitignore`)
 - **NEVER hardcode API keys** in source code
 - Environment variable `GEMINI_API_KEY` is loaded by Vite and exposed as `process.env.API_KEY` to the client
+- ⚠️ **Security Warning:** The API key is exposed to the browser in the current implementation. For production, consider:
+  - Using a backend proxy to keep the API key server-side
+  - Implementing API key rotation and rate limiting
+  - Restricting API key usage by domain/referrer in Google Cloud Console
 - API keys should be stored in `.env.local`:
   ```
   GEMINI_API_KEY=your_api_key_here
