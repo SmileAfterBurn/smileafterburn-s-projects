@@ -1,5 +1,32 @@
 export type RegionName = 'All' | 'Odesa' | 'Mykolaiv' | 'Kherson' | 'Dnipro' | 'Zaporizhzhia' | 'Kyiv' | 'Lviv' | 'Kharkiv' | 'Volyn' | 'Zhytomyr' | 'IvanoFrankivsk' | 'Kirovohrad' | 'Rivne' | 'Sumy' | 'Ternopil' | 'Chernivtsi' | 'Khmelnytskyi' | 'Chernihiv' | 'Poltava';
 
+/**
+ * Coordinates represented as a tuple of [latitude, longitude]
+ */
+export type Coordinates = [number, number];
+
+/**
+ * Validated coordinates with guarantees that values are within valid ranges:
+ * - Latitude: -90 to 90
+ * - Longitude: -180 to 180
+ */
+export type ValidatedCoordinates = Coordinates & {
+  readonly __validated: unique symbol;
+};
+
+/**
+ * Configuration for a region including map settings
+ */
+export interface RegionConfig {
+  center: Coordinates;
+  zoom: number;
+  label: string;
+  icon: string;
+  gradient: string;
+  description: string;
+  customImage?: string;
+}
+
 export interface Organization {
   id: string;
   name: string; // Відповідає колонці "Актори"
