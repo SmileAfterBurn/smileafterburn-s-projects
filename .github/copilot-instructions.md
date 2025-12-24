@@ -26,7 +26,7 @@ npm install
 ```bash
 npm run dev
 ```
-The app runs at `http://localhost:5173`
+The app runs at `http://localhost:3000`
 
 ### Build
 ```bash
@@ -81,8 +81,8 @@ npm run preview
 
 **CRITICAL SECURITY**: Never commit API keys or `.env.local` files!
 
-- Environment variables use `VITE_` prefix (Vite convention)
-- Required: `VITE_GEMINI_API_KEY` for Google Gemini AI integration
+- Required environment variable: `GEMINI_API_KEY` for Google Gemini AI integration
+- The Vite config loads this as `env.GEMINI_API_KEY` (no VITE_ prefix needed)
 - Always check `.gitignore` includes `.env.local`
 
 ## Project Structure
