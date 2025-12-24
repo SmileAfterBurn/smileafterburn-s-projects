@@ -3,6 +3,7 @@ description: "Instructions for GitHub Copilot coding agent working on the Інк
 ---
 
 # Copilot Instructions for Social Service Map Ukraine
+## Інклюзивна Мапа Соціальних Послуг України
 
 ## Project Overview
 
