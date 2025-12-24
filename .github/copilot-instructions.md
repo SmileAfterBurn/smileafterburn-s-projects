@@ -134,7 +134,7 @@ This is **Інклюзивна Мапа Соціальних Послуг Укр
 npm install
 
 # Create environment file (required)
-# Create .env.local and add VITE_GEMINI_API_KEY=your_api_key_here
+# Create .env.local and add GEMINI_API_KEY=your_api_key_here
 
 # Start development server
 npm run dev  # Runs on http://localhost:5173
@@ -213,10 +213,10 @@ npm run test -- <pattern>  # Run specific tests
 ### Environment Variables
 - **NEVER commit `.env.local`** to Git (already in `.gitignore`)
 - **NEVER hardcode API keys** in source code
-- Use `VITE_` prefix for environment variables exposed to the client
+- Environment variable `GEMINI_API_KEY` is loaded by Vite and exposed as `process.env.API_KEY` to the client
 - API keys should be stored in `.env.local`:
   ```
-  VITE_GEMINI_API_KEY=your_api_key_here
+  GEMINI_API_KEY=your_api_key_here
   ```
 
 ### API Security
@@ -328,7 +328,7 @@ npm update <package-name>
 - Ensure map container has explicit height in styles
 
 ### AI Assistant Not Working
-- Verify `VITE_GEMINI_API_KEY` is set in `.env.local`
+- Verify `GEMINI_API_KEY` is set in `.env.local`
 - Check API key is valid and has proper permissions
 - Review browser console for API errors
 
