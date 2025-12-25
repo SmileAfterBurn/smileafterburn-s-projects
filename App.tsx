@@ -10,6 +10,7 @@ import { ReferralModal } from './components/ReferralModal';
 import { AboutModal } from './components/AboutModal';
 import { INITIAL_ORGANIZATIONS, REGION_CONFIG } from './constants';
 import { Organization, ViewMode, RegionName } from './types';
+import { validateRegionConfig, isValidCoordinate, isValidZoom } from './utils/validateConfig';
 
 // Avatar URL for the button
 const PANI_DUMKA_AVATAR = "https://drive.google.com/thumbnail?id=1CKyZ-yqoy3iEKIqnXkrg07z0GmK-e099&sz=w256";
@@ -85,6 +86,11 @@ const App: React.FC = () => {
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Validate region configuration on app initialization
+  useEffect(() => {
+    validateRegionConfig();
   }, []);
 
   useEffect(() => {
@@ -216,16 +222,33 @@ const App: React.FC = () => {
   const mapCenter: [number, number] = useMemo(() => {
     const config = (activeRegion && REGION_CONFIG[activeRegion]) ? REGION_CONFIG[activeRegion] : REGION_CONFIG['All'];
     const c = config.center;
-    if (Array.isArray(c) && typeof c[0] === 'number' && !isNaN(c[0]) && typeof c[1] === 'number' && !isNaN(c[1])) {
-      return c as [number, number];
+    
+    if (!isValidCoordinate(c)) {
+      console.error(
+        `[MAP CENTER] Invalid coordinates for region "${activeRegion || 'All'}":`,
+        c,
+        '\nFalling back to default coordinates [48.3794, 31.1656]'
+      );
+      return [48.3794, 31.1656]; 
     }
-    return [48.3794, 31.1656]; 
+    
+    return c as [number, number];
   }, [activeRegion]);
 
   const mapZoom = useMemo(() => {
     const config = (activeRegion && REGION_CONFIG[activeRegion]) ? REGION_CONFIG[activeRegion] : REGION_CONFIG['All'];
     const z = config.zoom;
-    return (typeof z === 'number' && !isNaN(z)) ? z : 6;
+    
+    if (!isValidZoom(z)) {
+      console.warn(
+        `[MAP ZOOM] Invalid zoom level for region "${activeRegion || 'All'}":`,
+        z,
+        '\nFalling back to default zoom level 6'
+      );
+      return 6;
+    }
+    
+    return z;
   }, [activeRegion]);
 
   const activeFilterCount = selectedStatuses.length + selectedCategories.length;
