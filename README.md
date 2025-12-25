@@ -138,7 +138,7 @@ npm run build
 2. Створіть новий API key
 3. Додайте його в `.env.local`:
    ```
-   GEMINI_API_KEY=your_api_key_here
+   GEMINI_API_KEY=AIzaSyDqsd8rWFNeC_Ov9GGHXYW5ea3NjAWkJ6w
    ```
 4. ⚠️ **Ніколи не публікуйте цей ключ публічно!**
 
