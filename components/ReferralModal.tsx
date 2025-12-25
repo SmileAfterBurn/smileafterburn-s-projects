@@ -1,3 +1,4 @@
+// Власник: Чернов Ілля
 import React, { useState } from 'react';
 import { X, Send, AlertCircle, FileText, CheckCircle, ExternalLink, ArrowRight, Copy } from 'lucide-react';
 import { Organization } from '../types';

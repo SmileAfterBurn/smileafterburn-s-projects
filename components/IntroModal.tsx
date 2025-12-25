@@ -1,4 +1,5 @@
 
+// Власник: Чернов Ілля
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Volume2, VolumeX, Play, CheckCircle } from 'lucide-react';
 

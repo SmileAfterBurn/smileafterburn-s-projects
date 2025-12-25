@@ -1,4 +1,5 @@
 
+// Власник: Чернов Ілля
 import { GoogleGenAI, GenerateContentResponse, LiveServerMessage, Modality } from "@google/genai";
 import { Organization } from "../types";
 

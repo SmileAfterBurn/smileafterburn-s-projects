@@ -1,4 +1,5 @@
 
+// Власник: Чернов Ілля
 import React, { useState } from 'react';
 import { X, Heart, Share2, Github, Mail, Globe, Award, Wallet, ArrowRight, Target, Users, ShieldCheck, Briefcase } from 'lucide-react';
 

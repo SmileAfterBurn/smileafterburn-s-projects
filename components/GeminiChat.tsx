@@ -1,4 +1,5 @@
 
+// Власник: Чернов Ілля
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, User, Loader2, Download, Type, Eye, Mic, MicOff } from 'lucide-react';
 import { analyzeData, LiveSession } from '../services/geminiService';
