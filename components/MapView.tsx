@@ -1,9 +1,10 @@
 
 import React, { useEffect, useState, useMemo, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, AttributionControl, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, AttributionControl, ZoomControl, GeoJSON } from 'react-leaflet';
 import { Organization } from '../types';
 import { MapPin, Heart, Phone, Mail, FileText, Locate, Navigation, Loader2, AlertCircle, ExternalLink, Calendar } from 'lucide-react';
 import L from 'leaflet';
+import ukraineGeoJSON from '../maps/ukraine_services_map.geojson'; // Ensure this import works with your bundler
 
 // Utility for strict coordinate validation with type coercion
 const isValCoord = (val: any): val is number => {
@@ -260,6 +261,19 @@ export const MapView: React.FC<MapViewProps> = ({
         <MapUpdater center={targetCenter} zoom={targetZoom} />
         <LocationMarker />
         <MapLegend />
+
+        {/* Render GeoJSON if available */}
+        {ukraineGeoJSON && (
+          <GeoJSON 
+            data={ukraineGeoJSON as any} 
+            style={{
+              color: '#0d9488',
+              weight: 2,
+              opacity: 0.5,
+              fillOpacity: 0.1
+            }}
+          />
+        )}
 
         {organizations.map((org) => {
           if (!isValidLatLng(org.lat, org.lng)) return null;

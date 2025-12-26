@@ -6,10 +6,13 @@ import RadioGroup from './RadioGroup';
 import SelectInput from './SelectInput';
 import CheckboxInput from './CheckboxInput';
 import TextArea from './TextArea';
+import { submitOrganizationToSheet } from '../../services/googleSheetsService';
 
 export const ConsentForm: React.FC = () => {
     const [formData, setFormData] = useState<Record<string, any>>({});
     const [submittedData, setSubmittedData] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
@@ -58,11 +61,31 @@ export const ConsentForm: React.FC = () => {
         URL.revokeObjectURL(url);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const dataString = JSON.stringify(formData, null, 2);
-        setSubmittedData(dataString);
-        downloadCsv(formData);
+        setIsSubmitting(true);
+        setSubmitError(null);
+
+        try {
+            // Submit to Google Sheet
+            const success = await submitOrganizationToSheet(formData);
+
+            if (success) {
+                const dataString = JSON.stringify(formData, null, 2);
+                setSubmittedData(dataString);
+                // Optional: still download CSV as backup
+                downloadCsv(formData);
+                alert('Дані успішно надіслано!');
+            } else {
+                setSubmitError('Помилка при відправці даних. Спробуйте пізніше або збережіть CSV.');
+                downloadCsv(formData); // Fallback
+            }
+        } catch (err) {
+            setSubmitError('Виникла помилка.');
+            console.error(err);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const renderField = (field: FormField) => {
@@ -111,9 +134,14 @@ export const ConsentForm: React.FC = () => {
                         </div>
                     ))}
 
-                    <div className="flex justify-end pt-4">
-                        <button type="submit" className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg">
-                            Надіслати
+                    <div className="flex justify-end pt-4 items-center gap-4">
+                        {submitError && <span className="text-red-400 text-sm font-bold">{submitError}</span>}
+                        <button 
+                            type="submit" 
+                            disabled={isSubmitting}
+                            className={`bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 shadow-lg ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            {isSubmitting ? 'Відправка...' : 'Надіслати'}
                         </button>
                     </div>
                 </form>

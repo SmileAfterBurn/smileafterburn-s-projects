@@ -12,6 +12,7 @@ import { ConsentModal } from './components/ConsentForm/ConsentModal';
 import { INITIAL_ORGANIZATIONS, REGION_CONFIG } from './constants';
 import { Organization, ViewMode, RegionName } from './types';
 import { validateRegionConfig, isValidCoordinate, isValidZoom } from './utils/validateConfig';
+import { fetchOrganizationsFromSheet } from './services/googleSheetsService';
 
 // Avatar URL for the button
 const PANI_DUMKA_AVATAR = "https://drive.google.com/thumbnail?id=1CKyZ-yqoy3iEKIqnXkrg07z0GmK-e099&sz=w256";
@@ -41,7 +42,7 @@ const ICON_COMPONENTS: Record<string, React.ElementType> = {
 };
 
 const App: React.FC = () => {
-  const [organizations] = useState<Organization[]>(INITIAL_ORGANIZATIONS);
+  const [organizations, setOrganizations] = useState<Organization[]>(INITIAL_ORGANIZATIONS);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Split);
   const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -62,6 +63,16 @@ const App: React.FC = () => {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const filterRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const sheetData = await fetchOrganizationsFromSheet();
+      if (sheetData.length > 0) {
+        setOrganizations([...INITIAL_ORGANIZATIONS, ...sheetData]);
+      }
+    };
+    loadData();
+  }, []);
 
   useEffect(() => {
     const checkLocation = async () => {
