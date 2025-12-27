@@ -1,7 +1,7 @@
 
-// Власник: Чернов Ілля
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Volume2, VolumeX, Play, CheckCircle } from 'lucide-react';
+import { ArrowRight, Volume2, VolumeX, Play, CheckCircle, Loader2 } from 'lucide-react';
+import { generateSpeech } from '../services/geminiService';
 
 interface IntroModalProps {
   onComplete: () => void;
@@ -29,59 +29,78 @@ const SLIDES = [
 export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
   
-  // Ref to handle speech synthesis cancellation
-  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
 
-  // Load voices
   useEffect(() => {
-    const loadVoices = () => {
-      window.speechSynthesis.getVoices();
-    };
-    loadVoices();
-    window.speechSynthesis.onvoiceschanged = loadVoices;
     return () => {
-      window.speechSynthesis.onvoiceschanged = null;
-      window.speechSynthesis.cancel();
+      stopAudio();
+      audioContextRef.current?.close();
     };
   }, []);
 
-  // Handle slide changes - trigger speech if playing
   useEffect(() => {
     if (hasStarted && isPlaying) {
-      speak(SLIDES[currentStep].text);
+      playCurrentSlide();
     }
-  }, [currentStep]); // Removed isPlaying/hasStarted to prevent double-triggering
+  }, [currentStep]);
 
-  const speak = (text: string) => {
-    // Always cancel before speaking new text
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'uk-UA'; 
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-    
-    const voices = window.speechSynthesis.getVoices();
-    // Prioritize Ukrainian -> Russian (often handles UK well) -> Default
-    const targetVoice = voices.find(v => v.lang.includes('uk')) || 
-                        voices.find(v => v.lang.includes('ru'));
-    
-    if (targetVoice) {
-      utterance.voice = targetVoice;
+  const stopAudio = () => {
+    if (sourceNodeRef.current) {
+      try { sourceNodeRef.current.stop(); } catch(e) {}
+      sourceNodeRef.current = null;
     }
+  };
 
-    speechRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
+  const playCurrentSlide = async () => {
+    stopAudio();
+    setIsLoadingAudio(true);
+    
+    try {
+      const audioData = await generateSpeech(SLIDES[currentStep].text);
+      
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      }
+      
+      const buffer = await decodeAudioData(audioData, audioContextRef.current);
+      
+      const source = audioContextRef.current.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioContextRef.current.destination);
+      source.onended = () => {
+        if (sourceNodeRef.current === source) {
+          sourceNodeRef.current = null;
+        }
+      };
+      source.start(0);
+      sourceNodeRef.current = source;
+    } catch (e) {
+      console.error("Audio playback error", e);
+    } finally {
+      setIsLoadingAudio(false);
+    }
+  };
+
+  const decodeAudioData = async (data: ArrayBuffer, ctx: AudioContext): Promise<AudioBuffer> => {
+    // Gemini TTS returns raw PCM (int16), need to manually create the buffer
+    const dataInt16 = new Int16Array(data);
+    const buffer = ctx.createBuffer(1, dataInt16.length, 24000);
+    const channelData = buffer.getChannelData(0);
+    for (let i = 0; i < dataInt16.length; i++) {
+      channelData[i] = dataInt16[i] / 32768.0;
+    }
+    return buffer;
   };
 
   const handleStart = () => {
     setHasStarted(true);
     setIsPlaying(true);
-    // Speak immediately on user interaction
-    speak(SLIDES[currentStep].text);
+    playCurrentSlide();
   };
 
   const handleNext = () => {
@@ -93,12 +112,11 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
   };
 
   const handleSkip = () => {
-    window.speechSynthesis.cancel();
+    stopAudio();
     handleFinish();
   };
 
   const handleFinish = () => {
-    window.speechSynthesis.cancel();
     if (dontShowAgain) {
       localStorage.setItem('hide_intro_annotation', 'true');
     }
@@ -107,13 +125,11 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
 
   const toggleMute = () => {
     if (isPlaying) {
-      // Mute
-      window.speechSynthesis.cancel();
+      stopAudio();
       setIsPlaying(false);
     } else {
-      // Unmute and Speak
       setIsPlaying(true);
-      speak(SLIDES[currentStep].text);
+      playCurrentSlide();
     }
   };
 
@@ -121,11 +137,9 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
   const isLastSlide = currentStep === SLIDES.length - 1;
 
   return (
-    // High Z-index to cover everything
     <div className="fixed inset-0 z-[5000] bg-slate-900/95 backdrop-blur-md flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden relative flex flex-col animate-in fade-in zoom-in duration-300">
         
-        {/* Header Image */}
         <div className="h-32 bg-teal-600 bg-[url('https://images.unsplash.com/photo-1605806616949-1e87b487bc2a?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center relative">
           <div className="absolute inset-0 bg-teal-900/40"></div>
           <div className="absolute bottom-4 left-6 text-white z-10">
@@ -135,20 +149,16 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
           <button 
             onClick={toggleMute}
             className="absolute top-4 right-4 p-2 bg-black/30 hover:bg-black/50 rounded-full text-white backdrop-blur-sm transition-all"
-            title={isPlaying ? "Вимкнути звук" : "Увімкнути звук"}
           >
             {isPlaying ? <Volume2 size={20} /> : <VolumeX size={20} />}
           </button>
         </div>
 
-        {/* Content Body */}
         <div className="p-6 md:p-8 flex flex-col gap-6">
-          
-          {/* Main Text Area */}
           <div className="min-h-[120px] text-lg text-slate-700 leading-relaxed relative flex items-center">
              {!hasStarted ? (
                <div className="w-full flex flex-col items-center justify-center gap-4 py-2 text-center">
-                 <p>Натисніть кнопку, щоб прослухати аудіо-гід.</p>
+                 <p className="font-medium">Пані Думка хоче розповісти вам про можливості мапи.</p>
                  <button 
                    onClick={handleStart}
                    className="flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-full font-bold shadow-lg transition-transform hover:scale-105"
@@ -157,13 +167,19 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
                  </button>
                </div>
              ) : (
-                <p className="animate-in fade-in duration-500 w-full">
-                  {content.text}
-                </p>
+                <div className="relative w-full">
+                  {isLoadingAudio && (
+                    <div className="absolute -top-10 left-1/2 -translate-x-1/2">
+                       <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
+                    </div>
+                  )}
+                  <p className="animate-in fade-in duration-500">
+                    {content.text}
+                  </p>
+                </div>
              )}
           </div>
 
-          {/* Progress Dots */}
           <div className="flex gap-2 justify-center">
             {SLIDES.map((_, idx) => (
               <div 
@@ -173,7 +189,6 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
             ))}
           </div>
 
-          {/* Footer Controls */}
           <div className="flex items-center justify-between pt-4 border-t border-slate-100">
              <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-500 hover:text-slate-700 select-none">
                <input 
@@ -198,7 +213,8 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
                {hasStarted && (
                  <button 
                    onClick={handleNext}
-                   className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-teal-700 text-white rounded-lg font-bold transition-colors shadow-md"
+                   disabled={isLoadingAudio}
+                   className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-teal-700 text-white rounded-lg font-bold transition-colors shadow-md disabled:opacity-50"
                  >
                    {isLastSlide ? 'Почати роботу' : 'Далі'}
                    {!isLastSlide ? <ArrowRight size={18} /> : <CheckCircle size={18} />}

@@ -1,4 +1,3 @@
-// Власник: Чернов Ілля
 import React, { useState } from 'react';
 import { Phone, Search, X, Headphones, Scale, Info, ShieldAlert, PhoneForwarded, Globe } from 'lucide-react';
 import { REMOTE_SUPPORT_ACTORS } from '../constants';

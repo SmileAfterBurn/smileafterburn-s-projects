@@ -1,5 +1,4 @@
 
-// Власник: Чернов Ілля
 import React, { useEffect, useRef } from 'react';
 import { Organization } from '../types';
 import { MapPin, Phone, Mail, ChevronRight, Calendar } from 'lucide-react';

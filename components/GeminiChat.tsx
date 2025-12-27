@@ -1,8 +1,7 @@
 
-// Власник: Чернов Ілля
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, User, Loader2, Download, Type, Eye, Mic, MicOff } from 'lucide-react';
-import { analyzeData, LiveSession } from '../services/geminiService';
+import { Send, User, Loader2, Download, Type, Eye, Mic, MicOff, Volume2 } from 'lucide-react';
+import { analyzeData, LiveSession, generateSpeech } from '../services/geminiService';
 import { Organization, ChatMessage } from '../types';
 
 const PANI_DUMKA_AVATAR = "https://drive.google.com/thumbnail?id=1CKyZ-yqoy3iEKIqnXkrg07z0GmK-e099&sz=w256";
@@ -27,10 +26,13 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
   const [isLoading, setIsLoading] = useState(false);
   const [isLargeText, setIsLargeText] = useState(false);
   const [isHighContrast, setIsHighContrast] = useState(false);
+  const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
   
   // Voice Chat State
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const liveSessionRef = useRef<LiveSession | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -44,11 +46,57 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
 
   useEffect(() => {
     return () => {
-      if (liveSessionRef.current) {
-        liveSessionRef.current.disconnect();
-      }
+      if (liveSessionRef.current) liveSessionRef.current.disconnect();
+      stopAudioPlayback();
+      audioContextRef.current?.close();
     };
   }, []);
+
+  const stopAudioPlayback = () => {
+    if (sourceNodeRef.current) {
+      try { sourceNodeRef.current.stop(); } catch(e) {}
+      sourceNodeRef.current = null;
+    }
+    setSpeakingMessageId(null);
+  };
+
+  const speakText = async (msgId: string, text: string) => {
+    if (speakingMessageId === msgId) {
+      stopAudioPlayback();
+      return;
+    }
+    
+    stopAudioPlayback();
+    setSpeakingMessageId(msgId);
+    
+    try {
+      const cleanText = text.replace(/\*\*/g, '').replace(/<br\/>/g, ' ');
+      const audioData = await generateSpeech(cleanText);
+      
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      }
+      
+      const dataInt16 = new Int16Array(audioData);
+      const buffer = audioContextRef.current.createBuffer(1, dataInt16.length, 24000);
+      const channelData = buffer.getChannelData(0);
+      for (let i = 0; i < dataInt16.length; i++) {
+        channelData[i] = dataInt16[i] / 32768.0;
+      }
+      
+      const source = audioContextRef.current.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioContextRef.current.destination);
+      source.onended = () => {
+        if (speakingMessageId === msgId) setSpeakingMessageId(null);
+      };
+      source.start(0);
+      sourceNodeRef.current = source;
+    } catch (e) {
+      console.error("Speech playback error", e);
+      setSpeakingMessageId(null);
+    }
+  };
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -94,7 +142,6 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
         });
         await liveSessionRef.current.connect();
       } catch (e) {
-        console.error("Failed to start voice chat:", e);
         alert("Не вдалося запустити голосовий чат.");
       }
     }
@@ -182,9 +229,17 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
 
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[90%] p-4 rounded-2xl shadow-sm leading-relaxed ${textSizeClass} ${msg.role === 'user' ? `${messageUserClass} rounded-br-none` : `${messageModelClass} rounded-bl-none`}`}>
-              <div className="flex items-center gap-2 mb-1 opacity-80 text-[10px] uppercase font-bold tracking-wider">
-                {msg.role === 'model' ? 'пані Думка' : 'Ви'}
+            <div className={`max-w-[90%] p-4 rounded-2xl shadow-sm leading-relaxed relative ${textSizeClass} ${msg.role === 'user' ? `${messageUserClass} rounded-br-none` : `${messageModelClass} rounded-bl-none`}`}>
+              <div className="flex items-center justify-between mb-1 opacity-80 text-[10px] uppercase font-bold tracking-wider">
+                <span>{msg.role === 'model' ? 'пані Думка' : 'Ви'}</span>
+                {msg.role === 'model' && (
+                  <button 
+                    onClick={() => speakText(msg.id, msg.text)}
+                    className={`p-1 rounded hover:bg-black/10 transition-colors ${speakingMessageId === msg.id ? 'text-teal-600 animate-pulse' : ''}`}
+                  >
+                    <Volume2 className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
               <div dangerouslySetInnerHTML={{ __html: msg.text.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
             </div>
