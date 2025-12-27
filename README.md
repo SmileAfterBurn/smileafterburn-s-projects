@@ -1,20 +1,76 @@
+![SmileAfterBurn Banner](./assets/SAfB-Banner.svg)
+
+# 🇺🇦 SmileAfterBurn Social Projects
+
+**AI Safety & Charity Principles**
+
+---
+
+## 🎯 Про проект
+
+**SmileAfterBurn** — проект соціальних ініціатив, спрямований на створення інклюзивних рішень для України. Ми розробляємо технології, що змінюють світ на краще.
+
+### 🌟 Основні проекти
+
+- **Інклюзивна мапа послуг України** — TypeScript додаток для пошуку соціальних послуг
+- **Inclusive service maps** — Карти сервісів для кожної людини
+
+## 💻 Технологічний стек
+
+- **Frontend:** TypeScript, React
+- **Backend:** Node.js, Express
+- **Infrastructure:** Google Cloud Run
+- **Databases:** Firebase, PostgreSQL
+
+## 🚀 Як почати
+
+```bash
+# Клонуємо репозиторій
+git clone https://github.com/SmileAfterBurn/smileafterburn-s-projects.git
+
+# Переходимо в директорію
+cd smileafterburn-s-projects
+
+# Встановлюємо залежності
+npm install
+
+# Запускаємо проект
+npm run dev
+```
+
+## 🤝 Як внести свій внесок
+
+Ми раді кожному, хто хоче допомогти розвивати наші проекти!
+
+1. **Fork** репозиторій
+2. Створіть **Feature Branch** (`git checkout -b feature/AmazingFeature`)
+3. **Commit** ваші зміни (`git commit -m 'docs: додано нову функцію'`)
+4. **Push** на Branch (`git push origin feature/AmazingFeature`)
+5. Відкрийте **Pull Request**
+
+## 📋 Стандарти розробки
+
+- ✅ Коментарі та документація українською мовою
+- ✅ Commit messages на українській мові
+- ✅ TypeScript strict mode
+- ✅ ESLint + Prettier для форматування коду
+
+## 📞 Контакти
+
+- **Email:** illya.vladimirovich@icloud.com
+- **GitHub:** [@SmileAfterBurn](https://github.com/SmileAfterBurn)
+- **Локація:** 🇺🇦 Ukraine
+
+## 📄 Ліцензія
+
+Цей проект ліцензований під відкритою ліцензією для соціальних проектів.
+
+---
+
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+
+**Разом ми сильніші! Together we are stronger!** 💙💛
+
+Дякуємо за вашу підтримку!
+
 </div>
-
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/drive/1rVF5mtqLSXIx9Y3EpXjyAKCrDtJsTOVt
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
