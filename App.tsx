@@ -2,11 +2,11 @@
 import React, { useState, useCallback } from 'react';
 import { formStructure } from './constants';
 import { FormFieldType, FormField } from './types';
-import FormInput from './components/FormInput';
-import RadioGroup from './components/RadioGroup';
-import SelectInput from './components/SelectInput';
-import CheckboxInput from './components/CheckboxInput';
-import TextArea from './components/TextArea';
+import FormInput from './FormInput';
+import RadioGroup from './RadioGroup';
+import SelectInput from './SelectInput';
+import CheckboxInput from './CheckboxInput';
+import TextArea from './TextArea';
 
 const App: React.FC = () => {
     const [formData, setFormData] = useState<Record<string, any>>({});
