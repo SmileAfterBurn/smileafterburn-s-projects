@@ -1,0 +1,186 @@
+{
+    "type": "FeatureCollection",
+    "name": "south_services_map",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Кризовий центр для жінок та дітей Миколаїв",
+                "category": "тимчасовий притулок",
+                "services": "['екстрене розміщення', 'психологічна підтримка', 'юридичні консультації']",
+                "contacts": "{'phone': '+380 (512) 37-12-45', 'email': 'support@mykolaiv-crisis.org'}",
+                "notes": "Прийом за попереднім записом через гарячу лінію. Безпечна кімната для постраждалих від ГЗН.",
+                "oblast": "Миколаївська",
+                "oblast_key": "mykolaiv",
+                "category_norm": "тимчасовий притулок"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    31.9946,
+                    46.9753
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Мобільна бригада соціально-психологічної допомоги Баштанка",
+                "category": "мобільна бригада",
+                "services": "['виїзні консультації', 'супровід до медичних послуг', \"зв'язок із поліцією\"]",
+                "contacts": "{'phone': '+380 (67) 512-44-80'}",
+                "notes": "Працює за попередніми викликами від громад та гуманітарних партнерів.",
+                "oblast": "Миколаївська",
+                "oblast_key": "mykolaiv",
+                "category_norm": "мобільна бригада"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    32.4395,
+                    47.4079
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "ЦНАП м. Вознесенськ – координатор послуг ГЗН",
+                "category": "координація",
+                "services": "['направлення до shelter program', 'допомога з документами', 'запис на медичні огляди']",
+                "contacts": "{'phone': '+380 (51) 234-56-70', 'website': 'https://voz.gov.ua/cnap'}",
+                "notes": "Окреме вікно прийому для постраждалих від ГЗН.",
+                "oblast": "Миколаївська",
+                "oblast_key": "mykolaiv",
+                "category_norm": "координація"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    31.3334,
+                    47.5672
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Дім для жінок – притулок Одеса",
+                "category": "shelter",
+                "services": "['притулок', 'психологічні сесії', 'супровід до медичних клінік']",
+                "contacts": "{'hotline': '+380 (48) 728-62-11'}",
+                "notes": "Конфіденційне місцезнаходження, координати вказані як центр міста.",
+                "oblast": "Одеська",
+                "oblast_key": "odesa",
+                "category_norm": "shelter"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    30.7326,
+                    46.4825
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Одеський обласний центр соціально-психологічної допомоги",
+                "category": "державний центр",
+                "services": "['кризове консультування', 'юридичний супровід', 'адаптаційні програми']",
+                "contacts": "{'phone': '+380 (48) 705-34-56', 'email': 'info@odspc.gov.ua'}",
+                "notes": "Приймає направлення від поліції, лікарень та НУО.",
+                "oblast": "Одеська",
+                "oblast_key": "odesa",
+                "category_norm": "державний центр"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    30.6658,
+                    46.4738
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "UNFPA Safe Space – Подільський район",
+                "category": "safe_space",
+                "services": "['групи підтримки', 'інформаційні сесії', 'підтримка з працевлаштування']",
+                "contacts": "{'phone': '+380 (67) 223-51-19'}",
+                "notes": "Мобільна команда працює у громадах Подільського району.",
+                "oblast": "Одеська",
+                "oblast_key": "odesa",
+                "category_norm": "safe_space"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    29.6111,
+                    47.7486
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Кризовий центр ГЗН Херсон",
+                "category": "кризовий центр",
+                "services": "['тимчасовий прихисток', 'первинна медична допомога', 'психологічна підтримка']",
+                "contacts": "{'hotline': '+380 (50) 318-22-14'}",
+                "notes": "Працює у партнерстві з управлінням соцзахисту міста.",
+                "oblast": "Херсонська",
+                "oblast_key": "kherson",
+                "category_norm": "кризовий центр"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    32.6178,
+                    46.6354
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Мобільна група UNHCR – Берислав",
+                "category": "мобільна група",
+                "services": "['оцінка потреб', 'видача наборів невідкладної допомоги', 'направлення до shelter hub']",
+                "contacts": "{'phone': '+380 (93) 447-10-82'}",
+                "notes": "Працює щотижнево у громадах правобережжя.",
+                "oblast": "Херсонська",
+                "oblast_key": "kherson",
+                "category_norm": "мобільна група"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    33.3763,
+                    46.8384
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Безпечний простір Caritas – Нова Каховка",
+                "category": "safe_space",
+                "services": "['дитячий простір', 'індивідуальні консультації', 'юридичні поради щодо компенсацій']",
+                "contacts": "{'phone': '+380 (67) 978-55-22'}",
+                "notes": "Переважно працює як денний центр, з можливістю релокації відвідувачів у разі ескалації.",
+                "oblast": "Херсонська",
+                "oblast_key": "kherson",
+                "category_norm": "safe_space"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    33.1224,
+                    46.7533
+                ]
+            }
+        }
+    ]
+}
