@@ -130,7 +130,20 @@ export async function accessSecretVersion(
     // Access the secret version
     const [version] = await client.accessSecretVersion({ name });
 
-    const payload = version.payload?.data?.toString('utf8') || '';
+    // The data is a Uint8Array, convert to string
+    const payloadData = version.payload?.data;
+    let payload = '';
+    
+    if (payloadData) {
+      if (typeof payloadData === 'string') {
+        payload = payloadData;
+      } else if (payloadData instanceof Uint8Array) {
+        payload = new TextDecoder('utf-8').decode(payloadData);
+      } else {
+        // Fallback for other types (Buffer, etc.)
+        payload = Buffer.from(payloadData as any).toString('utf8');
+      }
+    }
 
     return { data: payload };
   } catch (error) {
