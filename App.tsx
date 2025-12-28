@@ -1,15 +1,14 @@
-
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Info, Heart, Menu, X, Filter, Check, MessageCircle, Gem, Lock } from 'lucide-react';
-import { MapView } from './components/MapView';
-import { TableView } from './components/TableView';
-import { GeminiChat } from './components/GeminiChat';
-import { IntroModal } from './components/IntroModal';
-import { RemoteSupportModal } from './components/RemoteSupportModal';
-import { ReferralModal } from './components/ReferralModal';
-import { AboutModal } from './components/AboutModal';
-import { INITIAL_ORGANIZATIONS, REGION_CONFIG } from './constants';
-import { Organization, ViewMode, RegionName } from './types';
+import { MapView } from './components/MapView.tsx';
+import { TableView } from './components/TableView.tsx';
+import { GeminiChat } from './components/GeminiChat.tsx';
+import { IntroModal } from './components/IntroModal.tsx';
+import { RemoteSupportModal } from './components/RemoteSupportModal.tsx';
+import { ReferralModal } from './components/ReferralModal.tsx';
+import { AboutModal } from './components/AboutModal.tsx';
+import { INITIAL_ORGANIZATIONS, REGION_CONFIG } from './constants.ts';
+import { Organization, ViewMode, RegionName } from './types.ts';
 
 // Avatar URL for the button
 const PANI_DUMKA_AVATAR = "https://drive.google.com/thumbnail?id=1CKyZ-yqoy3iEKIqnXkrg07z0GmK-e099&sz=w256";
