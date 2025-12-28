@@ -7,6 +7,7 @@ steps:
 
   # 2. Збірка продуктивної версії додатку з використанням Secret Manager
   # Отримуємо API_KEY з Google Cloud Secret Manager замість placeholder
+  # Note: Secret is retrieved and injected only during build time and not exposed in logs
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
     args:

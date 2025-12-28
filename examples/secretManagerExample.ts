@@ -54,7 +54,7 @@ async function runExample() {
 
     // Step 2: Add a secret version with an API key
     console.log('\n2. Adding secret version with API key...');
-    const apiKeyValue = 'AIzaSyExample-Replace-With-Real-API-Key-123456789';
+    const apiKeyValue = 'example-api-key-DO-NOT-USE-IN-PRODUCTION-replace-with-real-key';
     const versionName = await addSecretVersion(projectId, locationId, secretId, {
       data: apiKeyValue,
     });

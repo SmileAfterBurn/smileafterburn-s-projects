@@ -2,6 +2,17 @@ import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 import { SecretConfig, SecretPayload, SecretMetadata } from '../types';
 
 /**
+ * Creates a Secret Manager client configured for the specified region
+ * 
+ * @param locationId - The location/region for the secret (e.g., 'europe-west1')
+ * @returns Configured SecretManagerServiceClient
+ */
+function createRegionalClient(locationId: string): SecretManagerServiceClient {
+  const apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com:443`;
+  return new SecretManagerServiceClient({ apiEndpoint });
+}
+
+/**
  * Creates a new regional secret in Google Cloud Secret Manager
  * 
  * @param projectId - The Google Cloud project ID
@@ -21,9 +32,7 @@ export async function createRegionalSecret(
   secretId: string
 ): Promise<SecretMetadata> {
   try {
-    // Configure regional endpoint
-    const apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com:443`;
-    const client = new SecretManagerServiceClient({ apiEndpoint });
+    const client = createRegionalClient(locationId);
 
     const parent = `projects/${projectId}/locations/${locationId}`;
 
@@ -78,8 +87,7 @@ export async function addSecretVersion(
   payload: SecretPayload
 ): Promise<string> {
   try {
-    const apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com:443`;
-    const client = new SecretManagerServiceClient({ apiEndpoint });
+    const client = createRegionalClient(locationId);
 
     const parent = `projects/${projectId}/locations/${locationId}/secrets/${secretId}`;
 
@@ -122,8 +130,7 @@ export async function accessSecretVersion(
   versionId: string = 'latest'
 ): Promise<SecretPayload> {
   try {
-    const apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com:443`;
-    const client = new SecretManagerServiceClient({ apiEndpoint });
+    const client = createRegionalClient(locationId);
 
     const name = `projects/${projectId}/locations/${locationId}/secrets/${secretId}/versions/${versionId}`;
 
@@ -140,8 +147,9 @@ export async function accessSecretVersion(
       } else if (payloadData instanceof Uint8Array) {
         payload = new TextDecoder('utf-8').decode(payloadData);
       } else {
-        // Fallback for other types (Buffer, etc.)
-        payload = Buffer.from(payloadData as any).toString('utf8');
+        // For any other buffer-like type, convert to Buffer first
+        const buffer = Buffer.from(payloadData as ArrayBuffer);
+        payload = buffer.toString('utf8');
       }
     }
 
@@ -185,8 +193,7 @@ export async function updateSecret(
   secret: { labels?: Record<string, string> }
 ): Promise<SecretMetadata> {
   try {
-    const apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com:443`;
-    const client = new SecretManagerServiceClient({ apiEndpoint });
+    const client = createRegionalClient(locationId);
 
     const name = `projects/${projectId}/locations/${locationId}/secrets/${secretId}`;
 
@@ -234,8 +241,7 @@ export async function deleteSecret(
   secretId: string
 ): Promise<void> {
   try {
-    const apiEndpoint = `secretmanager.${locationId}.rep.googleapis.com:443`;
-    const client = new SecretManagerServiceClient({ apiEndpoint });
+    const client = createRegionalClient(locationId);
 
     const name = `projects/${projectId}/locations/${locationId}/secrets/${secretId}`;
 
