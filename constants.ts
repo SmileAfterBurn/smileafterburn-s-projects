@@ -193,7 +193,7 @@ export const REGION_CONFIG: Record<RegionName, { center: [number, number], zoom:
     icon: 'Mountain',
     gradient: 'from-purple-500 to-pink-600',
     description: 'СРІБНА ЗЕМЛЯ'
-  }
+  },
   'Kyiv': {
     center: [50.4501, 30.5234],
     zoom: 11,
