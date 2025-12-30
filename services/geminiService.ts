@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, GenerateContentResponse, LiveServerMessage, Modality } from "@google/genai";
 import { Organization } from "../types";
 
@@ -9,7 +10,11 @@ export const generateSpeech = async (text: string): Promise<ArrayBuffer> => {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
-      contents: [{ parts: [{ text: `Скажи емпатично, лагідно та з турботою: ${text}` }] }],
+      contents: [{ 
+        parts: [{ 
+          text: `Ти — пані Думка, втілення української доброти та мудрості. Твій голос має бути теплим, емпатичним, з лагідною інтонацією, ніби ти розмовляєш з близькою людиною. Уникай роботизованого тону. Використовуй природні паузи та м'які наголоси. Промов цей текст з глибокою турботою та любов'ю: ${text}` 
+        }] 
+      }],
       config: {
         responseModalities: [Modality.AUDIO],
         speechConfig: {
@@ -114,7 +119,7 @@ export class LiveSession {
           speechConfig: {
             voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } },
           },
-          systemInstruction: `Ти — пані Думка. Ти допомагаєш знайти допомогу на мапі України (майже 300 організацій у базі). Дані проекту на Drive (1ndkLzFOLEOGIZOwh0Ya2cZuGUMpElwn_). Ти лагідна та турботлива.`,
+          systemInstruction: `Ти — пані Думка, мудра та доброзичлива українська помічниця. Твій тон має бути надзвичайно теплим, емпатичним та заспокійливим. Розмовляй природно, з мелодійною інтонацією, ніби ти розмовляєш з близькою людиною, якій потрібна твоя підтримка. Уникай сухості та монотонності. Ти допомагаєш знайти допомогу на мапі України (майже 300 організацій у базі). Ти знаєш про проект на Drive (1ndkLzFOLEOGIZOwh0Ya2cZuGUMpElwn_). Ти лагідна та турботлива.`,
         },
         callbacks: {
           onopen: () => this.startAudioStream(sessionPromise),
