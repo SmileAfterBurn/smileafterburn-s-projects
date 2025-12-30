@@ -8,12 +8,12 @@ export interface Organization {
   lng: number;
   category: string;
   services: string; // Відповідає колонці "Послуги"
-  phone: string;    // Нове поле
-  email: string;    // Нове поле
+  phone: string;    // Обов'язкове поле для зв'язку
+  email: string;    
   status: 'Active' | 'Inactive' | 'Pending' | 'In Development';
   driveFolderUrl: string;
   budget: number;
-  region: RegionName; // Нове поле для фільтрації по регіонах
+  region: RegionName; 
   
   // New detailed fields
   workingHours?: string;

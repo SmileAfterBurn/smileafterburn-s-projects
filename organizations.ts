@@ -2,24 +2,24 @@ import { Organization, RegionName } from './types';
 
 /**
  * Функція для генерації стандартної мережі організацій у регіоні 
- * Створює 12 різнопланових установ для кожного регіону
+ * Створює 12 різнопланових установ для кожного регіону з розширеними метаданими
  */
 function generateStandardNetwork(region: RegionName, lat: number, lng: number): Organization[] {
   if (region === 'All') return [];
   
   const services = [
-    { cat: 'Благодійна організація', name: 'Карітас', srv: 'Гуманітарна допомога, дитячі простори, допомога ВПО' },
-    { cat: 'Міжнародна організація', name: 'Червоний Хрест', srv: 'Перша допомога, навчання, видача ваучерів' },
-    { cat: 'Державна соціальна служба', name: 'Центр соціальних служб', srv: 'Консультації, реєстрація, супровід сімей' },
-    { cat: 'Адміністративні послуги', name: 'ЦНАП', srv: 'Реєстрація ВПО, довідки, юридичні документи' },
-    { cat: 'Благодійна організація', name: 'БФ «Рокада»', srv: 'Соціальний супровід, гуманітарні набори' },
-    { cat: 'Благодійна організація', name: 'БФ «Право на захист»', srv: 'Юридична підтримка ВПО, захист прав' },
-    { cat: 'Громадська організація', name: 'ГО «Дівчата»', srv: 'Підтримка жінок, запобігання ГЗН' },
-    { cat: 'Шелтер/Прихисток', name: 'Міський Шелтер', srv: 'Тимчасове житло для переселенців' },
-    { cat: 'Гуманітарний штаб', name: 'Координаційний Хаб', srv: 'Розподіл продуктових та гігієнічних наборів' },
-    { cat: 'Психологічна допомога', name: 'Центр психічного здоров’я', srv: 'Індивідуальні та групові терапії' },
-    { cat: 'Допомога дітям', name: 'Простір дружній до дитини', srv: 'Освітні та розважальні програми' },
-    { cat: 'Юридична допомога', name: 'Центр БПД', srv: 'Безкоштовні правові консультації' }
+    { cat: 'Благодійна організація', name: 'Карітас', srv: 'Гуманітарна допомога, дитячі простори, допомога ВПО', status: 'Active' as const },
+    { cat: 'Міжнародна організація', name: 'Червоний Хрест', srv: 'Перша допомога, навчання, видача ваучерів', status: 'Active' as const },
+    { cat: 'Державна соціальна служба', name: 'Центр соціальних служб', srv: 'Консультації, реєстрація, супровід сімей', status: 'Active' as const },
+    { cat: 'Адміністративні послуги', name: 'ЦНАП', srv: 'Реєстрація ВПО, довідки, юридичні документи', status: 'Active' as const },
+    { cat: 'Благодійна організація', name: 'БФ «Рокада»', srv: 'Соціальний супровід, гуманітарні набори', status: 'Pending' as const },
+    { cat: 'Благодійна організація', name: 'БФ «Право на захист»', srv: 'Юридична підтримка ВПО, захист прав', status: 'Active' as const },
+    { cat: 'Громадська організація', name: 'ГО «Дівчата»', srv: 'Підтримка жінок, запобігання ГЗН', status: 'Active' as const },
+    { cat: 'Шелтер/Прихисток', name: 'Міський Шелтер', srv: 'Тимчасове житло для переселенців', status: 'In Development' as const },
+    { cat: 'Гуманітарний штаб', name: 'Координаційний Хаб', srv: 'Розподіл продуктових та гігієнічних наборів', status: 'Active' as const },
+    { cat: 'Психологічна допомога', name: 'Центр психічного здоров’я', srv: 'Індивідуальні та групові терапії', status: 'Active' as const },
+    { cat: 'Допомога дітям', name: 'Простір дружній до дитини', srv: 'Освітні та розважальні програми', status: 'Active' as const },
+    { cat: 'Юридична допомога', name: 'Центр БПД', srv: 'Безкоштовні правові консультації', status: 'Active' as const }
   ];
 
   return services.map((s, idx) => ({
@@ -27,13 +27,15 @@ function generateStandardNetwork(region: RegionName, lat: number, lng: number): 
     name: `${s.name} (${region})`,
     region: region,
     address: `м. ${region}, вул. Центральна, ${10 + idx}`,
-    lat: lat + (Math.random() - 0.5) * 0.1, // Розсіювання навколо центру міста
-    lng: lng + (Math.random() - 0.5) * 0.1,
+    lat: lat + (Math.random() - 0.5) * 0.15,
+    lng: lng + (Math.random() - 0.5) * 0.15,
     category: s.cat,
     services: s.srv,
-    phone: `+380 ${67 + idx} 000 00 00`,
+    phone: `+380 ${67 + idx} ${100 + idx} 00 00`,
     email: `contact@${region.toLowerCase()}-support.ua`,
-    status: 'Active',
+    status: s.status,
+    workingHours: 'Пн-Пт 09:00 - 18:00',
+    notes: idx % 4 === 0 ? 'Попередній запис обов’язковий через телефон.' : undefined,
     driveFolderUrl: '',
     budget: 0
   }));
@@ -51,11 +53,14 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     category: 'Благодійна організація',
     services: 'Комплексна гуманітарна допомога, центри підтримки сім’ї, психологічна підтримка',
     phone: '+380 50 460 22 40',
+    additionalPhones: ['+380 61 222 33 44'],
     email: 'info@posmishka.org.ua',
     status: 'Active',
+    workingHours: 'Пн-Пт 10:00 - 17:00',
+    website: 'https://posmishka.org.ua',
+    notes: 'Центральний офіс. Прийом гуманітарної допомоги здійснюється за графіком.',
     driveFolderUrl: '',
-    budget: 0,
-    website: 'https://posmishka.org.ua'
+    budget: 0
   },
   {
     id: 'zap_posmishka_nez',
@@ -68,30 +73,152 @@ export const INITIAL_ORGANIZATIONS: Organization[] = [
     services: 'Осередок допомоги, соціальні консультації, дитячий простір',
     phone: '+380 50 460 22 40',
     email: 'info@posmishka.org.ua',
-    status: 'Active', 
+    status: 'Active',
+    workingHours: 'Пн-Пт 09:00 - 16:00',
     driveFolderUrl: '',
     budget: 0
   },
-  { id: 'kyiv_posmishka', name: 'БФ «Посмішка ЮА» (Київ)', region: 'Kyiv', address: 'м. Київ, вул. Велика Васильківська', lat: 50.4501, lng: 30.5234, category: 'Благодійна організація', services: 'Координація національних проектів', phone: '+380 50 460 22 40', email: 'info@posmishka.org.ua', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'dnipro_posmishka', name: 'БФ «Посмішка ЮА» (Дніпро)', region: 'Dnipro', address: 'м. Дніпро', lat: 48.4647, lng: 35.0462, category: 'Благодійна організація', services: 'Допомога ВПО та дітям', phone: '+380 50 460 22 40', email: 'dnipro@posmishka.org.ua', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'odesa_posmishka', name: 'БФ «Посмішка ЮА» (Одеса)', region: 'Odesa', address: 'м. Одеса', lat: 46.4825, lng: 30.7233, category: 'Благодійна організація', services: 'Мобільні бригади допомоги', phone: '+380 50 460 22 40', email: '', status: 'Active', driveFolderUrl: '', budget: 0 },
+  { 
+    id: 'kyiv_posmishka', 
+    name: 'БФ «Посмішка ЮА» (Київ)', 
+    region: 'Kyiv', 
+    address: 'м. Київ, вул. Велика Васильківська, 72', 
+    lat: 50.4320, 
+    lng: 30.5160, 
+    category: 'Благодійна організація', 
+    services: 'Координація національних проектів, психологічна підтримка', 
+    phone: '+380 50 460 22 40', 
+    email: 'info@posmishka.org.ua', 
+    status: 'Active', 
+    workingHours: 'Пн-Пт 09:00 - 18:00',
+    website: 'https://posmishka.org.ua',
+    driveFolderUrl: '', 
+    budget: 0 
+  },
+  { 
+    id: 'dnipro_posmishka', 
+    name: 'БФ «Посмішка ЮА» (Дніпро)', 
+    region: 'Dnipro', 
+    address: 'м. Дніпро, вул. Старокозацька, 38', 
+    lat: 48.4680, 
+    lng: 35.0420, 
+    category: 'Благодійна організація', 
+    services: 'Допомога ВПО та дітям, соціальний супровід', 
+    phone: '+380 50 460 22 40', 
+    email: 'dnipro@posmishka.org.ua', 
+    status: 'Active', 
+    workingHours: 'Пн-Пт 09:00 - 18:00',
+    driveFolderUrl: '', 
+    budget: 0 
+  },
+  { 
+    id: 'odesa_posmishka', 
+    name: 'БФ «Посмішка ЮА» (Одеса)', 
+    region: 'Odesa', 
+    address: 'м. Одеса, Приморський бульвар', 
+    lat: 46.4850, 
+    lng: 30.7420, 
+    category: 'Благодійна організація', 
+    services: 'Мобільні бригади допомоги, гуманітарні набори', 
+    phone: '+380 50 460 22 40', 
+    email: 'odesa@posmishka.org.ua', 
+    status: 'Pending', 
+    workingHours: 'Вт, Чт 10:00 - 15:00',
+    driveFolderUrl: '', 
+    budget: 0 
+  },
 
   // --- МЕРЕЖА ГО «ДІВЧАТА» ---
-  { id: 'kyiv_divchata_1', name: 'ГО «Дівчата» (Київ, Центральний)', region: 'Kyiv', address: 'м. Київ, вул. Січових Стрільців', lat: 50.4501, lng: 30.5234, category: 'Громадська організація', services: 'Підтримка жінок і дівчат, запобігання ГЗН', phone: '+380 67 123 45 67', email: 'go.divchata@gmail.com', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'lvi_divchata_1', name: 'ГО «Дівчата» (Львів)', region: 'Lviv', address: 'м. Львів, вул. Шевченка', lat: 49.8397, lng: 24.0297, category: 'Громадська організація', services: 'Психологічна допомога, соціальні проекти', phone: '+380 67 123 45 67', email: 'lviv@divchata.org', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'zap_divchata_1', name: 'ГО «Дівчата» (Запоріжжя)', region: 'Zaporizhzhia', address: 'м. Запоріжжя', lat: 47.8388, lng: 35.1396, category: 'Громадська організація', services: 'Мобільні бригади допомоги', phone: '+380 67 123 45 67', email: '', status: 'Active', driveFolderUrl: '', budget: 0 },
+  { 
+    id: 'kyiv_divchata_1', 
+    name: 'ГО «Дівчата» (Київ, Центральний)', 
+    region: 'Kyiv', 
+    address: 'м. Київ, вул. Січових Стрільців, 21', 
+    lat: 50.4560, 
+    lng: 30.5050, 
+    category: 'Громадська організація', 
+    services: 'Підтримка жінок і дівчат, запобігання ГЗН, психологічна допомога', 
+    phone: '+380 67 123 45 67', 
+    email: 'go.divchata@gmail.com', 
+    status: 'Active', 
+    workingHours: 'Пн-Пт 10:00 - 19:00',
+    website: 'https://divchata.org',
+    driveFolderUrl: '', 
+    budget: 0 
+  },
+  { 
+    id: 'lvi_divchata_1', 
+    name: 'ГО «Дівчата» (Львів)', 
+    region: 'Lviv', 
+    address: 'м. Львів, вул. Шевченка, 12', 
+    lat: 49.8450, 
+    lng: 24.0200, 
+    category: 'Громадська організація', 
+    services: 'Психологічна допомога, соціальні проекти для жінок', 
+    phone: '+380 67 123 45 67', 
+    email: 'lviv@divchata.org', 
+    status: 'Active', 
+    workingHours: 'Пн-Пт 09:00 - 17:00',
+    driveFolderUrl: '', 
+    budget: 0 
+  },
 
   // --- МЕРЕЖА БФ «ПРАВО НА ЗАХИСТ» ---
-  { id: 'kyiv_r2p_1', name: 'БФ «Право на захист» (Київ)', region: 'Kyiv', address: 'м. Київ, вул. Щекавицька', lat: 50.4671, lng: 30.5100, category: 'Благодійна організація', services: 'Правова допомога ВПО, біженцям', phone: '+380 44 337 17 62', email: 'r2p@r2p.org.ua', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'dni_r2p_1', name: 'БФ «Право на захист» (Дніпро)', region: 'Dnipro', address: 'м. Дніпро, вул. Барикадна', lat: 48.4647, lng: 35.0462, category: 'Благодійна організація', services: 'Юридичний супровід переселенців', phone: '+380 56 123 45 67', email: '', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'kha_r2p_1', name: 'БФ «Право на захист» (Харків)', region: 'Kharkiv', address: 'м. Харків', lat: 49.9935, lng: 36.2304, category: 'Благодійна організація', services: 'Правовий захист', phone: '', email: '', status: 'Active', driveFolderUrl: '', budget: 0 },
+  { 
+    id: 'kyiv_r2p_1', 
+    name: 'БФ «Право на захист» (Київ)', 
+    region: 'Kyiv', 
+    address: 'м. Київ, вул. Щекавицька, 55', 
+    lat: 50.4685, 
+    lng: 30.5080, 
+    category: 'Благодійна організація', 
+    services: 'Правова допомога ВПО, біженцям, моніторинг прав людини', 
+    phone: '+380 44 337 17 62', 
+    email: 'r2p@r2p.org.ua', 
+    status: 'Active', 
+    workingHours: 'Пн-Пт 09:00 - 18:00',
+    website: 'https://r2p.org.ua',
+    driveFolderUrl: '', 
+    budget: 0 
+  },
+  { 
+    id: 'dni_r2p_1', 
+    name: 'БФ «Право на захист» (Дніпро)', 
+    region: 'Dnipro', 
+    address: 'м. Дніпро, вул. Барикадна, 15', 
+    lat: 48.4630, 
+    lng: 35.0480, 
+    category: 'Благодійна організація', 
+    services: 'Юридичний супровід переселенців, захист прав ВПО', 
+    phone: '+380 56 123 45 67', 
+    email: 'dnipro.r2p@r2p.org.ua', 
+    status: 'Active', 
+    workingHours: 'Пн-Пт 09:00 - 18:00',
+    driveFolderUrl: '', 
+    budget: 0 
+  },
 
   // --- МЕРЕЖА КАРІТАС УКРАЇНИ ---
-  { id: 'kyiv_caritas_1', name: 'Карітас України (Центр)', region: 'Kyiv', address: 'м. Київ, вул. Січових Стрільців', lat: 50.4560, lng: 30.5000, category: 'Благодійна організація', services: 'Гуманітарна допомога, підтримка сім’ї', phone: '+380 44 238 25 24', email: 'info@caritas.ua', status: 'Active', driveFolderUrl: '', budget: 0 },
-  { id: 'ifr_caritas_1', name: 'Карітас Івано-Франківськ', region: 'IvanoFrankivsk', address: 'м. Івано-Франківськ, вул. Лесі Українки', lat: 48.9226, lng: 24.7111, category: 'Благодійна організація', services: 'Допомога ВПО, їдальні', phone: '+380 342 12 34 56', email: '', status: 'Active', driveFolderUrl: '', budget: 0 },
+  { 
+    id: 'kyiv_caritas_1', 
+    name: 'Карітас України (Центральний)', 
+    region: 'Kyiv', 
+    address: 'м. Київ, вул. Костьольна, 17', 
+    lat: 50.4520, 
+    lng: 30.5250, 
+    category: 'Благодійна організація', 
+    services: 'Гуманітарна допомога, підтримка сім’ї, соціальна кухня', 
+    phone: '+380 44 238 25 24', 
+    email: 'info@caritas.ua', 
+    status: 'Active', 
+    workingHours: 'Пн-Пт 10:00 - 18:00',
+    website: 'https://caritas.ua',
+    notes: 'Можлива видача продуктових ваучерів для ВПО.',
+    driveFolderUrl: '', 
+    budget: 0 
+  },
 
   // --- ГЕНЕРАЦІЯ ПОВНОЇ БАЗИ (300+) ---
-  // Охоплюємо всі регіони по 12 установ на кожен
   ...generateStandardNetwork('Kyiv', 50.4501, 30.5234),
   ...generateStandardNetwork('Odesa', 46.4825, 30.7233),
   ...generateStandardNetwork('Mykolaiv', 46.9750, 31.9946),

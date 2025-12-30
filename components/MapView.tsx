@@ -1,4 +1,5 @@
-import { useEffect, useState, useMemo, useRef, memo } from 'react';
+// Adding React import to ensure React namespace is available for React.FC
+import React, { useEffect, useState, useMemo, useRef, memo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, AttributionControl, ZoomControl } from 'react-leaflet';
 import { Organization } from '../types';
 import { MapPin, Phone, FileText, Locate, Loader2, AlertCircle, ExternalLink, Clock, Globe } from 'lucide-react';
@@ -69,6 +70,7 @@ interface MapViewProps {
   zoom?: number;
 }
 
+// Fixed missing React namespace by importing React
 const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
   const map = useMap();
   const lastTarget = useRef<string>("");
@@ -165,14 +167,24 @@ const OrganizationMarker = memo(({ org, isSelected, onSelectOrg, onOpenReferral 
 
             {/* Контакти */}
             <div className="space-y-2 pt-1">
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-2">
                 {org.phone && (
-                  <a href={`tel:${cleanPhone}`} className="flex items-center gap-2 text-sm font-bold text-slate-800 hover:text-teal-700 transition-colors">
-                    <Phone className="w-3.5 h-3.5 text-teal-600" /> {org.phone}
+                  <a 
+                    href={`tel:${cleanPhone}`} 
+                    className="flex items-center gap-2.5 p-2 rounded-lg bg-teal-50/50 border border-teal-100 text-sm font-bold text-slate-800 hover:text-teal-700 hover:bg-teal-50 transition-all shadow-sm group"
+                  >
+                    <div className="w-7 h-7 rounded-md bg-teal-600 text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <span>{org.phone}</span>
                   </a>
                 )}
                 {org.additionalPhones?.map((phone, idx) => (
-                  <a key={idx} href={`tel:${phone.replace(/[^\d+]/g, '')}`} className="flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-teal-700 ml-5 transition-colors">
+                  <a 
+                    key={idx} 
+                    href={`tel:${phone.replace(/[^\d+]/g, '')}`} 
+                    className="flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-teal-700 ml-9 transition-colors"
+                  >
                     {phone}
                   </a>
                 ))}
@@ -183,7 +195,7 @@ const OrganizationMarker = memo(({ org, isSelected, onSelectOrg, onOpenReferral 
                   href={org.website} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors pt-1"
+                  className="flex items-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors pt-2 px-1"
                 >
                   <Globe className="w-3.5 h-3.5" /> 
                   Відвідати веб-сайт 
@@ -210,6 +222,7 @@ const OrganizationMarker = memo(({ org, isSelected, onSelectOrg, onOpenReferral 
   );
 });
 
+// Fixed missing React namespace by importing React
 export const MapView: React.FC<MapViewProps> = ({ 
   organizations, 
   selectedOrgId, 
