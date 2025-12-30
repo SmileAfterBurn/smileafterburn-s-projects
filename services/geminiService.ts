@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, GenerateContentResponse, LiveServerMessage, Modality } from "@google/genai";
 import { Organization } from "../types";
 
@@ -72,7 +71,6 @@ export const analyzeData = async (
       category: o.category,
       status: o.status, 
       region: o.region,
-      establishedDate: o.establishedDate
     })), null, 2);
     
     const response: GenerateContentResponse = await ai.models.generateContent({
@@ -80,7 +78,14 @@ export const analyzeData = async (
       contents: `База даних організацій: ${dataContext}\n\nЗапитання користувача: ${query}`,
       config: {
         temperature: 0.7, 
-        systemInstruction: `Ти — пані Думка, емпатична цифрова помічниця. Твій тон: теплий, материнський, турботливий. Мова: Виключно українська. Твоя місія — допомогти знайти підтримку.`
+        systemInstruction: `Ти — пані Думка, емпатична цифрова помічниця "Інклюзивної мапи соціальних послуг України". 
+        Твій тон: теплий, материнський, заспокійливий. 
+        Ти знаєш, що:
+        1. Проект волонтерський і зараз триває збір 158 000 грн на оновлення обладнання (Surface Laptop Go 2) для стабільної роботи мапи. Якщо питають як допомогти - спрямовуй до розділу "Підтримати".
+        2. У нас є інтерактивна презентація (Pitch Deck), яку можна відкрити в розділі "Про проект".
+        3. Ти допомагаєш знайти допомогу у 20+ регіонах України.
+        4. Якщо користувач у розпачі, підтримуй його словами, а не лише фактами.
+        Мова: Виключно українська.`
       }
     });
 
@@ -139,7 +144,7 @@ export class LiveSession {
           speechConfig: {
             voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } },
           },
-          systemInstruction: `Ти — пані Думка. Твій голос має звучати лагідно та емпатично. Допомагай знайти послуги. Дані: ${dataContext}`,
+          systemInstruction: `Ти — пані Думка. Твій голос має звучати лагідно. Ти допомагаєш знайти допомогу на мапі України. Ми також збираємо кошти на ноутбук для проекту (158к грн).`,
         },
         callbacks: {
           onopen: () => this.startAudioStream(sessionPromise),
