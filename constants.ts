@@ -1,10 +1,10 @@
-
 import { RegionName, RemoteSupportActor } from './types';
 import { INITIAL_ORGANIZATIONS } from './organizations';
 
 export const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1ev98ifed1h8xc16KcWaOmvaky8I9StuE0-6w7UPG4K4/edit?gid=1212063265#gid=1212063265';
-export const DRIVE_URL = 'https://drive.google.com/drive/folders/1kSQKI_-2b8mmWfUw5ZHvGaDD9g4tPWqU?usp=sharing';
-export const REFERRAL_DRIVE_URL = 'https://drive.google.com/drive/folders/1cBKp3HoTfujq8AamTKK37HjtHC59GHyt?usp=sharing';
+// Пряме посилання на папку Google Drive для документів та регламентів
+export const DRIVE_URL = 'https://drive.google.com/drive/folders/1ndkLzFOLEOGIZOwh0Ya2cZuGUMpElwn_?usp=sharing';
+export const REFERRAL_DRIVE_URL = 'https://drive.google.com/drive/folders/1ndkLzFOLEOGIZOwh0Ya2cZuGUMpElwn_?usp=sharing';
 
 export { INITIAL_ORGANIZATIONS };
 
@@ -82,6 +82,22 @@ export const REGION_CONFIG: Record<RegionName, { center: [number, number], zoom:
     gradient: 'from-green-500 to-emerald-700',
     description: 'МІСТО МОЛОДІ'
   },
+  'Vinnytsia': {
+    center: [49.2331, 28.4682],
+    zoom: 12,
+    label: 'Вінницька область',
+    icon: 'Waves',
+    gradient: 'from-indigo-500 to-purple-600',
+    description: 'МІСТО ФОНТАНІВ'
+  },
+  'Cherkasy': {
+    center: [49.4444, 32.0598],
+    zoom: 12,
+    label: 'Черкаська область',
+    icon: 'Wheat',
+    gradient: 'from-amber-500 to-yellow-600',
+    description: 'СЕРЦЕ УКРАЇНИ'
+  },
   'Volyn': {
     center: [50.7472, 25.3254],
     zoom: 12,
@@ -112,7 +128,7 @@ export const REGION_CONFIG: Record<RegionName, { center: [number, number], zoom:
     label: 'Сумська область',
     icon: 'Wheat',
     gradient: 'from-yellow-400 to-lime-600',
-    description: 'КОЗАЦЬКИЙ КРАЙ'
+    description: 'КОЗАЦЬКА КРАЙ'
   },
   'Ternopil': {
     center: [49.5535, 25.5948],
@@ -279,7 +295,7 @@ export const REMOTE_SUPPORT_ACTORS: RemoteSupportActor[] = [
     name: 'Український ветеранський фонд',
     category: 'Психологічна підтримка',
     phones: ['0 800 33 20 29'],
-    description: 'Гаряча лінія кризової підтримки для ветеранів та їхніх родин (цілодобово).',
+    description: 'Гаряча лінія кризової підтримки для ветеранів та their families (цілодобово).',
     website: 'https://veteranfund.com.ua/'
   },
   {

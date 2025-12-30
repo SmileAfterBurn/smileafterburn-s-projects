@@ -4,27 +4,46 @@ import { Organization } from '../types';
 import { MapPin, Heart, Phone, Mail, FileText, Locate, Navigation, Loader2, AlertCircle, ExternalLink, Calendar } from 'lucide-react';
 import L from 'leaflet';
 
-// Utility for strict coordinate validation
-const isValCoord = (val: any): val is number => {
-  const n = Number(val);
-  return typeof n === 'number' && !isNaN(n) && Number.isFinite(n);
+/**
+ * Strictly validates if a value is a finite number suitable for coordinates.
+ */
+const isNumeric = (val: any): val is number => {
+  if (typeof val === 'number') return !isNaN(val) && isFinite(val);
+  if (typeof val === 'string') {
+    const n = parseFloat(val);
+    return !isNaN(n) && isFinite(n);
+  }
+  return false;
 };
 
-const isValidLatLng = (lat: any, lng: any): boolean => 
-  isValCoord(lat) && isValCoord(lng) && Math.abs(Number(lat)) <= 90 && Math.abs(Number(lng)) <= 180;
+/**
+ * Checks if a pair of coordinates is valid for Leaflet.
+ */
+const isValidLatLng = (lat: any, lng: any): boolean => {
+  if (!isNumeric(lat) || !isNumeric(lng)) return false;
+  const nLat = Number(lat);
+  const nLng = Number(lng);
+  return Math.abs(nLat) <= 90 && Math.abs(nLng) <= 180;
+};
 
-// Function to create custom SVG icons - memoized outside to prevent recreation
+/**
+ * Sanitizes a coordinate pair, returning a fallback if invalid.
+ */
+const sanitizeLatLng = (lat: any, lng: any, fallback: [number, number] = [48.3794, 31.1656]): [number, number] => {
+  return isValidLatLng(lat, lng) ? [Number(lat), Number(lng)] : fallback;
+};
+
+// Function to create custom SVG icons
 const createCustomIcon = (color: string, size: number, isSelected: boolean = false) => {
-  const strokeColor = isSelected ? '#ffffff' : 'white'; 
-  const strokeWidth = isSelected ? '3' : '2';
-  const shadowOpacity = isSelected ? '0.6' : '0.3';
   const scale = isSelected ? '1.2' : '1';
+  const strokeColor = isSelected ? '#ffffff' : 'white';
+  const strokeWidth = isSelected ? '3' : '2';
   
   return new L.DivIcon({
     className: `custom-marker-${isSelected ? 'selected' : 'default'}`,
     html: `
       <div style="transform: scale(${scale}); transition: transform 0.2s ease-out;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${size}" height="${size}" fill="${color}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,${shadowOpacity}));">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${size}" height="${size}" fill="${color}" stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 10c0 6-9 13-9 13s-9-7-9-13a6.5 6.5 0 0 1 13 0Z"></path>
           <circle cx="12" cy="10" r="3" fill="white"></circle>
         </svg>
@@ -57,41 +76,59 @@ interface MapViewProps {
   zoom?: number;
 }
 
-// Optimized MapUpdater to handle camera moves smoothly
 const MapUpdater: React.FC<{ center: [number, number]; zoom: number }> = ({ center, zoom }) => {
   const map = useMap();
   const lastTarget = useRef<string>("");
 
   useEffect(() => {
     if (!map) return;
-    const targetKey = `${center[0].toFixed(4)},${center[1].toFixed(4)},${zoom}`;
+    
+    // SAFETY: Skip update if any coordinate is NaN to prevent Leaflet crash
+    if (!isValidLatLng(center[0], center[1])) {
+      console.warn("MapUpdater: Skipping move due to invalid Lat/Lng", center);
+      return;
+    }
+
+    const [lat, lng] = [Number(center[0]), Number(center[1])];
+    const validZoom = isNumeric(zoom) ? Number(zoom) : 6;
+    const targetKey = `${lat.toFixed(4)},${lng.toFixed(4)},${validZoom}`;
+    
     if (lastTarget.current === targetKey) return;
 
     map.invalidateSize();
-    map.flyTo(center as L.LatLngExpression, zoom, { 
-      duration: 1.2,
-      easeLinearity: 0.3
-    });
-    lastTarget.current = targetKey;
+    try {
+      map.flyTo([lat, lng], validZoom, { 
+        duration: 1.2,
+        easeLinearity: 0.3
+      });
+      lastTarget.current = targetKey;
+    } catch (e) {
+      console.warn("Leaflet flyTo failed:", e);
+    }
   }, [center, zoom, map]);
+
   return null;
 };
 
-// Extracted for performance
 const OrganizationMarker = memo(({ org, isSelected, onSelectOrg, onOpenReferral }: { 
   org: Organization, 
   isSelected: boolean, 
   onSelectOrg: (id: string) => void,
   onOpenReferral: (org: Organization) => void
 }) => {
-  if (!isValidLatLng(org.lat, org.lng)) return null;
+  // CRITICAL: Prevent rendering markers with NaN coordinates
+  if (!isValidLatLng(org.lat, org.lng)) {
+    console.warn(`Skipping marker for ${org.name} due to invalid coordinates: [${org.lat}, ${org.lng}]`);
+    return null;
+  }
 
   const icon = isSelected ? ICONS.selected : (org.status === 'In Development' ? ICONS.dev : ICONS.default);
   const cleanPhone = org.phone ? org.phone.replace(/[^\d+]/g, '') : '';
+  const pos: [number, number] = [Number(org.lat), Number(org.lng)];
 
   return (
     <Marker
-      position={[Number(org.lat), Number(org.lng)]}
+      position={pos}
       icon={icon}
       eventHandlers={{ click: () => onSelectOrg(org.id) }}
       zIndexOffset={isSelected ? 1000 : 0}
@@ -121,11 +158,6 @@ const OrganizationMarker = memo(({ org, isSelected, onSelectOrg, onOpenReferral 
                   <Phone className="w-3.5 h-3.5 text-teal-600" /> {org.phone}
                 </a>
               )}
-              {org.email && (
-                <a href={`mailto:${org.email}`} className="flex items-center gap-2 text-sm font-bold text-slate-800 hover:text-teal-700 break-all">
-                  <Mail className="w-3.5 h-3.5 text-teal-600" /> {org.email}
-                </a>
-              )}
             </div>
             <div className="pt-2 flex flex-col gap-2">
               {org.email && (
@@ -135,16 +167,6 @@ const OrganizationMarker = memo(({ org, isSelected, onSelectOrg, onOpenReferral 
                 >
                   <FileText className="w-3.5 h-3.5 inline mr-2" /> Надіслати запит
                 </button>
-              )}
-              {org.website && (
-                <a
-                  href={org.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full text-center bg-white border border-slate-200 hover:border-teal-200 text-slate-700 text-[10px] font-black uppercase tracking-widest py-2.5 rounded-lg transition-colors"
-                >
-                  <ExternalLink className="w-3.5 h-3.5 inline mr-2" /> Сайт
-                </a>
               )}
             </div>
           </div>
@@ -163,16 +185,31 @@ export const MapView: React.FC<MapViewProps> = ({
   zoom = 6
 }) => {
   const [userPos, setUserPos] = useState<[number, number] | null>(null);
-  const selectedOrg = useMemo(() => organizations.find(o => o.id === selectedOrgId), [organizations, selectedOrgId]);
   
   const targetCenter = useMemo<[number, number]>(() => {
-    if (selectedOrg && isValidLatLng(selectedOrg.lat, selectedOrg.lng)) return [selectedOrg.lat, selectedOrg.lng];
-    return center;
-  }, [selectedOrg, center]);
+    const defaultCenter: [number, number] = [48.3794, 31.1656];
+    
+    // Check if an organization is selected and valid
+    if (selectedOrgId) {
+      const selectedOrg = organizations.find(o => o.id === selectedOrgId);
+      if (selectedOrg && isValidLatLng(selectedOrg.lat, selectedOrg.lng)) {
+        return [Number(selectedOrg.lat), Number(selectedOrg.lng)];
+      }
+    }
+    
+    // Check if provided center prop is valid
+    if (center && isValidLatLng(center[0], center[1])) {
+      return [Number(center[0]), Number(center[1])];
+    }
+    
+    return defaultCenter;
+  }, [selectedOrgId, organizations, center]);
 
-  const targetZoom = useMemo(() => selectedOrg ? 15 : zoom, [selectedOrg, zoom]);
+  const targetZoom = useMemo(() => {
+    const selectedOrg = selectedOrgId ? organizations.find(o => o.id === selectedOrgId) : null;
+    return selectedOrg ? 15 : (isNumeric(zoom) ? Number(zoom) : 6);
+  }, [selectedOrgId, organizations, zoom]);
 
-  // Memoize markers to prevent bulk re-renders
   const markers = useMemo(() => (
     organizations.map(org => (
       <OrganizationMarker 
@@ -185,6 +222,16 @@ export const MapView: React.FC<MapViewProps> = ({
     ))
   ), [organizations, selectedOrgId, onSelectOrg, onOpenReferral]);
 
+  // If even targetCenter is somehow invalid (shouldn't happen with sanitatization), show a fallback
+  if (!isValidLatLng(targetCenter[0], targetCenter[1])) {
+    return (
+      <div className="h-full w-full flex flex-col items-center justify-center bg-slate-100 text-slate-500 gap-2">
+        <AlertCircle size={48} className="text-rose-500" />
+        <p className="font-bold">Помилка завантаження координат</p>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full w-full relative overflow-hidden bg-slate-100">
       <style>{`
@@ -195,7 +242,7 @@ export const MapView: React.FC<MapViewProps> = ({
       <MapContainer
         center={targetCenter}
         zoom={targetZoom}
-        preferCanvas={true} // Performance optimization for large datasets
+        preferCanvas={true}
         style={{ height: '100%', width: '100%' }}
         attributionControl={false}
         zoomControl={false}
@@ -220,12 +267,27 @@ const LocationControl = ({ setUserPos, userPos }: { setUserPos: (p: [number, num
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    map.on('locationfound', (e) => {
-      setUserPos([e.latlng.lat, e.latlng.lng]);
-      map.flyTo(e.latlng, 14);
+    if (!map) return;
+    
+    const handleLocationFound = (e: L.LocationEvent) => {
+      if (isValidLatLng(e.latlng.lat, e.latlng.lng)) {
+        setUserPos([e.latlng.lat, e.latlng.lng]);
+        map.flyTo(e.latlng, 14);
+      }
       setLoading(false);
-    });
-    map.on('locationerror', () => setLoading(false));
+    };
+
+    const handleLocationError = () => {
+      setLoading(false);
+    };
+
+    map.on('locationfound', handleLocationFound);
+    map.on('locationerror', handleLocationError);
+    
+    return () => {
+      map.off('locationfound', handleLocationFound);
+      map.off('locationerror', handleLocationError);
+    };
   }, [map, setUserPos]);
 
   return (
@@ -239,7 +301,7 @@ const LocationControl = ({ setUserPos, userPos }: { setUserPos: (p: [number, num
           {loading ? <Loader2 size={18} className="animate-spin text-teal-600" /> : <Locate size={18} />}
         </button>
       </div>
-      {userPos && <Marker position={userPos} icon={ICONS.user} zIndexOffset={2000} />}
+      {userPos && isValidLatLng(userPos[0], userPos[1]) && <Marker position={userPos} icon={ICONS.user} zIndexOffset={2000} />}
     </>
   );
 };
