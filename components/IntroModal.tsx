@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Volume2, VolumeX, Play, CheckCircle, Loader2 } from 'lucide-react';
 import { generateSpeech } from '../services/geminiService';
@@ -10,7 +9,7 @@ interface IntroModalProps {
 const SLIDES = [
   {
     title: "Ласкаво просимо на Мапу Послуг!",
-    text: "Ми об'єднали понад 100 організацій у 20+ регіонах України в єдину мережу допомоги. Знаходьте перевірені благодійні фонди, державні соцслужби, шелтери та гуманітарні штаби у своєму місті.",
+    text: "Ми об'єднали майже 300 перевірених організацій у всіх регіонах України в єдину мережу допомоги. Знаходьте благодійні фонди, державні соцслужби, шелтери та гуманітарні штаби у своєму місті.",
   },
   {
     title: "Дистанційна підтримка",
@@ -87,7 +86,6 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
   };
 
   const decodeAudioData = async (data: ArrayBuffer, ctx: AudioContext): Promise<AudioBuffer> => {
-    // Gemini TTS returns raw PCM (int16), need to manually create the buffer
     const dataInt16 = new Int16Array(data);
     const buffer = ctx.createBuffer(1, dataInt16.length, 24000);
     const channelData = buffer.getChannelData(0);

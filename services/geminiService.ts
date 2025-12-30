@@ -2,38 +2,24 @@
 import { GoogleGenAI, GenerateContentResponse, LiveServerMessage, Modality } from "@google/genai";
 import { Organization } from "../types";
 
-const getApiKey = () => {
-  try {
-    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-      return process.env.API_KEY;
-    }
-  } catch (e) {
-    console.warn("API_KEY access error:", e);
-  }
-  return undefined;
-};
-
-const getClient = () => {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error("API Key not found.");
-  }
-  return new GoogleGenAI({ apiKey });
-};
-
 // --- Neural Text-to-Speech (High Quality) ---
 
 export const generateSpeech = async (text: string): Promise<ArrayBuffer> => {
   try {
-    const ai = getClient();
+    // Initializing GoogleGenAI directly with process.env.API_KEY as per guidelines.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
-      contents: [{ parts: [{ text: `Скажи емпатично, лагідно та з турботою: ${text}` }] }],
+      contents: [{ 
+        parts: [{ 
+          text: `Ти — пані Думка, втілення української доброти та мудрості. Твій голос має бути теплим, емпатичним, з лагідною інтонацією, ніби ти розмовляєш з близькою людиною. Уникай роботизованого тону. Використовуй природні паузи та м'які наголоси. Промов цей текст з глибокою турботою та любов'ю: ${text}` 
+        }] 
+      }],
       config: {
         responseModalities: [Modality.AUDIO],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Kore' }, // Kore is warm and professional
+            prebuiltVoiceConfig: { voiceName: 'Kore' }, 
           },
         },
       },
@@ -61,9 +47,10 @@ export const analyzeData = async (
   organizations: Organization[]
 ): Promise<string> => {
   try {
-    const ai = getClient();
+    // Initializing GoogleGenAI directly with process.env.API_KEY as per guidelines.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
-    const dataContext = JSON.stringify(organizations.map(o => ({
+    const dataContext = JSON.stringify(organizations.slice(0, 100).map(o => ({
       name: o.name,
       address: o.address,
       services: o.services,
@@ -72,15 +59,21 @@ export const analyzeData = async (
       category: o.category,
       status: o.status, 
       region: o.region,
-      establishedDate: o.establishedDate
     })), null, 2);
     
     const response: GenerateContentResponse = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
-      contents: `База даних організацій: ${dataContext}\n\nЗапитання користувача: ${query}`,
+      contents: `База даних організацій (майже 300 записів): ${dataContext}\n\nЗапитання користувача: ${query}`,
       config: {
         temperature: 0.7, 
-        systemInstruction: `Ти — пані Думка, емпатична цифрова помічниця. Твій тон: теплий, материнський, турботливий. Мова: Виключно українська. Твоя місія — допомогти знайти підтримку.`
+        systemInstruction: `Ти — пані Думка, емпатична цифрова помічниця "Інклюзивної мапи соціальних послуг України". 
+        Твій тон: теплий, материнський, заспокійливий. 
+        Ти знаєш, що:
+        1. На даний момент у базі даних додано майже 300 перевірених організацій по всій Україні.
+        2. Проект волонтерський, зараз триває критично важливий збір 158 000 грн на Surface Laptop Go 2 для розробників.
+        3. Усі файли, регламенти та база даних проекту зберігаються за посиланням на Google Drive: https://drive.google.com/drive/folders/1ndkLzFOLEOGIZOwh0Ya2cZuGUMpElwn_?usp=sharing
+        4. Ти допомагаєш знайти допомогу у будь-якому регіоні. Ти — експерт з організацій Карітас, Червоний Хрест, Посмішка ЮА, ГО Дівчата та Право на Захист.
+        5. Мова: Виключно українська.`
       }
     });
 
@@ -92,9 +85,7 @@ export const analyzeData = async (
 };
 
 // --- Live Audio Session ---
-
 export class LiveSession {
-  private client: GoogleGenAI | null = null;
   private inputAudioContext: AudioContext | null = null;
   private outputAudioContext: AudioContext | null = null;
   private nextStartTime = 0;
@@ -106,40 +97,29 @@ export class LiveSession {
   private isActive = false;
 
   constructor(private organizations: Organization[], private onStatusChange: (active: boolean) => void) {
-    try {
-        this.client = getClient();
-    } catch (e) {
-        this.client = null;
-    }
   }
 
   async connect() {
-    if (!this.client) throw new Error("API Key missing");
-
     this.isActive = true;
     this.onStatusChange(true);
 
     try {
+      // Initializing GoogleGenAI directly with process.env.API_KEY as per guidelines inside connect to ensure it's up-to-date.
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      
       const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
       this.inputAudioContext = new AudioContextClass({ sampleRate: 16000 });
       this.outputAudioContext = new AudioContextClass({ sampleRate: 24000 });
       this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-      const dataContext = JSON.stringify(this.organizations.map(o => ({
-        name: o.name,
-        address: o.address,
-        services: o.services,
-        region: o.region
-      })), null, 2);
-
-      const sessionPromise = this.client.live.connect({
+      const sessionPromise = ai.live.connect({
         model: 'gemini-2.5-flash-native-audio-preview-09-2025',
         config: {
           responseModalities: [Modality.AUDIO],
           speechConfig: {
             voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } },
           },
-          systemInstruction: `Ти — пані Думка. Твій голос має звучати лагідно та емпатично. Допомагай знайти послуги. Дані: ${dataContext}`,
+          systemInstruction: `Ти — пані Думка, мудра та доброзичлива українська помічниця. Твій тон має бути надзвичайно теплим, емпатичним та заспокійливим. Розмовляй природно, з мелодійною інтонацією, ніби ти розмовляєш з близькою людиною, якій потрібна твоя підтримка. Уникай сухості та монотонності. Ти допомагаєш знайти допомогу на мапі України (майже 300 організацій у базі). Ти знаєш про проект на Drive (1ndkLzFOLEOGIZOwh0Ya2cZuGUMpElwn_). Ти лагідна та турботлива.`,
         },
         callbacks: {
           onopen: () => this.startAudioStream(sessionPromise),
@@ -157,8 +137,8 @@ export class LiveSession {
 
   private startAudioStream(sessionPromise: Promise<any>) {
     if (!this.inputAudioContext || !this.stream) return;
-    this.inputSource = this.inputAudioContext.createMediaStreamSource(this.stream);
-    this.scriptProcessor = this.inputAudioContext.createScriptProcessor(4096, 1, 1);
+    this.inputSource = this.inputSource || this.inputAudioContext.createMediaStreamSource(this.stream);
+    this.scriptProcessor = this.scriptProcessor || this.inputAudioContext.createScriptProcessor(4096, 1, 1);
     this.scriptProcessor.onaudioprocess = (e) => {
       if (!this.isActive) return;
       const inputData = e.inputBuffer.getChannelData(0);

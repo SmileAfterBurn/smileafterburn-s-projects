@@ -1,4 +1,4 @@
-export type RegionName = 'All' | 'Odesa' | 'Mykolaiv' | 'Kherson' | 'Dnipro' | 'Zaporizhzhia' | 'Kyiv' | 'Lviv' | 'Kharkiv' | 'Volyn' | 'Zhytomyr' | 'IvanoFrankivsk' | 'Kirovohrad' | 'Rivne' | 'Sumy' | 'Ternopil' | 'Chernivtsi' | 'Khmelnytskyi' | 'Chernihiv' | 'Poltava';
+export type RegionName = 'All' | 'Odesa' | 'Mykolaiv' | 'Kherson' | 'Dnipro' | 'Zaporizhzhia' | 'Kyiv' | 'Lviv' | 'Kharkiv' | 'Volyn' | 'Zhytomyr' | 'IvanoFrankivsk' | 'Kirovohrad' | 'Rivne' | 'Sumy' | 'Ternopil' | 'Chernivtsi' | 'Khmelnytskyi' | 'Chernihiv' | 'Poltava' | 'Vinnytsia' | 'Cherkasy';
 
 export interface Organization {
   id: string;
@@ -43,21 +43,4 @@ export enum ViewMode {
   Grid = 'grid',
   Map = 'map',
   Split = 'split'
-}
-
-// Secret Manager types
-export interface SecretConfig {
-  projectId: string;
-  locationId: string;
-  secretId: string;
-}
-
-export interface SecretPayload {
-  data: string;
-}
-
-export interface SecretMetadata {
-  name: string;
-  createTime?: string;
-  labels?: Record<string, string>;
 }
