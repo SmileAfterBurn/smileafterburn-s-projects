@@ -26,6 +26,12 @@ export const ConsentForm: React.FC = () => {
     }, []);
 
     const downloadCsv = (data: Record<string, any>) => {
+        // Перевіряємо доступність браузерного API
+        if (typeof window === 'undefined' || !document) {
+            console.error('Завантаження CSV недоступне на цій платформі');
+            return;
+        }
+
         const allFields = formStructure.flatMap(section => section.fields);
 
         const headers = allFields.map(field => `"${field.label.replace(/"/g, '""')}"`).join(',');
@@ -46,19 +52,23 @@ export const ConsentForm: React.FC = () => {
 
         const csvContent = `${headers}\n${row}`;
 
-        const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
+        try {
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
 
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        link.setAttribute('download', `form-submission-${timestamp}.csv`);
-        link.style.visibility = 'hidden';
+            link.href = url;
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            link.download = `form-submission-${timestamp}.csv`;
+            link.style.display = 'none';
 
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Помилка при завантаженні CSV:', error);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
