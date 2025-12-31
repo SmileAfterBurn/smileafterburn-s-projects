@@ -1,4 +1,6 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
+
+const SAMPLE_RATE = 24000;
 
 /**
  * Custom hook for managing audio playback with Web Audio API
@@ -8,18 +10,22 @@ export const useAudioPlayback = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      stopAudio();
-      audioContextRef.current?.close();
-    };
+  /**
+   * Ensures AudioContext is initialized
+   */
+  const ensureAudioContext = useCallback(() => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (
+        window.AudioContext || (window as any).webkitAudioContext
+      )({ sampleRate: SAMPLE_RATE });
+    }
+    return audioContextRef.current;
   }, []);
 
   /**
    * Stops the currently playing audio
    */
-  const stopAudio = () => {
+  const stopAudio = useCallback(() => {
     if (sourceNodeRef.current) {
       try {
         sourceNodeRef.current.stop();
@@ -28,7 +34,15 @@ export const useAudioPlayback = () => {
       }
       sourceNodeRef.current = null;
     }
-  };
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopAudio();
+      audioContextRef.current?.close();
+    };
+  }, [stopAudio]);
 
   /**
    * Decodes raw PCM audio data (Int16Array) into an AudioBuffer
@@ -36,22 +50,14 @@ export const useAudioPlayback = () => {
    * @param sampleRate - Sample rate of the audio (default: 24000)
    * @returns Promise<AudioBuffer>
    */
-  const decodeAudioData = async (
+  const decodeAudioData = useCallback(async (
     data: ArrayBuffer,
-    sampleRate: number = 24000
+    sampleRate: number = SAMPLE_RATE
   ): Promise<AudioBuffer> => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (
-        window.AudioContext || (window as any).webkitAudioContext
-      )({ sampleRate });
-    }
+    const ctx = ensureAudioContext();
 
     const dataInt16 = new Int16Array(data);
-    const buffer = audioContextRef.current.createBuffer(
-      1,
-      dataInt16.length,
-      sampleRate
-    );
+    const buffer = ctx.createBuffer(1, dataInt16.length, sampleRate);
     const channelData = buffer.getChannelData(0);
 
     // Convert Int16 to Float32 normalized audio samples
@@ -60,28 +66,24 @@ export const useAudioPlayback = () => {
     }
 
     return buffer;
-  };
+  }, [ensureAudioContext]);
 
   /**
    * Plays an audio buffer
    * @param buffer - AudioBuffer to play
    * @param onEnded - Optional callback when playback ends
    */
-  const playAudioBuffer = (
+  const playAudioBuffer = useCallback((
     buffer: AudioBuffer,
     onEnded?: () => void
   ) => {
     stopAudio(); // Stop any currently playing audio
 
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (
-        window.AudioContext || (window as any).webkitAudioContext
-      )({ sampleRate: 24000 });
-    }
+    const ctx = ensureAudioContext();
 
-    const source = audioContextRef.current.createBufferSource();
+    const source = ctx.createBufferSource();
     source.buffer = buffer;
-    source.connect(audioContextRef.current.destination);
+    source.connect(ctx.destination);
 
     if (onEnded) {
       source.onended = onEnded;
@@ -89,7 +91,7 @@ export const useAudioPlayback = () => {
 
     source.start(0);
     sourceNodeRef.current = source;
-  };
+  }, [stopAudio, ensureAudioContext]);
 
   return {
     stopAudio,
