@@ -86,7 +86,7 @@ main() {
         echo "  - Latest commit: ${LATEST_COMMIT}"
         
         # Count files
-        FILE_COUNT=$(find . -type f | wc -l)
+        FILE_COUNT=$(git ls-files | wc -l)
         echo "  - Total files: ${FILE_COUNT}"
         
         print_success "Clone operation completed!"
@@ -97,4 +97,4 @@ main() {
 }
 
 # Run main function
-main
+main "$@"
