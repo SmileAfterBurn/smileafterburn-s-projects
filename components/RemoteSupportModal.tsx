@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Phone, Search, X, Headphones, Scale, Info, ShieldAlert, PhoneForwarded, Globe } from 'lucide-react';
 import { REMOTE_SUPPORT_ACTORS } from '../constants';
-import { ModalOverlay } from './shared/ModalOverlay';
 
 interface RemoteSupportModalProps {
   onClose: () => void;
@@ -29,7 +28,7 @@ export const RemoteSupportModal: React.FC<RemoteSupportModalProps> = ({ onClose 
   };
 
   return (
-    <ModalOverlay backdropVariant="light" zIndex={6000}>
+    <div className="fixed inset-0 z-[6000] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
         
         {/* Header */}
@@ -136,6 +135,6 @@ export const RemoteSupportModal: React.FC<RemoteSupportModalProps> = ({ onClose 
         </div>
 
       </div>
-    </ModalOverlay>
+    </div>
   );
 };

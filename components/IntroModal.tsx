@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Volume2, VolumeX, Play, CheckCircle, Loader2 } from 'lucide-react';
 import { generateSpeech } from '../services/geminiService';
-import { useAudioPlayback } from '../hooks/useAudioPlayback';
-import { ModalOverlay } from './shared/ModalOverlay';
 
 interface IntroModalProps {
   onComplete: () => void;
@@ -34,7 +32,15 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
   const [hasStarted, setHasStarted] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
   
-  const { stopAudio, decodeAudioData, playAudioBuffer } = useAudioPlayback();
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
+
+  useEffect(() => {
+    return () => {
+      stopAudio();
+      audioContextRef.current?.close();
+    };
+  }, []);
 
   useEffect(() => {
     if (hasStarted && isPlaying) {
@@ -42,22 +48,51 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
     }
   }, [currentStep]);
 
+  const stopAudio = () => {
+    if (sourceNodeRef.current) {
+      try { sourceNodeRef.current.stop(); } catch(e) {}
+      sourceNodeRef.current = null;
+    }
+  };
+
   const playCurrentSlide = async () => {
     stopAudio();
     setIsLoadingAudio(true);
     
     try {
       const audioData = await generateSpeech(SLIDES[currentStep].text);
-      const buffer = await decodeAudioData(audioData);
       
-      playAudioBuffer(buffer, () => {
-        // Audio playback ended
-      });
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      }
+      
+      const buffer = await decodeAudioData(audioData, audioContextRef.current);
+      
+      const source = audioContextRef.current.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioContextRef.current.destination);
+      source.onended = () => {
+        if (sourceNodeRef.current === source) {
+          sourceNodeRef.current = null;
+        }
+      };
+      source.start(0);
+      sourceNodeRef.current = source;
     } catch (e) {
       console.error("Audio playback error", e);
     } finally {
       setIsLoadingAudio(false);
     }
+  };
+
+  const decodeAudioData = async (data: ArrayBuffer, ctx: AudioContext): Promise<AudioBuffer> => {
+    const dataInt16 = new Int16Array(data);
+    const buffer = ctx.createBuffer(1, dataInt16.length, 24000);
+    const channelData = buffer.getChannelData(0);
+    for (let i = 0; i < dataInt16.length; i++) {
+      channelData[i] = dataInt16[i] / 32768.0;
+    }
+    return buffer;
   };
 
   const handleStart = () => {
@@ -100,7 +135,7 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
   const isLastSlide = currentStep === SLIDES.length - 1;
 
   return (
-    <ModalOverlay backdropVariant="solid" zIndex={5000}>
+    <div className="fixed inset-0 z-[5000] bg-slate-900/95 backdrop-blur-md flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden relative flex flex-col animate-in fade-in zoom-in duration-300">
         
         <div className="h-32 bg-teal-600 bg-[url('https://images.unsplash.com/photo-1605806616949-1e87b487bc2a?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center relative">
@@ -188,6 +223,6 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onComplete }) => {
         </div>
 
       </div>
-    </ModalOverlay>
+    </div>
   );
 };

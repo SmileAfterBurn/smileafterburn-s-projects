@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, User, Loader2, Download, Type, Eye, Mic, MicOff, Volume2, PlayCircle, Heart, X } from 'lucide-react';
 import { analyzeData, LiveSession, generateSpeech } from '../services/geminiService';
 import { Organization, ChatMessage } from '../types';
-import { useAudioPlayback } from '../hooks/useAudioPlayback';
 
 const PANI_DUMKA_AVATAR = "https://drive.google.com/thumbnail?id=1CKyZ-yqoy3iEKIqnXkrg07z0GmK-e099&sz=w256";
 const FALLBACK_AVATAR = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=256&auto=format&fit=crop";
@@ -33,9 +32,9 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
   
   const [isVoiceActive, setIsVoiceActive] = useState(false);
   const liveSessionRef = useRef<LiveSession | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const { stopAudio, decodeAudioData, playAudioBuffer } = useAudioPlayback();
 
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 
@@ -44,29 +43,39 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
   useEffect(() => {
     return () => {
       if (liveSessionRef.current) liveSessionRef.current.disconnect();
+      stopAudioPlayback();
+      audioContextRef.current?.close();
     };
   }, []);
 
-  const speakText = async (msgId: string, text: string) => {
-    if (speakingMessageId === msgId) { 
-      stopAudio(); 
-      setSpeakingMessageId(null);
-      return; 
+  const stopAudioPlayback = () => {
+    if (sourceNodeRef.current) {
+      try { sourceNodeRef.current.stop(); } catch(e) {}
+      sourceNodeRef.current = null;
     }
-    
-    stopAudio();
+    setSpeakingMessageId(null);
+  };
+
+  const speakText = async (msgId: string, text: string) => {
+    if (speakingMessageId === msgId) { stopAudioPlayback(); return; }
+    stopAudioPlayback();
     setSpeakingMessageId(msgId);
-    
     try {
       const cleanText = text.replace(/\*\*/g, '').replace(/<br\/>/g, ' ');
       const audioData = await generateSpeech(cleanText);
-      const buffer = await decodeAudioData(audioData);
-      
-      playAudioBuffer(buffer, () => {
-        if (speakingMessageId === msgId) {
-          setSpeakingMessageId(null);
-        }
-      });
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      }
+      const dataInt16 = new Int16Array(audioData);
+      const buffer = audioContextRef.current.createBuffer(1, dataInt16.length, 24000);
+      const channelData = buffer.getChannelData(0);
+      for (let i = 0; i < dataInt16.length; i++) channelData[i] = dataInt16[i] / 32768.0;
+      const source = audioContextRef.current.createBufferSource();
+      source.buffer = buffer;
+      source.connect(audioContextRef.current.destination);
+      source.onended = () => { if (speakingMessageId === msgId) setSpeakingMessageId(null); };
+      source.start(0);
+      sourceNodeRef.current = source;
     } catch (e) {
       setSpeakingMessageId(null);
     }

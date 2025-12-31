@@ -5,21 +5,14 @@ steps:
     entrypoint: 'npm'
     args: ['install']
 
-  # 2. Збірка продуктивної версії додатку з використанням Secret Manager
-  # Отримуємо API_KEY з Google Cloud Secret Manager замість placeholder
-  # Note: Secret is retrieved and injected only during build time and not exposed in logs
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        # Отримуємо API ключ з Secret Manager
-        export API_KEY=$(gcloud secrets versions access latest --secret="api-key" --location="${_LOCATION}")
-        
-        # Запускаємо збірку з отриманим ключем
-        npm run build
+  # 2. Збірка продуктивної версії додатку
+  # Ми передаємо API_KEY як змінну середовища для процесу збірки, 
+  # якщо ваш код очікує її під час компіляції (наприклад, для Vite)
+  - name: 'node:20'
+    entrypoint: 'npm'
+    args: ['run', 'build']
     env:
-      - 'NODE_VERSION=20'
+      - 'API_KEY=${_API_KEY}'
 
 # 3. Визначення артефактів (результатів збірки)
 # Після завершення файли з папки 'dist' будуть завантажені у ваш GCS бакет
@@ -33,12 +26,5 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 substitutions:
-  # Регіон для Secret Manager (має співпадати з регіоном Cloud Build)
-  _LOCATION: 'europe-west1'
-  # GCS бакет для артефактів збірки
+  _API_KEY: 'placeholder-key' # Можна перевизначити через gcloud або тригери
   _ARTIFACT_BUCKET: 'your-gcs-bucket-name' # Вкажіть ім'я вашого бакета
-  
-# Примітка: API_KEY тепер зберігається в Secret Manager
-# Створіть секрет командою:
-# gcloud secrets create api-key --location=europe-west1 --data-file=- <<< "your-actual-api-key"
-

@@ -1,6 +1,6 @@
+
 import React, { useState } from 'react';
 import { X, Heart, Share2, Github, Mail, Globe, Award, Wallet, ArrowRight, Target, Users, ShieldCheck, Briefcase, Copy, ExternalLink, Laptop, PlayCircle } from 'lucide-react';
-import { ModalOverlay } from './shared/ModalOverlay';
 
 interface AboutModalProps {
   onClose: () => void;
@@ -13,6 +13,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose, onOpenPresentat
 
   const MONO_JAR_URL = "https://send.monobank.ua/jar/3upLLMPr6P";
   const CARD_NUMBER = "4874 1000 2054 3750";
+  const GITHUB_URL = "https://github.com/SmileAfterBurn/smileafterburn-s-projects";
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -26,7 +27,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose, onOpenPresentat
   };
 
   return (
-    <ModalOverlay backdropVariant="dark" zIndex={6000}>
+    <div className="fixed inset-0 z-[6000] bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-2 md:p-4">
       <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col max-h-[95vh] border border-white/20">
         
         <div className="h-28 md:h-36 bg-gradient-to-r from-teal-700 to-blue-800 relative flex flex-col items-center justify-center shrink-0">
@@ -54,7 +55,13 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose, onOpenPresentat
            {activeTab === 'about' && (
              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
                <p className="text-sm md:text-lg text-slate-600 leading-relaxed font-medium"><strong>«Інклюзивна мапа»</strong> — це єдиний верифікований реєстр допомоги для ВПО та вразливих груп населення в Україні.</p>
-               <button onClick={onOpenPresentation} className="w-full py-4 bg-teal-600 text-white rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest hover:bg-teal-700 transition flex items-center justify-center gap-3 shadow-lg group active:scale-95"><PlayCircle className="w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform" /> Дивитись Pitch Deck проєкту</button>
+               
+               <div className="grid grid-cols-1 gap-3">
+                 <button onClick={onOpenPresentation} className="w-full py-4 bg-teal-600 text-white rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest hover:bg-teal-700 transition flex items-center justify-center gap-3 shadow-lg group active:scale-95">
+                   <PlayCircle className="w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform" /> Переглянути презентацію
+                 </button>
+               </div>
+
                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                   {[
                     { icon: Target, label: 'Швидкість', text: 'Миттєвий пошук допомоги.', color: 'teal' },
@@ -108,9 +115,9 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose, onOpenPresentat
 
         <div className="p-4 md:p-6 border-t border-slate-100 flex flex-col sm:flex-row gap-2 md:gap-3 bg-slate-50/50 shrink-0">
            <button onClick={handleShare} className="flex-1 py-3.5 bg-white text-teal-700 font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-teal-50 transition flex items-center justify-center gap-2 border border-slate-200 active:scale-95 shadow-sm"><Share2 size={16} /> Поділитися</button>
-           <a href="https://github.com/illia-chernov" target="_blank" className="flex-1 py-3.5 bg-slate-900 text-white font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-slate-800 transition flex items-center justify-center gap-2 active:scale-95 shadow-lg"><Github size={16} /> GitHub</a>
+           <a href={GITHUB_URL} target="_blank" className="flex-1 py-3.5 bg-slate-900 text-white font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-slate-800 transition flex items-center justify-center gap-2 active:scale-95 shadow-lg"><Github size={16} /> GitHub</a>
         </div>
       </div>
-    </ModalOverlay>
+    </div>
   );
 };

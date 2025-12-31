@@ -1,3 +1,4 @@
+
 import { RegionName, RemoteSupportActor } from './types';
 import { INITIAL_ORGANIZATIONS } from './organizations';
 
@@ -203,7 +204,7 @@ export const REMOTE_SUPPORT_ACTORS: RemoteSupportActor[] = [
     name: 'Гаряча лінія протидії насильству',
     category: 'Соціальний захист',
     phones: ['1547'],
-    description: 'Гаряча лінія з питань протидії торгівлі людьми, запобігання та протидії домашньому насильству. Безкоштовно, анонімно.',
+    description: 'Гаряця лінія з питань протидії торгівлі людьми, запобігання та протидії домашньому насильству. Безкоштовно, анонімно.',
     website: 'https://1547.ukc.gov.ua'
   },
   {

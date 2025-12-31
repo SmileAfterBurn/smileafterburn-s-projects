@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { X, Send, AlertCircle, FileText, CheckCircle, ExternalLink, ArrowRight, Copy } from 'lucide-react';
 import { Organization } from '../types';
 import { REFERRAL_DRIVE_URL } from '../constants';
-import { ModalOverlay } from './shared/ModalOverlay';
 
 interface ReferralModalProps {
   organization: Organization;
@@ -121,7 +120,7 @@ ${formData.notes}
 
   if (isSubmitted) {
     return (
-      <ModalOverlay backdropVariant="medium" zIndex={6000}>
+      <div className="fixed inset-0 z-[6000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
         <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg p-8 animate-in fade-in zoom-in duration-200 text-center">
           <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-10 h-10" />
@@ -179,12 +178,12 @@ ${formData.notes}
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
-      </ModalOverlay>
+      </div>
     );
   }
 
   return (
-    <ModalOverlay backdropVariant="medium" zIndex={6000}>
+    <div className="fixed inset-0 z-[6000] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl flex flex-col animate-in fade-in zoom-in duration-200 max-h-[90vh]">
         
         {/* Header */}
@@ -352,6 +351,6 @@ ${formData.notes}
 
         </form>
       </div>
-    </ModalOverlay>
+    </div>
   );
 };
