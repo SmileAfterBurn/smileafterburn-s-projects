@@ -44,3 +44,20 @@ export enum ViewMode {
   Map = 'map',
   Split = 'split'
 }
+
+// Secret Manager types
+export interface SecretConfig {
+  projectId: string;
+  locationId: string;
+  secretId: string;
+}
+
+export interface SecretPayload {
+  data: string;
+}
+
+export interface SecretMetadata {
+  name: string;
+  createTime?: string;
+  labels?: Record<string, string>;
+}
