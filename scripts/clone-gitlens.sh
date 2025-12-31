@@ -60,6 +60,11 @@ main() {
         read -p "Do you want to remove it and clone fresh? (y/N) " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
+            # Sanity check: ensure target directory is not empty, root, or home
+            if [ -z "$TARGET_DIR" ] || [ "$TARGET_DIR" = "/" ] || [ "$TARGET_DIR" = "$HOME" ]; then
+                print_error "Cannot remove directory: invalid or dangerous path."
+                exit 1
+            fi
             print_info "Removing existing directory..."
             rm -rf "$TARGET_DIR"
         else
@@ -75,19 +80,21 @@ main() {
         echo ""
         print_info "Repository location: ${TARGET_DIR}"
         
-        # Get some repository info
-        cd "$TARGET_DIR"
-        CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-        LATEST_COMMIT=$(git log -1 --pretty=format:"%h - %s (%cr)" 2>/dev/null || echo "N/A")
-        
-        echo ""
-        print_info "Repository Details:"
-        echo "  - Current branch: ${CURRENT_BRANCH}"
-        echo "  - Latest commit: ${LATEST_COMMIT}"
-        
-        # Count files
-        FILE_COUNT=$(git ls-files | wc -l)
-        echo "  - Total files: ${FILE_COUNT}"
+        # Get some repository info (use subshell to avoid changing directory)
+        (
+            cd "$TARGET_DIR"
+            CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+            LATEST_COMMIT=$(git log -1 --pretty=format:"%h - %s (%cr)" 2>/dev/null || echo "N/A")
+            
+            echo ""
+            print_info "Repository Details:"
+            echo "  - Current branch: ${CURRENT_BRANCH}"
+            echo "  - Latest commit: ${LATEST_COMMIT}"
+            
+            # Count files
+            FILE_COUNT=$(git ls-files | wc -l)
+            echo "  - Total files: ${FILE_COUNT}"
+        )
         
         print_success "Clone operation completed!"
     else
