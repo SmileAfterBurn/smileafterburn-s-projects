@@ -1,5 +1,6 @@
+
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Info, Heart, Menu, X, Filter, Check, MessageCircle, Gem, Lock, Waves } from 'lucide-react';
+import { LayoutGrid, Map as MapIcon, Table as TableIcon, Search, Sparkles, HeartHandshake, MapPin, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, PhoneForwarded, Anchor, Ship, Sun, Building2, Zap, Landmark, Coffee, GraduationCap, Globe, Castle, Trees, Mountain, Wheat, Church, Flower2, Shield, Info, Heart, Menu, X, Filter, Check, MessageCircle, Gem, Lock, Waves, RefreshCcw } from 'lucide-react';
 import { MapView } from './components/MapView.tsx';
 import { TableView } from './components/TableView.tsx';
 import { GeminiChat } from './components/GeminiChat.tsx';
@@ -8,6 +9,7 @@ import { RemoteSupportModal } from './components/RemoteSupportModal.tsx';
 import { ReferralModal } from './components/ReferralModal.tsx';
 import { AboutModal } from './components/AboutModal.tsx';
 import { PresentationModal } from './components/PresentationModal.tsx';
+import { SyncCenterModal } from './components/SyncCenterModal.tsx';
 import { INITIAL_ORGANIZATIONS, REGION_CONFIG } from './constants.ts';
 import { Organization, ViewMode, RegionName } from './types.ts';
 
@@ -36,6 +38,7 @@ const App: React.FC = () => {
   const [isRemoteSupportOpen, setIsRemoteSupportOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isPresentationOpen, setIsPresentationOpen] = useState(false);
+  const [isSyncCenterOpen, setIsSyncCenterOpen] = useState(false);
   const [referralOrg, setReferralOrg] = useState<Organization | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeRegion, setActiveRegion] = useState<RegionName>('All');
@@ -159,6 +162,7 @@ const App: React.FC = () => {
       {isPresentationOpen && <PresentationModal onClose={() => setIsPresentationOpen(false)} />}
       {referralOrg && <ReferralModal organization={referralOrg} onClose={() => setReferralOrg(null)} />}
       {isRemoteSupportOpen && <RemoteSupportModal onClose={() => setIsRemoteSupportOpen(false)} />}
+      {isSyncCenterOpen && <SyncCenterModal onClose={() => setIsSyncCenterOpen(false)} organizations={organizations} />}
 
       {isRegionModalOpen && !showIntro && (
         <div className="fixed inset-0 z-[500] bg-slate-900/95 backdrop-blur-md flex items-center justify-center p-4">
@@ -198,7 +202,6 @@ const App: React.FC = () => {
           </div>
           <div className="flex items-center gap-1.5 md:hidden">
              <button onClick={() => setIsAboutOpen(true)} className="w-9 h-9 flex items-center justify-center text-rose-500 rounded-xl bg-rose-50 border border-rose-100 shadow-sm"><Heart size={18} fill="currentColor" /></button>
-             <button onClick={() => setIsRemoteSupportOpen(true)} className="w-9 h-9 flex items-center justify-center text-indigo-600 rounded-xl bg-indigo-50 border border-indigo-100 shadow-sm"><PhoneForwarded size={18} /></button>
           </div>
         </div>
 
@@ -214,6 +217,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-2">
+          <button onClick={() => setIsSyncCenterOpen(true)} className="w-10 h-10 flex items-center justify-center text-teal-600 rounded-xl hover:bg-teal-50 bg-teal-50/30 border border-teal-100 transition-colors" title="Sync Center"><RefreshCcw size={20} /></button>
           <button onClick={() => setIsAboutOpen(true)} className="w-10 h-10 flex items-center justify-center text-rose-500 rounded-xl hover:bg-rose-50 bg-rose-50/30 border border-rose-100 transition-colors"><Heart size={20} fill="currentColor" /></button>
           <button onClick={() => setIsRemoteSupportOpen(true)} className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-md transition-all active:scale-95"><PhoneForwarded size={16} /><span>Гарячі лінії</span></button>
           <button onClick={() => setIsChatOpen(!isChatOpen)} className={`flex items-center gap-3 px-1.5 py-1.5 pr-4 rounded-xl border transition-all shadow-sm active:scale-95 ${isChatOpen ? 'bg-teal-600 border-teal-600 text-white' : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'}`}>

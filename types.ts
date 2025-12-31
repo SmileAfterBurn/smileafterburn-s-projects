@@ -1,3 +1,4 @@
+
 export type RegionName = 'All' | 'Odesa' | 'Mykolaiv' | 'Kherson' | 'Dnipro' | 'Zaporizhzhia' | 'Kyiv' | 'Lviv' | 'Kharkiv' | 'Volyn' | 'Zhytomyr' | 'IvanoFrankivsk' | 'Kirovohrad' | 'Rivne' | 'Sumy' | 'Ternopil' | 'Chernivtsi' | 'Khmelnytskyi' | 'Chernihiv' | 'Poltava' | 'Vinnytsia' | 'Cherkasy';
 
 export interface Organization {
@@ -43,4 +44,19 @@ export enum ViewMode {
   Grid = 'grid',
   Map = 'map',
   Split = 'split'
+}
+
+// Sync Integration Types
+export interface SyncConfig {
+  githubToken?: string;
+  githubRepo: string;
+  googleDriveFolderId: string;
+  localPath: string;
+}
+
+export interface SyncStatus {
+  github: 'connected' | 'disconnected' | 'error';
+  drive: 'connected' | 'disconnected' | 'error';
+  local: 'connected' | 'disconnected' | 'error';
+  lastSync?: number;
 }

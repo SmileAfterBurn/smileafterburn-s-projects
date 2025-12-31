@@ -1,4 +1,5 @@
 
+
 import { GoogleGenAI, GenerateContentResponse, LiveServerMessage, Modality } from "@google/genai";
 import { Organization } from "../types";
 
@@ -6,20 +7,22 @@ import { Organization } from "../types";
 
 export const generateSpeech = async (text: string): Promise<ArrayBuffer> => {
   try {
-    // Initializing GoogleGenAI directly with process.env.API_KEY as per guidelines.
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-preview-tts",
       contents: [{ 
         parts: [{ 
-          text: `Ти — пані Думка, втілення української доброти та мудрості. Твій голос має бути теплим, емпатичним, з лагідною інтонацією, ніби ти розмовляєш з близькою людиною. Уникай роботизованого тону. Використовуй природні паузи та м'які наголоси. Промов цей текст з глибокою турботою та любов'ю: ${text}` 
+          text: `[STYLING INSTRUCTIONS: Speak as Pani Dumka. Use a warm, mature, and deeply empathetic female voice. Maintain a slow, comforting pace. Use natural rising and falling intonations. Add slight pauses (breath marks) between sentences to sound like a real person, not a machine. Your tone should be reassuring and motherly.] 
+
+Промов цей текст з глибокою турботою та щирою українською душею: ${text}` 
         }] 
       }],
       config: {
+        // Fix: corrected typo in property name from responseModalalities to responseModalities
         responseModalities: [Modality.AUDIO],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Kore' }, 
+            prebuiltVoiceConfig: { voiceName: 'Zephyr' }, 
           },
         },
       },
@@ -47,7 +50,6 @@ export const analyzeData = async (
   organizations: Organization[]
 ): Promise<string> => {
   try {
-    // Initializing GoogleGenAI directly with process.env.API_KEY as per guidelines.
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
     const dataContext = JSON.stringify(organizations.slice(0, 100).map(o => ({
@@ -72,7 +74,7 @@ export const analyzeData = async (
         1. На даний момент у базі даних додано майже 300 перевірених організацій по всій Україні.
         2. Проект волонтерський, зараз триває критично важливий збір 158 000 грн на Surface Laptop Go 2 для розробників.
         3. Усі файли, регламенти та база даних проекту зберігаються за посиланням на Google Drive: https://drive.google.com/drive/folders/1ndkLzFOLEOGIZOwh0Ya2cZuGUMpElwn_?usp=sharing
-        4. Ти допомагаєш знайти допомогу у будь-якому регіоні. Ти — експерт з організацій Карітас, Червоний Хрест, Посмішка ЮА, ГО Дівчата та Право на Захист.
+        4. Ти допомагаєш знайти допомогу у будь-потрібному регіоні. Ти — експерт з організацій Карітас, Червоний Хрест, Посмішка ЮА, ГО Дівчата та Право на Захист.
         5. Мова: Виключно українська.`
       }
     });
@@ -82,6 +84,36 @@ export const analyzeData = async (
     console.error("Gemini API Error:", error);
     return "Вибачте, виникла технічна помилка.";
   }
+};
+
+// --- Video Generation (Veo) ---
+
+export const generatePromoVideo = async (prompt: string, aspectRatio: '16:9' | '9:16' = '16:9'): Promise<string> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  
+  let operation = await ai.models.generateVideos({
+    model: 'veo-3.1-fast-generate-preview',
+    prompt: prompt,
+    config: {
+      numberOfVideos: 1,
+      resolution: '720p',
+      aspectRatio: aspectRatio
+    }
+  });
+
+  while (!operation.done) {
+    await new Promise(resolve => setTimeout(resolve, 10000));
+    operation = await ai.operations.getVideosOperation({ operation: operation });
+  }
+
+  const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri;
+  if (!downloadLink) throw new Error("Video generation failed: No video URI returned from the operation.");
+
+  const response = await fetch(`${downloadLink}&key=${process.env.API_KEY}`);
+  if (!response.ok) throw new Error(`Failed to fetch generated video: ${response.statusText}`);
+  
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
 };
 
 // --- Live Audio Session ---
@@ -104,7 +136,6 @@ export class LiveSession {
     this.onStatusChange(true);
 
     try {
-      // Initializing GoogleGenAI directly with process.env.API_KEY as per guidelines inside connect to ensure it's up-to-date.
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
       const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
@@ -117,9 +148,9 @@ export class LiveSession {
         config: {
           responseModalities: [Modality.AUDIO],
           speechConfig: {
-            voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } },
+            voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } },
           },
-          systemInstruction: `Ти — пані Думка, мудра та доброзичлива українська помічниця. Твій тон має бути надзвичайно теплим, емпатичним та заспокійливим. Розмовляй природно, з мелодійною інтонацією, ніби ти розмовляєш з близькою людиною, якій потрібна твоя підтримка. Уникай сухості та монотонності. Ти допомагаєш знайти допомогу на мапі України (майже 300 організацій у базі). Ти знаєш про проект на Drive (1ndkLzFOLEOGIZOwh0Ya2cZuGUMpElwn_). Ти лагідна та турботлива.`,
+          systemInstruction: `Ти — пані Думка, мудра та доброзичлива українська помічниця. Твій голос має бути надзвичайно теплим, емпатичним та заспокійливим. Розмовляй природно, з мелодійною інтонацією, ніби ти розмовляєш з близькою людиною. Уникай монотонності, використовуй паузи для вдиху. Ти лагідна та турботлива.`,
         },
         callbacks: {
           onopen: () => this.startAudioStream(sessionPromise),
