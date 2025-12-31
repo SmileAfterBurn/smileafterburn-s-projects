@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Heart, Share2, Github, Mail, Globe, Award, Wallet, ArrowRight, Target, Users, ShieldCheck, Briefcase, Copy, ExternalLink, Laptop, PlayCircle } from 'lucide-react';
+import { ModalOverlay } from './shared/ModalOverlay';
 
 interface AboutModalProps {
   onClose: () => void;
@@ -25,7 +26,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose, onOpenPresentat
   };
 
   return (
-    <div className="fixed inset-0 z-[6000] bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-2 md:p-4">
+    <ModalOverlay backdropVariant="dark" zIndex={6000}>
       <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-3xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col max-h-[95vh] border border-white/20">
         
         <div className="h-28 md:h-36 bg-gradient-to-r from-teal-700 to-blue-800 relative flex flex-col items-center justify-center shrink-0">
@@ -110,6 +111,6 @@ export const AboutModal: React.FC<AboutModalProps> = ({ onClose, onOpenPresentat
            <a href="https://github.com/illia-chernov" target="_blank" className="flex-1 py-3.5 bg-slate-900 text-white font-black uppercase text-[10px] tracking-widest rounded-2xl hover:bg-slate-800 transition flex items-center justify-center gap-2 active:scale-95 shadow-lg"><Github size={16} /> GitHub</a>
         </div>
       </div>
-    </div>
+    </ModalOverlay>
   );
 };
