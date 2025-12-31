@@ -41,6 +41,8 @@ print_error() {
 
 # Main execution
 main() {
+    local REPLY  # Declare REPLY as local to avoid variable leakage
+    
     print_info "GitLens Repository Clone Script"
     print_info "================================"
     echo ""
