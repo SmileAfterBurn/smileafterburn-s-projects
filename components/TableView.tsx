@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Organization } from '../types';
 import { MapPin, Phone, Mail, ChevronRight, Calendar } from 'lucide-react';
@@ -102,9 +101,10 @@ export const TableView: React.FC<TableViewProps> = ({
                              <a 
                                href={`tel:${cleanPhone}`} 
                                onClick={(e) => e.stopPropagation()} 
-                               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:border-teal-400 hover:text-teal-700 transition-all shadow-sm active:scale-95"
+                               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 border border-teal-100 text-xs font-bold hover:bg-teal-100 hover:border-teal-200 transition-all shadow-sm active:scale-95 group"
                              >
-                               <Phone className="w-3 h-3" /> {org.phone}
+                               <Phone className="w-3 h-3 group-hover:scale-110 transition-transform" /> 
+                               {org.phone}
                              </a>
                            )}
                            {org.email && (
