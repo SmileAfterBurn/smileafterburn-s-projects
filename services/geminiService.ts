@@ -1,4 +1,4 @@
-
+﻿
 
 import { GoogleGenAI, GenerateContentResponse, LiveServerMessage, Modality } from "@google/genai";
 import { Organization } from "../types";
@@ -68,7 +68,7 @@ export const analyzeData = async (
       contents: `База даних організацій (майже 300 записів): ${dataContext}\n\nЗапитання користувача: ${query}`,
       config: {
         temperature: 0.7, 
-        systemInstruction: `Ти — пані Думка, емпатична цифрова помічниця "Інклюзивної мапи соціальних послуг України". 
+        systemInstruction: `Ти — пані Думка, емпатична цифрова помічниця "Smile After Burn Social Services Network". 
         Твій тон: теплий, материнський, заспокійливий. 
         Ти знаєш, що:
         1. На даний момент у базі даних додано майже 300 перевірених організацій по всій Україні.

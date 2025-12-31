@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 // Added X icon to imports
 import { Send, User, Loader2, Download, Type, Eye, Mic, MicOff, Volume2, PlayCircle, Heart, X } from 'lucide-react';
-import { analyzeData, generateSpeech } from '../services/geminiService';
+import { analyzeData, LiveSession, generateSpeech } from '../services/geminiService';
 import { Organization, ChatMessage } from '../types';
 
 const PANI_DUMKA_AVATAR = "https://drive.google.com/thumbnail?id=1CKyZ-yqoy3iEKIqnXkrg07z0GmK-e099&sz=w256";
@@ -13,12 +13,6 @@ interface GeminiChatProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenPresentation?: () => void;
-}
-
-// Extend window interface for Web Speech API
-interface IWindow extends Window {
-  webkitSpeechRecognition: any;
-  SpeechRecognition: any;
 }
 
 export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, onClose, onOpenPresentation }) => {
@@ -36,8 +30,8 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
   const [isHighContrast, setIsHighContrast] = useState(false);
   const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
   
-  const [isRecording, setIsRecording] = useState(false);
-  const recognitionRef = useRef<any>(null);
+  const [isVoiceActive, setIsVoiceActive] = useState(false);
+  const liveSessionRef = useRef<LiveSession | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -46,38 +40,9 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
 
   useEffect(() => { scrollToBottom(); }, [messages, isOpen, isLargeText]);
 
-  // Initialize Speech Recognition
   useEffect(() => {
-    const { webkitSpeechRecognition, SpeechRecognition } = window as unknown as IWindow;
-    const SpeechRecognitionConstructor = SpeechRecognition || webkitSpeechRecognition;
-
-    if (SpeechRecognitionConstructor) {
-      const recognition = new SpeechRecognitionConstructor();
-      recognition.lang = 'uk-UA';
-      recognition.continuous = false; // Stop after silence
-      recognition.interimResults = true; // Show text while speaking
-
-      recognition.onstart = () => setIsRecording(true);
-      
-      recognition.onresult = (event: any) => {
-        const transcript = Array.from(event.results)
-          .map((result: any) => result[0])
-          .map((result) => result.transcript)
-          .join('');
-        setInput(transcript);
-      };
-
-      recognition.onend = () => setIsRecording(false);
-      
-      recognition.onerror = (event: any) => {
-        console.error("Speech recognition error", event.error);
-        setIsRecording(false);
-      };
-
-      recognitionRef.current = recognition;
-    }
-
     return () => {
+      if (liveSessionRef.current) liveSessionRef.current.disconnect();
       stopAudioPlayback();
       audioContextRef.current?.close();
     };
@@ -133,17 +98,14 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
     }
   };
 
-  const toggleRecording = () => {
-    if (!recognitionRef.current) {
-      alert("Ваш браузер не підтримує голосове введення.");
-      return;
-    }
-
-    if (isRecording) {
-      recognitionRef.current.stop();
+  const toggleVoiceChat = async () => {
+    if (isVoiceActive) {
+      if (liveSessionRef.current) { liveSessionRef.current.disconnect(); liveSessionRef.current = null; }
     } else {
-      setInput(''); // Clear input before new dictation
-      recognitionRef.current.start();
+      try {
+        liveSessionRef.current = new LiveSession(organizations, (active) => setIsVoiceActive(active));
+        await liveSessionRef.current.connect();
+      } catch (e) { alert("Не вдалося запустити голосовий чат."); }
     }
   };
 
@@ -219,8 +181,8 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
         </div>
 
         <div className="flex gap-3 items-end">
-          <button onClick={toggleRecording} className={`shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-lg active:scale-90 ${isRecording ? 'bg-rose-500 text-white animate-pulse' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`} title="Диктувати повідомлення">
-            {isRecording ? <MicOff size={24} /> : <Mic size={24} />}
+          <button onClick={toggleVoiceChat} className={`shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-lg active:scale-90 ${isVoiceActive ? 'bg-rose-500 text-white animate-pulse' : 'bg-slate-100 text-slate-500'}`}>
+            {isVoiceActive ? <MicOff size={24} /> : <Mic size={24} />}
           </button>
           
           <div className="flex-1 relative">
@@ -228,7 +190,7 @@ export const GeminiChat: React.FC<GeminiChatProps> = ({ organizations, isOpen, o
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-              placeholder={isRecording ? "Кажіть, я записую..." : "Напишіть пані Думці..."}
+              placeholder={isVoiceActive ? "Слухаю вас..." : "Напишіть пані Думці..."}
               className={`w-full p-3 pr-12 rounded-2xl border outline-none focus:ring-4 transition-all resize-none max-h-32 min-h-[48px] ${isHighContrast ? 'bg-slate-900 text-yellow-400 border-yellow-400 focus:ring-yellow-400/20' : 'bg-slate-50 border-slate-200 focus:border-teal-500 focus:ring-teal-500/10'}`}
               rows={1}
             />
