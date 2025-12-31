@@ -18,15 +18,3 @@ View your app in AI Studio: https://ai.studio/apps/drive/1rVF5mtqLSXIx9Y3EpXjyAK
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
-
-## Additional Scripts
-
-### Clone GitLens Repository
-
-This repository includes a script to clone the [gitkraken/vscode-gitlens](https://github.com/gitkraken/vscode-gitlens) repository:
-
-```bash
-./scripts/clone-gitlens.sh
-```
-
-For more information, see the [GitLens Clone Guide](docs/GITLENS_CLONE_GUIDE.md).
