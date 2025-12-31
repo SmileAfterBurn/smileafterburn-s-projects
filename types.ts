@@ -1,4 +1,4 @@
-export type RegionName = 'All' | 'Odesa' | 'Mykolaiv' | 'Kherson' | 'Dnipro' | 'Zaporizhzhia' | 'Kyiv' | 'Lviv' | 'Kharkiv' | 'Volyn' | 'Zhytomyr' | 'IvanoFrankivsk' | 'Kirovohrad' | 'Rivne' | 'Sumy' | 'Ternopil' | 'Chernivtsi' | 'Khmelnytskyi' | 'Chernihiv' | 'Poltava';
+export type RegionName = 'All' | 'Odesa' | 'Mykolaiv' | 'Kherson' | 'Dnipro' | 'Zaporizhzhia' | 'Kyiv' | 'Lviv' | 'Kharkiv' | 'Volyn' | 'Zhytomyr' | 'IvanoFrankivsk' | 'Kirovohrad' | 'Rivne' | 'Sumy' | 'Ternopil' | 'Chernivtsi' | 'Khmelnytskyi' | 'Chernihiv' | 'Poltava' | 'Vinnytsia' | 'Cherkasy';
 
 export interface Organization {
   id: string;
@@ -8,12 +8,12 @@ export interface Organization {
   lng: number;
   category: string;
   services: string; // Відповідає колонці "Послуги"
-  phone: string;    // Нове поле
-  email: string;    // Нове поле
+  phone: string;    // Обов'язкове поле для зв'язку
+  email: string;    
   status: 'Active' | 'Inactive' | 'Pending' | 'In Development';
   driveFolderUrl: string;
   budget: number;
-  region: RegionName; // Нове поле для фільтрації по регіонах
+  region: RegionName; 
   
   // New detailed fields
   workingHours?: string;
@@ -43,4 +43,21 @@ export enum ViewMode {
   Grid = 'grid',
   Map = 'map',
   Split = 'split'
+}
+
+// Secret Manager types
+export interface SecretConfig {
+  projectId: string;
+  locationId: string;
+  secretId: string;
+}
+
+export interface SecretPayload {
+  data: string;
+}
+
+export interface SecretMetadata {
+  name: string;
+  createTime?: string;
+  labels?: Record<string, string>;
 }
